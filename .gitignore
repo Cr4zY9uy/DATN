@@ -52,3 +52,9 @@ package-lock.json
 package.json
 
 .env
+
+*.crt
+
+elastic_search 
+
+.history
