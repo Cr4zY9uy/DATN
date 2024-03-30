@@ -23,10 +23,17 @@ const user_schema = new mongoose.Schema({
         min: 6,
         max: 50
     },
+    googleID: {
+        type: String,
+
+    },
     refreshToken: {
         type: String,
         require: true
     },
+    image: {
+        type: String
+    }
 },
     {
         timestamps: true
