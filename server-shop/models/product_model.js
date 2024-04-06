@@ -1,53 +1,58 @@
 import mongoose from "mongoose";
 const product_schema = new mongoose.Schema({
-    product_id: {
+    sku_id: {
         type: String,
         require: true,
         min: 5,
         max: 10
     },
-    title: {
+    name: {
         type: String,
         require: true,
         min: 3,
-        max: 50
-    },
-    price: {
-        type: Number,
-        min: 1,
-        default: 1,
+        max: 50,
+        trim: true
     },
     description: {
         type: String,
         min: 5,
         max: 300
     },
-    qty: {
+    quantity: {
         type: Number,
         min: 0,
         require: true
     },
-    category_name: {
+    origin: {
         type: String,
         require: true,
-        min: 5,
-        max: 50
+        trim: true
     },
-    thumbnail: {
+    category: {
+        category_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "categories",
+            require: true,
+        },
+        category_name: {
+            type: String,
+            require: true,
+            min: 5,
+            max: 50
+        }
+    },
+    thumbnail: [{
         type: String,
         require: true
+    }],
+    isActive: {
+        type: Boolean,
+        default: true
     },
-    price_promotion: {
-        type: Number,
-        min: 0,
-        max: 1,
-        require: true
-    },
-    status: {
-        type: Number,
-        enum: [0, 1],
-        default: 0
-    }
+    variant: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'variants',
+    }]
 }
     ,
     {

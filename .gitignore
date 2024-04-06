@@ -53,4 +53,8 @@ package.json
 
 .env
 
+*.crt
+
+elastic_search 
+
 .history

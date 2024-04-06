@@ -1,0 +1,86 @@
+.product_relate-list {
+    height: 90vh;
+    text-align: center;
+    margin-top: 120px;
+}
+
+.product_relate-list {
+    padding: 0 20px;
+}
+
+.product_relate-list img {
+    width: 70%;
+    height: 70%;
+}
+
+.product_relate-list-list .product_relate-list .discount {
+    text-decoration: line-through;
+}
+
+.product_relate-list button {
+    width: 65%;
+    text-transform: uppercase;
+    padding: 10px 0px;
+    color: rgb(0, 0, 0);
+}
+
+.product_relate-list span,
+.product_relate-list p {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+
+
+
+.product_relate-list h2 {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.product_relate-list h4 {
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 20px;
+}
+
+
+.product_relate-list button:hover {
+    color: rgb(255, 255, 255)
+}
+
+.product_relate-list p {
+    color: rgb(239, 31, 31);
+}
+
+.product_relate-list .discount {
+    color: rgb(128, 128, 128);
+}
+
+
+.product_relate-list button {
+    position: relative;
+    display: inline-block;
+    margin: 15px;
+    padding: 15px 30px;
+    text-align: center;
+    font-size: 16px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    background: transparent;
+    cursor: pointer;
+    transition: ease-out 0.4s;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 0 #ffc107;
+}
+
+
+.product_relate-list button:hover {
+    color: white;
+    box-shadow: inset 0 -100px 0 0 #ffc107;
+}
+
+
+.product_relate-list button:active {
+    transform: scale(0.9);
+}

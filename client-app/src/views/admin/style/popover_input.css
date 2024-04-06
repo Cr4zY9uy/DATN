@@ -1,0 +1,9 @@
+#popover-input .saveBtn {
+    background-color: rgb(25, 135, 84);
+    color: rgb(255, 255, 255)
+}
+
+#popover-input .delBtn {
+    background-color: rgb(255, 77, 79);
+    color: rgb(255, 255, 255)
+}

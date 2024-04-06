@@ -1,0 +1,36 @@
+.side_bar {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22) !important;
+    z-index: 2;
+}
+
+.ant-layout-sider-children .logo {
+    font-size: 26px !important;
+    height: 10vh;
+    text-align: center;
+    line-height: 10vh;
+    background-color: rgb(199, 98, 108);
+    color: rgb(255, 255, 255);
+}
+
+.ant-layout-sider-children .logo span {
+    font-weight: 300;
+}
+
+.ant-menu-it em-selected {
+    font-weight: 500;
+}
+
+aside:not(:is(.ant-layout-sider.ant-layout-sider-dark.side_bar.ant-layout-sider-collapsed)) {
+    min-width: 230px !important;
+    max-width: 230px !important;
+    width: 230px !important;
+}
+
+.side_bar .ant-menu-title-content a {
+    text-decoration: none;
+}
+
+.side_bar .logo a {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+}
