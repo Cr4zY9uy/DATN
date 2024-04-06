@@ -1,16 +1,11 @@
 import mongoose from "mongoose";
 const category_schema = new mongoose.Schema({
-    category_id: {
-        type: String,
-        require: true,
-        min: 4,
-        max: 10
-    },
     name: {
         type: String,
         require: true,
         min: 6,
-        max: 50
+        max: 50,
+        trim: true,
     },
     image: {
         type: String,
@@ -20,7 +15,16 @@ const category_schema = new mongoose.Schema({
         type: String,
         require: true,
         min: 6,
-        max: 300
+        max: 300,
+        trim: true,
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    order: {
+        type: Number,
+        require: true
     }
 },
     {

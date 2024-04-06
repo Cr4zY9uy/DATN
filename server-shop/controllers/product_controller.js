@@ -1,4 +1,4 @@
-import upload_image from "../cloudinary/upload_image.js";
+import { upload_image } from "../cloudinary/upload_image.js";
 import product_model from "../models/product_model.js"
 
 export const add_product = async (req, res) => {
@@ -141,9 +141,9 @@ export const delete_product_list = async (req, res) => {
     }
 };
 
-export const paginate_product = async (req, res) => {
+export const getProduct = async (req, res) => {
+    const { page, start_price, end_price, start_date, end_date, sort } = req.query;
     const limit = 9;
-    const page = parseInt(req.query.page) ? parseInt(req.query.page) : 1;
     const skip = (page - 1) * limit;
     try {
         const dataAll = await product_model.find().sort({ createdAt: -1 });

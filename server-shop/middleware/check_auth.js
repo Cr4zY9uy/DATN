@@ -1,13 +1,15 @@
 import jwt from "jsonwebtoken"
 import user_model from "../models/user_model.js"
+import { filterXSS } from 'xss'
 export const checkAuth = async (req, res, next) => {
     try {
-        const accessToken = req.cookies.access_token;
+        const accessToken = filterXSS(req.cookies.access_token);
+        console.log(accessToken);
         if (!accessToken) {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-        const verified = await jwt.verify(
+        await jwt.verify(
             accessToken,
             accessTokenSecret,
             async (err, decoded) => {

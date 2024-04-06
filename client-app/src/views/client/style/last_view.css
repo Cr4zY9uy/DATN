@@ -1,0 +1,12 @@
+.last_view_item img {
+    width: 70px;
+    height: 70px;
+}
+.last_view_item h4{
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+.last_view_item {
+    margin-top: 10px;
+}

@@ -1,0 +1,136 @@
+header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 12;
+    background-color: rgb(255, 255, 255);
+    height: 10vh;
+}
+
+.headers {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 12;
+    background-color: rgb(255, 255, 255);
+    height: 10vh;
+    align-items: center;
+}
+
+
+.headers a {
+    text-decoration: none;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.873);
+    letter-spacing: 0.1rem;
+    margin: 0px 15px;
+    font-size: 16px;
+
+}
+
+.headers .icon {
+    margin-left: 0;
+}
+
+.header-logo {
+    width: 15%;
+    height: 100%;
+}
+
+.header-logo img {
+    height: 50px;
+
+}
+
+.header-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    text-align: center;
+    height: 100%;
+}
+
+.header-icon {
+    width: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-icon button {
+    border: none;
+    background-color: white;
+    margin: 0px 20px;
+
+}
+
+.header-icon button:first-child {
+    margin-left: 0px;
+}
+
+.header-icon button:first-child {
+    position: relative;
+}
+
+.header-icon .qty {
+    border: 0.1px solid rgb(217, 161, 163);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(217, 161, 163);
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    text-align: center;
+    line-height: 19px;
+    right: 30px;
+    top: 10px;
+}
+
+.headers button i {
+    font-size: 20px;
+
+}
+
+.headers .wrap_search_modal {
+    width: 1300px;
+    height: 500px;
+}
+
+.headers .main_menu {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.headers .main_menu .sub_menu a {
+    width: 150px;
+    color: rgba(0, 0, 0, .25);
+    font-weight: 300;
+    text-align: left;
+    padding: 10px 0;
+}
+
+.headers .main_menu .sub_menu a:hover {
+    color: rgba(0, 0, 0, 0.714);
+}
+
+.headers .main_menu .sub_menu {
+    display: none;
+    position: absolute;
+    z-index: 1111;
+    background-color: white;
+    top: 10vh;
+    left: -40px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
+}
+
+.headers .main_menu:hover .sub_menu {
+    display: flex;
+    flex-direction: column;
+}
+.header-link a{
+    padding: 0 10px;
+}

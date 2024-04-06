@@ -1,4 +1,4 @@
-import upload_image from "../cloudinary/upload_image.js";
+import { upload_image } from "../cloudinary/upload_image.js";
 import category_model from "../models/category_model.js"
 
 export const add_category = async (req, res) => {

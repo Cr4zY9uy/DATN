@@ -1,0 +1,178 @@
+.checkout_confirm_page {
+    min-height: 160vh;
+    max-height: 370vh;
+}
+
+.checkout_confirm_page .breadcrumb-item+.breadcrumb-item::before {
+    content: "\2794" !important;
+    color: black;
+}
+
+.checkout_confirm_page .breadcrumb-item a {
+    font-size: 16px;
+    text-decoration: none;
+    color: rgb(102, 101, 101);
+    font-weight: 500;
+}
+
+.checkout_confirm_page .breadcrumb-item.active a {
+    color: rgb(23, 23, 23);
+
+}
+
+.checkout_confirm_page .breadcrumb-item a:hover {
+    color: rgb(23, 23, 23);
+
+}
+
+.checkout_confirm_page nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 100px;
+    margin-top: 60px;
+}
+
+.checkout_confirm_page thead {
+    background-color: #eaebec;
+}
+
+.checkout_confirm_page thead tr th {
+    background-color: inherit;
+}
+
+
+
+.checkout_confirm_page .bill_detail {
+    width: 35vw;
+    overflow: hidden;
+    color: #343a40;
+    padding-top: 30px;
+    border: 0.01rem solid #343a4028;
+
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+
+}
+
+.checkout_confirm_page .bill label {
+    color: #000000bb;
+    text-align: left;
+    width: 100%;
+
+}
+
+.checkout_confirm_page .bill_detail h5,
+.checkout_confirm_page .bill_detail span {
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+
+.checkout_confirm_page .bill_detail h3 {
+    font-size: 1.2rem;
+
+}
+
+.checkout_confirm_page .credit,
+.checkout_confirm_page .paypal,
+.checkout_confirm_page .cod {
+    border: 0.01rem solid #343a4028;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 0.375rem;
+    font-size: 1.3rem;
+}
+
+.checkout_confirm_page .credit span,
+.checkout_confirm_page .paypal span,
+.checkout_confirm_page .cod span {
+    padding-left: 15px;
+    font-size: 0.9rem;
+}
+
+
+.checkout_confirm_page .free,
+.checkout_confirm_page .standard,
+.checkout_confirm_page .express {
+    border: 0.01rem solid #343a4028;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 0.375rem;
+    font-size: 1.3rem;
+}
+
+.checkout_confirm_page .free span,
+.checkout_confirm_page .standard span,
+.checkout_confirm_page .express span {
+    padding-left: 15px;
+    font-size: 0.9rem;
+}
+
+.checkout_confirm_page .active .bi-check2-circle {
+    color: #0000ff;
+}
+
+.checkout_confirm_page .wrap_bill {
+    width: 100%;
+    margin-left: 0;
+}
+
+.checkout_confirm_page .cost table tr:nth-child(4) th {
+    background-color: #eaebec;
+}
+
+.checkout_confirm_page .cost table tr td,
+.checkout_confirm_page .cost table tr th:last-child {
+    text-align: right;
+}
+
+.checkout_confirm_page .bill {
+    padding-left: 0;
+}
+
+
+
+.checkout_confirm_page .col-6:first-child {
+    padding-left: 0;
+}
+
+.checkout_confirm_page .col-6:last-child {
+    padding-right: 0;
+}
+
+.checkout_confirm_page button {
+    padding: 20px 50px;
+    text-transform: uppercase;
+    margin-top: 20px;
+    margin-right: 30px;
+}
+
+.checkout_confirm_page .wrap_btn {
+    text-align: right;
+}
+
+.checkout_confirm_page .items h1 {
+    font-weight: 400;
+}
+
+.checkout_confirm_page .cost table tr:last-child td {
+    text-align: right;
+    border: none
+}
+
+.checkout_confirm_page .cost table tr:last-child {
+    border: none;
+}
+
+.checkout_confirm_page .cost table tr:last-child th {
+    border: none
+}
