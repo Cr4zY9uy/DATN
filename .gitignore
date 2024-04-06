@@ -52,3 +52,5 @@ package-lock.json
 package.json
 
 .env
+
+.history
