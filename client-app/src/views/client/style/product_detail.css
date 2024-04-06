@@ -1,0 +1,142 @@
+.product_detail-client {
+    display: flex;
+    max-height: 230vh;
+    min-height: 100vh;
+    flex-direction: column;
+    margin-bottom: 300px;
+}
+
+
+
+
+.detail .img-product img {
+    width: 450px;
+    height: 450px;
+}
+
+.product_detail-client .breadcrumb-item+.breadcrumb-item::before {
+    content: "\2794" !important;
+    color: black;
+    padding-top: 2px;
+}
+
+.product_detail-client .breadcrumb-item a {
+    font-size: 18px;
+    text-decoration: none;
+    color: rgb(102, 101, 101);
+    font-weight: 500;
+    text-transform: uppercase;
+
+}
+
+.product_detail-client .breadcrumb-item.active a {
+    color: rgb(23, 23, 23);
+
+}
+
+.product_detail-client .breadcrumb-item a:hover {
+    color: rgb(23, 23, 23);
+
+}
+
+.product_detail-client nav {
+    display: flex;
+    padding-top: 20px;
+
+}
+
+.product_detail-client nav ol[class="breadcrumb"] {
+    margin: auto;
+}
+
+.detail {
+    margin-top: 120px;
+}
+
+.product_detail-client h1 {
+    font-weight: 400;
+
+}
+
+.product_detail-client h5 {
+    font-weight: 600;
+    color: rgb(255, 0, 0);
+}
+
+.product_detail-client .discount {
+    text-decoration: line-through;
+    font-size: 18px;
+    font-weight: 400;
+    color: rgb(128, 128, 128);
+    padding-left: 20px;
+}
+
+.product_detail-client .detail p {
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.product_detail-client .detail .info {
+    width: 50%;
+}
+
+.product_detail-client .detail .info hr {
+    width: 70%;
+}
+
+.product_detail-client .detail .form-group {
+    height: 12vh;
+}
+
+.product_detail-client .detail .form-group button {
+    height: 45%;
+    width: 20%;
+    border: 0.01rem solid rgb(163, 160, 160);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product_detail-client .detail .form-group input {
+    background-color: rgb(210, 209, 209);
+    width: 30%;
+    height: 100%;
+    font-size: 30px;
+}
+
+.product_detail-client .ant-tabs-tab-btn {
+    font-size: 18px;
+    text-transform: uppercase;
+    color: rgb(146, 42, 141) !important;
+}
+
+.product_detail-client .ant-tabs-ink-bar.ant-tabs-ink-bar-animated {
+    background-color: rgb(146, 42, 141) !important;
+
+}
+
+.product_detail-client .ant-tabs-content.ant-tabs-content-top {
+    font-size: 16px;
+    color: rgb(102, 101, 101);
+
+}
+
+.view h5 {
+    color: rgb(21, 21, 21);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.view {
+    width: 23%;
+}
+
+.view img {
+    margin-right: 10px;
+}
+
+.wrap_detail_sum {
+    width: 77%;
+
+}

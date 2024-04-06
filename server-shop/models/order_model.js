@@ -1,9 +1,5 @@
 import mongoose from "mongoose";
 const order_schema = new mongoose.Schema({
-    order_id: {
-        type: String,
-        require: true
-    },
     first_name: {
         type: String,
         require: true
@@ -21,10 +17,6 @@ const order_schema = new mongoose.Schema({
         require: true
     },
     address: {
-        type: String,
-        require: true
-    },
-    country: {
         type: String,
         require: true
     },
@@ -56,16 +48,21 @@ const order_schema = new mongoose.Schema({
     products: [
         {
             product_id: {
-                type: String,
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'products',
                 require: true
             },
-            title: {
+            name: {
                 type: String,
-                require: true
+                require: true,
+                min: 3,
+                max: 50,
+                trim: true
             },
             price: {
                 type: Number,
-                min: 1,
+                min: 10000,
+                max: 30000000,
                 require: true
             },
             quantity: {
@@ -73,16 +70,10 @@ const order_schema = new mongoose.Schema({
                 min: 0,
                 require: true
             },
-            thumbnail: {
+            thumbnail: [{
                 type: String,
                 require: true
-            },
-            price_promotion: {
-                type: Number,
-                min: 0,
-                max: 1,
-                require: true
-            },
+            }],
             tax: {
                 type: Number,
                 min: 0,
@@ -95,28 +86,15 @@ const order_schema = new mongoose.Schema({
         type: Number,
         min: 0,
     },
-    discount: {
-        type: Number,
-        min: 0,
-        max: 1,
-        default: 0,
-    },
-    other_fee: {
-        type: Number,
-        default: 0,
-        min: 0,
-    },
     received: {
         type: Number,
         min: 0,
         default: 0,
     },
-    balance: {
-        type: Number,
-        default: 0,
-        min: 0,
-    },
-    note: String
+    note: {
+        type: String,
+        trim: true
+    }
 },
     {
         timestamps: true

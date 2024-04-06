@@ -1,0 +1,99 @@
+.product_list {
+    height: 100vh;
+    margin-top: 10vh;
+}
+
+.product_list h1 {
+    text-transform: uppercase;
+    font-weight: 400;
+    text-align: center;
+    padding-top: 10px;
+}
+
+.product_list .products .discount {
+    text-decoration: line-through;
+}
+
+.products {
+    display: flex;
+    justify-content: space-between;
+    height: inherit;
+}
+
+.product {
+    width: 200px;
+    margin-top: 20px;
+    height: 15vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product button {
+    width: 100%;
+    text-transform: uppercase;
+    color: rgb(0, 0, 0);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.product span,
+.product p {
+    font-weight: 500;
+}
+
+.product span {
+    color: rgba(128, 128, 128, 0.607);
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.product p {
+    color: rgb(241, 28, 28);
+    font-size: 20px;
+}
+
+.product h4 {
+    font-weight: 400;
+}
+
+.product button:hover {
+    color: rgb(255, 255, 255);
+}
+
+.product .status {
+    width: 100%;
+
+}
+
+.product_list button {
+    position: relative;
+    display: inline-block;
+    margin: 15px;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    background: transparent;
+    cursor: pointer;
+    transition: ease-out 0.4s;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 0 #ffc107;
+}
+
+
+.product_list button:hover {
+    color: white;
+    box-shadow: inset 0 -100px 0 0 #ffc107;
+}
+
+
+.product_list button:active {
+    transform: scale(0.9);
+}
+
+.product a img {
+    width: 100%;
+    height: 100%;
+}

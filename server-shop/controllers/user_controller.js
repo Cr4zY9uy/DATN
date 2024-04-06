@@ -2,16 +2,15 @@ import bcrypt from "bcryptjs"
 import user_model from "../models/user_model.js";
 import jwt, { decode } from "jsonwebtoken"
 import randToken from "rand-token"
-
-export const loginByGoogle= async (req,res)=>{
-    res.json({message:"Logged"})
+import { filterXSS } from 'xss'
+export const loginByGoogle = async (req, res) => {
+    res.json({ message: "Logged" })
 }
 
 export const login = async (req, res) => {
-
+    console.log(req.body.username);
     try {
         const data = req.body;
-
         const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
         const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
         const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;

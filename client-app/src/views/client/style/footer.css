@@ -1,0 +1,16 @@
+.wrap-footer {
+    background-color: #80808073;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    height: 60vh;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.footer div h3 {
+    text-transform: uppercase;
+}
