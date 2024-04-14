@@ -38,4 +38,5 @@ const favourite_schema = new mongoose.Schema({
     {
         timestamps: true
     })
+favourite_schema.index({})
 export default mongoose.model("favourites", favourite_schema);

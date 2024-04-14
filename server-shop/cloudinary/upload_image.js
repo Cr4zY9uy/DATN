@@ -1,16 +1,27 @@
 import cloudinary from "./cloudinary.js"
 import { Router } from "express";
+
 const router = Router();
+import DatauriParser from "datauri/parser.js";
+const parser = new DatauriParser();
+const options = {
+    upload_preset: process.env.UPLOAD_PRESET
+};
 
 const upload_image = async (req, res) => {
-    const options = {
-        upload_preset: process.env.UPLOAD_PRESET
-    };
+    const images = req.files
     try {
-        const result = await cloudinary.uploader.upload(req.imagePath, options);
-        return res.status(200).json({ public_id: result.public_id });
+        const imagesToUpload = images.map((image) =>
+            cloudinary.uploader.upload(parser.format(image.originalname.toString(), image.buffer).content, options)
+        );
+        const result = await Promise.all(imagesToUpload);
+        const imageUrls = result.map((item) => ({
+            public_id: item.public_id,
+            url: item.url
+        }))
+        return res.status(200).json({ images: imageUrls })
     } catch (error) {
-        throw new Error(`Failed to upload image to Cloudinary: ${error}`);
+        return res.status(500).json({ message: error });
     }
 };
 router.post("/upload_image", upload_image)

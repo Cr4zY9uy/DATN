@@ -25,7 +25,7 @@ export const login = async (req, res) => {
         if (!verify) {
             return res.status(404).json({ message: "Password not true" });
         }
-        if (user.role !== 1) {
+        if (user.role < 0 || user.role > 4) {
             return res.status(403).json({ message: "Not allowed" });
         }
         const dataForAccessToken = {
@@ -60,10 +60,10 @@ export const login = async (req, res) => {
         res.cookie("refresh_token", refreshTokenSend, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 1000 * 24 });
         res.cookie("access_token", accessToken, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 1000 * 24 });
         return res.status(200).json({
-            user: {
-                username: user.username,
-                name: user.name
-            }
+            user_id: user._id,
+            username: user.username,
+            firstName: user.first_name,
+            lastName: user.last_name
         })
     } catch (error) {
         return res.status(500).json({ message: error.message });

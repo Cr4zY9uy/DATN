@@ -3,7 +3,7 @@ import { check, body, validationResult } from "express-validator";
 export const register_validator = [
     body("username")
         .notEmpty().withMessage("Username is required")
-        .isLength({ min: 3, max: 50 }).withMessage("Username must be at least 3 characters and max 50 characters"),
+        .isLength({ min: 2, max: 50 }).withMessage("Username must be at least 3 characters and max 50 characters"),
     body("password")
         .notEmpty().withMessage("Password is required")
         .isLength({ min: 6, max: 50 }).withMessage("Password has at least 6 characters and max 50 characters"),
@@ -36,7 +36,7 @@ export const login_validator = [
     body("username")
         .escape()
         .notEmpty().withMessage("Username is required")
-        .isLength({ min: 3, max: 50 }).withMessage("Username must be at least 3 characters and max 50 characters"),
+        .isLength({ min: 2, max: 50 }).withMessage("Username must be at least 3 characters and max 50 characters"),
     body("password").escape()
         .notEmpty().withMessage("Password is required")
         .isLength({ min: 6, max: 50 }).withMessage("Password has at least 6 characters and max 50 characters"),

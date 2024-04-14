@@ -3,6 +3,15 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User from "../models/user_model.js";
 
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    User.findById(id).then((user) => {
+        done(null, user);
+    });
+});
 passport.use(
     new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
@@ -31,4 +40,8 @@ passport.use(
         }
     })
 );
+
+
+
+
 

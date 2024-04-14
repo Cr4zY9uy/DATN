@@ -1,5 +1,5 @@
-import URL from "./url"
-import api from "./api";
+import URL from "../request/url"
+import api from "../request/api"
 
 export const login = async (user) => {
     const url = URL.USER.LOGIN;
@@ -11,6 +11,7 @@ export const login = async (user) => {
         return error.response;
     }
 }
+
 export const logout = async () => {
     const url = URL.USER.LOGOUT;
     try {
@@ -40,5 +41,17 @@ export const refreshToken = async () => {
         return error.response;
     }
 }
+
+
+export const loginByGoogle = async () => {
+    try {
+        const rs = await api.get(URL.USER.GOOGLE);
+        return rs;
+
+    } catch (error) {
+        return error.response;
+    }
+}
+
 
 

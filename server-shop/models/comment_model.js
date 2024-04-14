@@ -7,12 +7,6 @@ const comment_schema = new mongoose.Schema({
         max: 50,
         trim: true,
     },
-    stars: {
-        type: Number,
-        require: true,
-        min: 1,
-        max: 5,
-    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',

@@ -1,5 +1,5 @@
-import URL from "./url"
-import api from "./api";
+import URL from "../request/url"
+import api from "../request/api";
 export const list_category = async () => {
     const url = URL.CATEGORY.ALL;
 

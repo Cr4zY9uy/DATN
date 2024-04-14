@@ -4,7 +4,6 @@ import { filterXSS } from 'xss'
 export const checkAuth = async (req, res, next) => {
     try {
         const accessToken = filterXSS(req.cookies.access_token);
-        console.log(accessToken);
         if (!accessToken) {
             return res.status(401).json({ message: "Unauthorized" });
         }
@@ -30,7 +29,7 @@ export const checkAuth = async (req, res, next) => {
                 if (!user) {
                     return res.status(404).json({ message: "Not found user" });
                 }
-                if (decoded.role !== 1) {
+                if (decoded.role < 0 || decoded.role > 4) {
                     return res.status(405).json({ message: "Not allowed to access" });
                 }
                 req.user = user;

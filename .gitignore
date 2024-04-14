@@ -45,8 +45,8 @@ replay_pid*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-
+*.lock
+.history
 package-lock.json
 
 package.json

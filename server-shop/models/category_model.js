@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const category_schema = new mongoose.Schema({
     name: {
         type: String,
@@ -30,4 +32,6 @@ const category_schema = new mongoose.Schema({
     {
         timestamps: true
     })
+
+category_schema.plugin(moongosePaginate)
 export default mongoose.model("categories", category_schema);

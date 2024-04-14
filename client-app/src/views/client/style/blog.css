@@ -1,6 +1,5 @@
 .blog_page {
-    max-height: 220vh;
-    min-height: 200vh;
+    padding: 0 50px;
 }
 
 .blog_page .img_hover_zoom {
@@ -19,7 +18,7 @@
 
 .blog_page h4 {
     font-weight: 400;
-    }
+}
 
 .blog_page img {
     height: 100%;
@@ -36,7 +35,7 @@
     height: inherit;
 }
 
-.blog_page .wrap_blog .item.d-flex {
+.blog_page .wrap_blog .item {
     width: 70%;
     margin: 20px 0;
 }
