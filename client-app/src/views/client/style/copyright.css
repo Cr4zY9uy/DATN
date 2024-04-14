@@ -1,5 +1,6 @@
 .wrap-copyright {
     height: 60px;
+    padding: 0 50px;
 }
 
 .copyright {
@@ -13,7 +14,5 @@
 
 .copyright a {
     text-decoration: none;
-    color: var(--blue);
-    font-size: var(--font-size-header);
-    font-family: var(--font-family-header);
+    color: rgba(128, 128, 128, 0.774);
 }

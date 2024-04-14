@@ -1,6 +1,5 @@
 .checkout_page {
-    min-height: 230vh;
-    max-height: 370vh;
+    padding: 0 50px
 }
 
 .checkout_page .breadcrumb-item+.breadcrumb-item::before {
@@ -144,11 +143,7 @@
 }
 
 
-.checkout_page button {
-    padding: 20px 50px;
-    text-transform: uppercase;
-    margin-top: 20px;
-}
+
 
 .checkout_page .wrap_btn {
     text-align: right;

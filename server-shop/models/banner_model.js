@@ -19,7 +19,7 @@ const banner_schema = new mongoose.Schema({
         type: String,
         require: true
     },
-    isShown: {
+    isActive: {
         type: Boolean,
         default: true
     },

@@ -13,21 +13,14 @@
     height: 35px;
     border: 0.2rem solid white;
     border-radius: 50%;
-}
-
-.modal_search .close_btn i {
-    font-size: 20px;
     color: white;
-    font-weight: 800;
+    line-height: 20px;
 }
 
-.modal_search .close_btn:hover i {
-    color: rgb(114, 114, 114);
-}
 
 .modal_search .close_btn:hover {
     border-color: rgb(114, 114, 114);
-
+    color: rgb(114, 114, 114);
 }
 
 .modal_search .wrap_close {

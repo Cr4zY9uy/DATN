@@ -26,19 +26,11 @@
     padding: 0px 0 30px;
 }
 
-.shop .filterCate span,
-.shop .filterPrice span {
-    padding: 0.3rem 0;
-    cursor: pointer;
-}
 
 .shop .filterCAP h5 {
     font-size: 25px;
 }
 
-.shop .filterCate span:nth-child(n+4) {
-    padding-left: 1rem;
-}
 
 .shop .clear {
     margin-bottom: 10px;
@@ -94,22 +86,8 @@
     line-height: 7px;
 }
 
-.shop .shop_item button {
-    width: 60%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
 
-.shop .shop_item span,
-.shop .shop_item p {
-    font-weight: 600;
-}
 
-.shop .shop_item span {
-    color: rgba(128, 128, 128, 0.607);
-    font-size: 18px;
-    margin-left: 10px;
-}
 
 .shop .shop_item p {
     color: rgb(241, 28, 28);
@@ -123,4 +101,9 @@
 
 .shop .shop_item .discount {
     text-decoration: line-through;
+}
+
+.shop .ant-checkbox-group {
+    display: flex !important;
+    flex-direction: column;
 }

@@ -1,5 +1,5 @@
-import URL from "./url"
-import api from "./api";
+import URL from "../request/url"
+import api from "../request/api";
 export const paginate_product = async (page) => {
     const url = URL.PRODUCT.PAGINATE + "?page=" + page;
     try {

@@ -1,9 +1,87 @@
-.carousel-inner img {
-    width: 100%;
-    height: 100%;
+.ant-carousel .slick-prev,
+.ant-carousel .slick-next,
+.ant-carousel .slick-prev:hover,
+.ant-carousel .slick-next:hover,
+.ant-carousel .slick-prev:focus,
+.ant-carousel .slick-next:focus {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    color: white;
+    font-size: 20px;
+    background-color: #922a8d;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    transform: translateY(-50%);
+    display: none;
 }
-.carousel.slide .carousel-indicators button{
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+
+.ant-carousel:hover .slick-prev,
+.ant-carousel:hover .slick-next {
+    display: block;
+}
+
+@keyframes slideInFromLeft {
+    from {
+        left: 0px;
+        opacity: 0;
+    }
+
+    to {
+        left: 10px;
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        right: 0px;
+        opacity: 0;
+    }
+
+    to {
+        right: 10px;
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutToLeft {
+    from {
+        left: 10px;
+        opacity: 1;
+    }
+
+    to {
+        left: 0px;
+        opacity: 0;
+    }
+}
+
+@keyframes slideOutToRight {
+    from {
+        right: 10px;
+        opacity: 1;
+    }
+
+    to {
+        right: 0px;
+        opacity: 0;
+    }
+}
+
+.ant-carousel:hover .slick-prev {
+    animation: slideInFromLeft 0.5s ease-in-out forwards;
+}
+
+.ant-carousel:hover .slick-next {
+    animation: slideInFromRight 0.5s ease-in-out forwards;
+}
+
+.ant-carousel:not(:hover) .slick-prev {
+    animation: slideOutToLeft 0.5s ease-in-out forwards;
+}
+
+.ant-carousel:not(:hover) .slick-next {
+    animation: slideOutToRight 0.5s ease-in-out forwards;
 }

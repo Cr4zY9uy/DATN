@@ -8,9 +8,14 @@
 .footer {
     display: flex;
     justify-content: space-between;
-
+    padding: 0 50px;
 }
 
 .footer div h3 {
     text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.ant-layout-footer {
+    padding: 0;
 }
