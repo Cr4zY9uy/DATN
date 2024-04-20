@@ -23,10 +23,14 @@ const URL = {
     USER: {
         LOGIN: 'login',
         REGISTER: 'register',
+        DELETE: "users/delete/",
+        DETAIL: "uses/detail/",
+        UPDATE: "users/update/",
         REFRESH_ACCESS_TOKEN: 'refresh_access_token',
         REFRESH_TOKEN: 'refresh_token',
         LOGOUT: 'logout',
-        GOOGLE: 'auth/google'
+        FORGOT: 'forget-password',
+        RESET: 'reset-password'
     },
     ORDER: {
         PAGINATE: 'order_paginate',
@@ -40,6 +44,8 @@ const URL = {
     CHAT: {
         CRUD: 'chat',
         DETAIL: 'chat/'
-    }
+    },
+    UPLOAD: "upload_image",
+    PAYMENT: "create_payment_url"
 }
 export default URL;

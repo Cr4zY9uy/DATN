@@ -1,11 +1,9 @@
 .category_page {
     margin-bottom: 100px;
+    padding: 0 50px;
 }
 
-.category {
-    max-height: 500vh;
-    min-height: 150vh;
-}
+
 
 .category_page .breadcrumb-item+.breadcrumb-item::before {
     content: "\2794" !important;
@@ -34,5 +32,10 @@
     display: flex;
     justify-content: center;
     margin-bottom: 100px;
-    margin-top: 20px;
+    margin-top: 60px;
+}
+
+.category_pagination{
+    margin-bottom: 50px;
+    font-size: 20px;
 }

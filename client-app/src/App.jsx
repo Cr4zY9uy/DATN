@@ -27,10 +27,12 @@ function App() {
         style={{
           width: 30,
           height: 30,
-          cursor: 'pointer'
+          cursor: 'pointer',
+          bottom: "100px"
         }}
         color={'rgb(146, 42, 141)'}
       />
+    
     </>
   )
 }

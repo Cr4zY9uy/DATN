@@ -40,3 +40,12 @@ export const checkAuth = async (req, res, next) => {
         return res.status(501).json({ message: err.message });
     }
 };
+
+
+export const authRole = (roleAllowed) => {
+    return (req, res, next) => {
+        const { role } = req.user
+        if (roleAllowed.includes(role)) next()
+        else return res.status(401).json({ message: "You have no permission" })
+    }
+}

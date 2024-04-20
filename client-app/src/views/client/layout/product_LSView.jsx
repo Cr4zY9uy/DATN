@@ -1,54 +1,41 @@
 import { Link } from "react-router-dom";
 import "./../style/product_LSView.css";
-import 'owl.carousel/dist/assets/owl.carousel.css';
-import 'owl.carousel/dist/assets/owl.theme.default.css';
-import { Cloudinary } from '@cloudinary/url-gen';
-import { AdvancedImage } from '@cloudinary/react';
-import { Button } from "react-bootstrap";
+import { Button, Flex, Typography } from "antd";
 import { connect } from "react-redux";
 import CART_ACTION from "../../../redux/cart/cart_action";
-import { Store } from "react-notifications-component";
+import { HeartOutlined, ShoppingCartOutlined, ShoppingOutlined } from "@ant-design/icons";
 function Product_LSView(props) {
     const product = props.product;
-    const cld = new Cloudinary({
-        cloud: {
-            cloudName: 'dv7ni8uod'
-        }
-    });
-    const addToCart = () => {
-        const cart = props.state.cart;
-        console.log(1);
-        const existingItemIndex = cart.findIndex(cartItem => cartItem.product_id === product.product_id);
-        if (existingItemIndex !== -1) {
-            cart[existingItemIndex].quantity += 1;
-        } else {
-            cart.push({ ...product, quantity: 1 });
-        }
-        props.addToCart(cart);
-        Store.addNotification({
-            title: "Sucess!!",
-            message: "You add to cart successfully!",
-            type: "success",
-            insert: "top",
-            container: "top-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-                duration: 1500,
-                onScreen: true
-            }
-        });
-    };
+
+    // const addToCart = () => {
+    //     const cart = props.state.cart;
+    //     console.log(1);
+    //     const existingItemIndex = cart.findIndex(cartItem => cartItem.product_id === product.product_id);
+    //     if (existingItemIndex !== -1) {
+    //         cart[existingItemIndex].quantity += 1;
+    //     } else {
+    //         cart.push({ ...product, quantity: 1 });
+    //     }
+    //     props.addToCart(cart);
+
+    // };
     return (
-        <div className='item col-4'>
-            <Link to={`/product/${product.product_id}`}><AdvancedImage cldImg={cld.image(product.thumbnail)} /></Link>
-            <h4>{product.title.length > 18 ? product.title.substring(0, 18) + '...' : product.title}</h4>
-            <p>
-                {product.price * (1 - parseFloat(product.price_promotion))}$
-                {product.price_promotion === 0 ? "" : <span className="discount">{`${product.price}$`}</span>}
-            </p>
-            <Button variant="outline-warning"><i className="bi bi-cart-check-fill" onClick={addToCart}></i>Add to cart</Button>
-        </div>
+        <Flex className='item_related' vertical gap={30}>
+            <Flex vertical align="center">
+                <Link to={`/product/${product.product_id}`}>
+                    <img src="/data/banner/banner-home-1.png" loading="lazy" />
+                </Link>
+                <Typography.Title className="title" level={4} ellipsis={true} style={{ maxWidth: "70%" }}>{product.title}</Typography.Title>
+                <p>
+                    {Math.ceil(product.price * (1 - parseFloat(product.price_promotion)))}$
+                    {product.price_promotion === 0 ? "" : <span className="discount">{`${product.price}$`}</span>}
+                </p>
+            </Flex>
+            <Flex className="button_group" justify="space-evenly">
+                <Button shape="circle"><ShoppingCartOutlined /></Button>
+                <Button shape="circle"><HeartOutlined /></Button>
+            </Flex>
+        </Flex>
 
     );
 }
@@ -64,4 +51,4 @@ const mapDispatchToProps = (dispatch) => {
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Product_LSView); 
+export default Product_LSView; 

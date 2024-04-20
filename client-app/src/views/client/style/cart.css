@@ -1,8 +1,6 @@
 .cart_page {
-    max-height: 400vh;
-    min-height: 90vh;
+    padding: 0px 50px;
     margin-bottom: 100px;
-    margin-top: 50px;
 }
 
 :root {
@@ -11,6 +9,10 @@
     --font-family-header: Arial;
     --font-size-header: 30px;
 
+}
+
+.cart_page .ant-breadcrumb {
+    margin-top: 60px;
 }
 
 .cart_page table th:first-child,
@@ -40,36 +42,35 @@
     vertical-align: middle;
 }
 
-.cart_page button {
-    padding: 20px 50px;
+.cart_page .wrap_btn button {
     text-transform: uppercase;
+    width: 200px;
+    height: 80px;
+    font-size: 20px;
+    font-weight: 400;
+    background-color: #922a8d;
+    color: white;
+}
+
+.cart_page .delete button {
+    border: none;
+    color: red;
+}
+
+.cart_page .delete button:hover {
+    color: red !important;
+}
+
+.cart_page .wrap_btn button:hover {
+    background-color: white !important;
+    color: #808080 !important;
+    border: 0.01em solid grey !important;
 }
 
 .cart_page .wrap_btn {
-    text-align: right;
+    margin: 20px 0;
 }
 
-.cart_page .breadcrumb-item+.breadcrumb-item::before {
-    content: "\2794" !important;
-    color: black;
-}
-
-.cart_page .breadcrumb-item a {
-    font-size: 16px;
-    text-decoration: none;
-    color: rgb(102, 101, 101);
-    font-weight: 500;
-}
-
-.cart_page .breadcrumb-item.active a {
-    color: rgb(23, 23, 23);
-
-}
-
-.cart_page .breadcrumb-item a:hover {
-    color: rgb(23, 23, 23);
-
-}
 
 .cart_page nav {
     display: flex;

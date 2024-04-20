@@ -1,23 +1,49 @@
 import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import { Cloudinary } from '@cloudinary/url-gen';
-import { fill } from '@cloudinary/url-gen/actions/resize';
-import { AdvancedImage } from '@cloudinary/react';
+import { Badge, Button, Flex, Typography } from "antd";
 import "./../style/product_grid.css";
-function Product_Grid(props) {
-    const product = props.product;
-    const cld = new Cloudinary({
-        cloud: {
-            cloudName: 'dv7ni8uod'
-        }
-    });
+import { HeartOutlined, ShoppingOutlined } from "@ant-design/icons";
+function ProductGrid(props) {
+    const product = props?.products;
+    const type = props?.type
     return (
-        <div className="search_item col-4">
-            <Link to={`/product/${product.product_id}`}><AdvancedImage cldImg={cld.image(product.thumbnail)} /></Link>
-            <h4>{product.title}</h4>
-            <p>  {Math.ceil(product.price * (1 - parseFloat(product.price_promotion)))}$
-                {product.price_promotion === 0 ? "" : <span className="discount">{`${product.price}$`}</span>}</p>
-        </div>
+        <Flex className='item' key={product.product_id} vertical>
+            <Link to={`/client/product/${product.product_id}`}>
+                {!type &&
+                    (<><Button className="favourite" icon={<HeartOutlined />} />
+                        <Badge.Ribbon text={'-10%'} color="red" placement="start" /></>)}
+                <img src="/data/banner/banner-home-1.png" loading="lazy" />
+
+            </Link>
+            <Flex className="pt-4" vertical>
+                {!type &&
+                    (<>
+                        <Typography.Title level={5} className="country">Korea</Typography.Title>
+                    </>)}
+                <Typography.Title level={4} className="title">{product.title}</Typography.Title >
+                {!type &&
+                    (<>
+                        <Typography.Text className="price_promo">
+                            <Typography.Text className="promotion">
+                                {parseFloat(product.price * (1 - parseFloat(product.price_promotion))).toLocaleString('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD', // Adjust currency code as needed
+                                    minimumFractionDigits: 0, // Set minimum decimal places to 0
+                                    maximumFractionDigits: 0,  // Adjust currency code as needed
+                                })}
+                            </Typography.Text>
+                            <Typography.Text className="price">
+                                {product.price.toLocaleString('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD', // Adjust currency code as needed
+                                    minimumFractionDigits: 0, // Set minimum decimal places to 0
+                                    maximumFractionDigits: 0,  // Adjust currency code as needed
+                                })}
+                            </Typography.Text>
+                        </Typography.Text> </>)}
+            </Flex>
+            {!type && <Button icon={<ShoppingOutlined />} className="buy">add to cart</Button>}
+
+        </Flex>
     );
 }
-export default Product_Grid;
+export default ProductGrid;

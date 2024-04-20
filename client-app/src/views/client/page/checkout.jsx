@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../style/checkout.css";
-import { Breadcrumb, Table, Form, Button, Descriptions, Input, InputNumber, Select, Radio, Space, Flex } from "antd";
+import { Breadcrumb, Table, Form, Button, Descriptions, Input, InputNumber, Select, Radio, Space, Flex, Typography } from "antd";
 import { connect } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -8,9 +8,19 @@ import ORDER_ACTION from "../../../redux/order/order_action";
 import { CreditCardOutlined, DisconnectOutlined, MoneyCollectOutlined, SendOutlined, TruckOutlined } from "@ant-design/icons";
 function Checkout() {
     document.title = "Check out";
+    const [form] = Form.useForm()
     // const cart = props.state[0].cart;
     // const order = props.state[1].order;
-
+    useEffect(() => {
+        form.setFieldValue("payment", "cod")
+        form.setFieldValue("shipping", "free")
+    }, [])
+    const navigateConfirm = () => {
+        navigate('/client/checkout/confirm')
+    }
+    const navigateCart = () => {
+        navigate('/client/cart')
+    }
     const navigate = useNavigate();
     // const subTotal = cart.reduce((total, item) => { return total + item.price * (1 - item.price_promotion) * item.quantity }, 0)
     // const [data, setData] = useState({});
@@ -85,20 +95,20 @@ function Checkout() {
         {
             key: '1',
             label: 'Subtotal',
-            children: 1000,
+            children: <Typography.Text>1000$</Typography.Text>,
             span: 3
         },
         {
             key: '2',
             label: 'Tax',
-            children: 10,
+            children: <Typography.Text>10$</Typography.Text>,
             span: 3
 
         },
         {
             key: '3',
             label: 'Total',
-            children: 1010,
+            children: <Typography.Text>1010$</Typography.Text>,
             span: 3
 
         }
@@ -162,6 +172,7 @@ function Checkout() {
             </Breadcrumb>
             <Flex>
                 <Form
+                    form={form}
                     {...formItemLayout}
                     style={{
                         width: "100%"
@@ -173,13 +184,14 @@ function Checkout() {
                             <Form.Item
                                 label="First name"
                                 name="first_name"
+                                hasFeedback
                                 rules={[
                                     {
                                         required: true,
                                         message: 'Please input!',
                                     }, {
-                                        min: 6,
-                                        message: "At least 6 characters"
+                                        min: 3,
+                                        message: "At least 3 characters"
                                     }
                                 ]}
                             >
@@ -188,13 +200,14 @@ function Checkout() {
                             <Form.Item
                                 label="Last name"
                                 name="last_name"
+                                hasFeedback
                                 rules={[
                                     {
                                         required: true,
                                         message: 'Please input!',
                                     }, {
-                                        min: 6,
-                                        message: "At least 6 characters"
+                                        min: 3,
+                                        message: "At least 3 characters"
                                     }
                                 ]}
                             >
@@ -203,6 +216,7 @@ function Checkout() {
                             <Form.Item
                                 label="Email"
                                 name="email"
+                                hasFeedback
                                 rules={[
                                     {
                                         required: true,
@@ -223,6 +237,7 @@ function Checkout() {
                             <Form.Item
                                 label="Phone number"
                                 name="phone"
+                                hasFeedback
                                 rules={[
                                     {
                                         required: true,
@@ -242,6 +257,7 @@ function Checkout() {
                             <Form.Item
                                 label="Address"
                                 name="address"
+                                hasFeedback
                                 rules={[
                                     {
                                         required: true,
@@ -257,6 +273,7 @@ function Checkout() {
                             <Form.Item
                                 label="Country"
                                 name="country"
+                                hasFeedback
                                 rules={[
                                     {
                                         required: true,
@@ -282,9 +299,9 @@ function Checkout() {
                                 name="payment"
                             >
                                 <Radio.Group>
-                                    <Space direction='horizontal'>
-                                        <Radio value={'cod'}><MoneyCollectOutlined />COD</Radio>
-                                        <Radio value={'vnpay'}><CreditCardOutlined />VNPAY</Radio>
+                                    <Space direction='horizontal' wrap={true}>
+                                        <Radio value={'cod'} className="radio"><MoneyCollectOutlined /><Typography.Text>COD</Typography.Text></Radio>
+                                        <Radio value={'vnpay'} className="radio"><CreditCardOutlined /><Typography.Text>VNPAY</Typography.Text></Radio>
                                     </Space>
                                 </Radio.Group>
                             </Form.Item>
@@ -293,10 +310,10 @@ function Checkout() {
                                 name="shipping"
                             >
                                 <Radio.Group>
-                                    <Space direction='horizontal'>
-                                        <Radio value={'free'}><DisconnectOutlined />Free</Radio>
-                                        <Radio value={'standard'}><TruckOutlined />Standard</Radio>
-                                        <Radio value={'express'}><SendOutlined />Express</Radio>
+                                    <Space direction='horizontal' wrap={true}>
+                                        <Radio value={'free'} className="radio"><DisconnectOutlined /><Typography.Text>Free</Typography.Text></Radio>
+                                        <Radio value={'standard'} className="radio"><TruckOutlined /><Typography.Text>Standard</Typography.Text></Radio>
+                                        <Radio value={'express'} className="radio"><SendOutlined /><Typography.Text>Express</Typography.Text></Radio>
                                     </Space>
                                 </Radio.Group>
                             </Form.Item>
@@ -305,12 +322,19 @@ function Checkout() {
                             <Table
                                 columns={cartColumns}
                                 dataSource={cartData}
-                                pagination={{ hideOnSinglePage: true, pageSize: 3, total: 10, defaultCurrent: 1 }}
+                                pagination={{
+                                    hideOnSinglePage: true, pageSize: 3, total: 10, defaultCurrent: 1, showSizeChanger: false
+                                }}
                             />
-                            <Descriptions bordered items={items} />
-                            <Button type="primary" htmlType="submit">
-                                Checkout
-                            </Button>
+                            <Descriptions bordered items={items} className="sumary" />
+                            <Flex gap="large" justify="center" className="wrap_btn">
+                                <Button type="primary" htmlType="button" onClick={navigateCart}>
+                                    Back to cart
+                                </Button>
+                                <Button type="primary" htmlType="submit" onClick={navigateConfirm}>
+                                    Checkout
+                                </Button>
+                            </Flex>
                         </Space>
                     </Flex>
                 </Form>

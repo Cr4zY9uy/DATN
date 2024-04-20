@@ -4,7 +4,7 @@ import Banner from "../layout/banner";
 import Blog from "../layout/blog_list";
 import Product_Hot from "../layout/product_hot";
 import Product_List from "../layout/product_list";
-import { Flex, Typography } from "antd";
+import { Flex, Skeleton, Typography } from "antd";
 import RecommendedProduct from "../layout/RecommendedProduct";
 import { Countdown } from "../layout/CountDown";
 
@@ -12,6 +12,9 @@ function Home() {
     document.title = "Home";
     const [product_status, setProductHot] = useState([]);
     const [product_new, setProductNew] = useState([]);
+    const [isLoadingSale, SetIsLoadingSale] = useState(false)
+    const [isLoadingNew, SetIsLoadingNew] = useState(false)
+
     const product_hot_list = async () => {
         try {
             const rs = await product_hot();
@@ -51,7 +54,7 @@ function Home() {
             <Flex className="product_hot container text-center" vertical >
                 <Flex gap='large'>
                     {[...Array(10)].slice(4, 6).map((item, index) => {
-                        return <Product_Hot products={{ product_id: 1, title: "Keo bong gon cuc ngon", price: 1024133, price_promotion: 0.1, qty: 10 }} key={index} />
+                        return <Skeleton key={index} loading={isLoadingSale} active><Product_Hot products={{ product_id: 1, title: "Keo bong gon cuc ngon", price: 1024133, price_promotion: 0.1, qty: 10 }} key={index} /></Skeleton>
                     })}
                 </Flex>
             </Flex>
@@ -59,7 +62,9 @@ function Home() {
                 <Typography.Title level={1}>new products</Typography.Title>
                 <Flex className="products" gap='large'>
                     {[...Array(10)].slice(1, 5).map((item, index) => {
-                        return <Product_List products={{ product_id: 1, title: "Keo bong gon", price: 1024133, price_promotion: 0.1, qty: 10 }} key={index} />
+                        return <Skeleton loading={isLoadingNew} active key={index}>
+                            <Product_List products={{ product_id: 1, title: "Keo bong gon", price: 1024133, price_promotion: 0.1, qty: 10 }} key={index} />
+                        </Skeleton>
                     })}
                 </Flex>
             </Flex>

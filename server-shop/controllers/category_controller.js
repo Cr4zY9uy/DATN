@@ -1,64 +1,65 @@
-import { upload_image } from "../cloudinary/upload_image.js";
+// import { upload_image } from "./upload_controller.js";
 import category_model from "../models/category_model.js"
+import { options } from "../paginate/options.js";
 
-export const add_category = async (req, res) => {
-    try {
-        const data = req.body;
-        const checkExistId = await category_model.findOne({ category_id: data.category_id });
-        if (checkExistId != null) {
-            return res.status(400).json({ messsage: "Category id is existed" });
-        }
-        const checkExistName = await category_model.findOne({ name: data.name });
-        if (checkExistName != null) {
-            return res.status(400).json({ messsage: "Category name is existed" });
-        }
-        try {
-            const uploadedImage = await upload_image(data.image);
-            data.image = uploadedImage;
-        } catch (uploadError) {
-            return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
-        }
-        const category = await category_model.create(data);
-        if (category) {
-            return res.status(201).json({ category, message: "Add a category successfully" });
-        }
-        else {
-            return res.status(400).json({ message: error.message });
-        }
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
+// export const add_category = async (req, res) => {
+//     try {
+//         const data = req.body;
+//         const checkExistId = await category_model.findOne({ category_id: data.category_id });
+//         if (checkExistId != null) {
+//             return res.status(400).json({ messsage: "Category id is existed" });
+//         }
+//         const checkExistName = await category_model.findOne({ name: data.name });
+//         if (checkExistName != null) {
+//             return res.status(400).json({ messsage: "Category name is existed" });
+//         }
+//         try {
+//             const uploadedImage = await upload_image(data.image);
+//             data.image = uploadedImage;
+//         } catch (uploadError) {
+//             return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
+//         }
+//         const category = await category_model.create(data);
+//         if (category) {
+//             return res.status(201).json({ category, message: "Add a category successfully" });
+//         }
+//         else {
+//             return res.status(400).json({ message: error.message });
+//         }
+//     } catch (error) {
+//         return res.status(500).json({ message: error.message });
+//     }
+// }
 
-export const edit_category = async (req, res) => {
-    try {
-        const category_id = req.params.id;
-        const data = req.body;
-        const find = await category_model.findOne({ category_id });
-        if (!find) {
-            return res.status(404).json({ message: "Category does not exist" });
-        }
+// export const edit_category = async (req, res) => {
+//     try {
+//         const category_id = req.params.id;
+//         const data = req.body;
+//         const find = await category_model.findOne({ category_id });
+//         if (!find) {
+//             return res.status(404).json({ message: "Category does not exist" });
+//         }
 
-        if (data.image !== "") {
-            try {
-                const uploadedImage = await upload_image(data.image);
-                data.image = uploadedImage;
-            } catch (uploadError) {
-                return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
-            }
-        } else {
-            data.image = find.image;
-        }
-        const update_category = await category_model.findOneAndUpdate(
-            { category_id },
-            { name: data.name, description: data.description, image: data.image },
-            { new: true }
-        );
-        return res.status(200).json({ updated_category: update_category });
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
+//         if (data.image !== "") {
+//             try {
+//                 const uploadedImage = await upload_image(data.image);
+//                 data.image = uploadedImage;
+//             } catch (uploadError) {
+//                 return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
+//             }
+//         } else {
+//             data.image = find.image;
+//         }
+//         const update_category = await category_model.findOneAndUpdate(
+//             { category_id },
+//             { name: data.name, description: data.description, image: data.image },
+//             { new: true }
+//         );
+//         return res.status(200).json({ updated_category: update_category });
+//     } catch (error) {
+//         return res.status(500).json({ message: error.message });
+//     }
+// }
 
 export const detail_category = async (req, res) => {
     try {
@@ -155,17 +156,12 @@ export const paginate_category = async (req, res) => {
 }
 
 export const all_category = async (req, res) => {
-
     try {
-        const options = {
-            limit: 10,
-            sort: { createdAt: -1 } 
-        };
         const data = await category_model.paginate({}, options);
         if (data.totalDocs === 0) {
             return res.status(404).json({ message: "No category" });
         }
-        return res.status(200).json({ ...data });
+        else return res.status(200).json({ ...data });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

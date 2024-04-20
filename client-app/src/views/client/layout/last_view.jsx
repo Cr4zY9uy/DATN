@@ -1,21 +1,16 @@
+import { Flex, Typography } from 'antd';
 import '../style/last_view.css';
-import { Cloudinary } from '@cloudinary/url-gen';
-import { fill } from '@cloudinary/url-gen/actions/resize';
-import { AdvancedImage } from '@cloudinary/react';
 import { Link } from 'react-router-dom';
 
 function LastView(props) {
     const product = props.product;
-    const cld = new Cloudinary({
-        cloud: {
-            cloudName: 'dv7ni8uod'
-        }
-    });
     return (
-        <div className="last_view_item d-flex align-items-center">
-            <Link to={`/product/${product.product_id}`}><AdvancedImage cldImg={cld.image(product.thumbnail)} /></Link>
-            <h4>{product.title.length > 13 ? product.title.substring(0, 13) + '...' : product.title}</h4>
-        </div>
+        <Flex className="last_view_item d-flex align-items-center">
+            <Link to={`/product/${product.product_id}`}>
+                <img src="/data/banner/banner-home-1.png" loading="lazy" />
+            </Link>
+            <Typography.Text level={4} ellipsis={true}>{product.title}</Typography.Text>
+        </Flex>
     );
 }
 export default LastView;

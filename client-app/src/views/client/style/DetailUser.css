@@ -1,0 +1,50 @@
+.customer {
+    padding: 0 50px;
+}
+
+.customer .form_wrap {
+    width: 500px;
+}
+
+.customer .ant-upload-list {
+    justify-content: center;
+}
+
+.customer .ant-upload-list-item,
+.customer .ant-upload-select {
+    background-color: white !important;
+}
+
+.customer input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.customer input::-webkit-outer-spin-button,
+.customer input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.customer .ant-breadcrumb {
+    margin: 60px 0 100px;
+}
+
+.customer .button_group {
+    margin: 10px 0 100px;
+}
+
+.customer .ant-upload-wrapper {
+    margin-bottom: 30px;
+}
+
+.customer h3 {
+    font-weight: 500;
+    font-size: 18px;
+    margin: 0 0 5px;
+}
+
+.customer .button_group .ant-btn {
+    width: 150px;
+    height: 43px;
+    font-weight: 500;
+}

@@ -1,27 +1,43 @@
 import "../style/order_success.css"
-import { Breadcrumb } from "react-bootstrap";
+import { Breadcrumb, Button, Flex, Typography } from "antd";
+import { useEffect } from "react";
 import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
-function Order_Success(props) {
-    const orderList = props.state.order;
-    const order = orderList[orderList.length - 1];
-    document.title = "Order success";
+import { NavLink, useNavigate } from "react-router-dom";
+function OrderSuccess(props) {
+    // const orderList = props.state.order;
+    // const order = orderList[orderList.length - 1];
+    const navigate = useNavigate();
+    const navigateHome = () => {
+        navigate('/client')
+    }
+    useEffect(() => {
+        document.title = "Order success";
+
+
+        return () => {
+            document.title = ""
+        }
+    }, [])
+
     return (
-        <div className="order_success container">
+        <Flex className="order_success container" vertical>
             <Breadcrumb>
                 <Breadcrumb.Item>
-                    <NavLink to={'/'}>HOME</NavLink>
+                    <NavLink to={'/client'}>HOME</NavLink>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
-                    <NavLink to={'/order_success'}>ORDER SUCCESS</NavLink>
+                    <NavLink to={'/client/checkout/success'}>ORDER SUCCESS</NavLink>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <h1>ORDER SUCCESS</h1>
-            <h1>THANK YOU FOR YOUR PURCHASE!
-            </h1>
-            <h2>YOUR ORDER ID: {order.order_id}
-            </h2>
-        </div>
+            <Typography.Title level={1}>ORDER SUCCESS</Typography.Title >
+            <Typography.Title level={2}>THANK YOU FOR YOUR PURCHASE!
+            </Typography.Title >
+            <Flex justify="center" style={{margin:"100px"}}>
+                <Button onClick={navigateHome}>
+                    Purchase more
+                </Button>
+            </Flex>
+        </Flex>
     );
 }
 const mapStateToProps = (state, ownState) => {
@@ -29,4 +45,4 @@ const mapStateToProps = (state, ownState) => {
         state: state.order_reducer
     }
 }
-export default connect(mapStateToProps, null)(Order_Success);
+export default OrderSuccess;

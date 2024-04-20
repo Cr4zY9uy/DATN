@@ -1,28 +1,8 @@
 .checkout_page {
-    padding: 0 50px
+    padding: 0 50px;
+    margin-bottom: 100px;
 }
 
-.checkout_page .breadcrumb-item+.breadcrumb-item::before {
-    content: "\2794" !important;
-    color: black;
-}
-
-.checkout_page .breadcrumb-item a {
-    font-size: 16px;
-    text-decoration: none;
-    color: rgb(102, 101, 101);
-    font-weight: 500;
-}
-
-.checkout_page .breadcrumb-item.active a {
-    color: rgb(23, 23, 23);
-
-}
-
-.checkout_page .breadcrumb-item a:hover {
-    color: rgb(23, 23, 23);
-
-}
 
 .checkout_page nav {
     display: flex;
@@ -147,4 +127,74 @@
 
 .checkout_page .wrap_btn {
     text-align: right;
+}
+
+.checkout_page .sumary {
+    margin: 40px 0;
+}
+
+.checkout_page button:first-child {
+    text-transform: uppercase;
+    width: 200px;
+    height: 80px;
+    font-size: 20px;
+    font-weight: 400;
+    background-color: #e9da5d;
+    ;
+}
+
+.checkout_page button:nth-child(2) {
+    text-transform: uppercase;
+    width: 200px;
+    height: 80px;
+    font-size: 20px;
+    font-weight: 400;
+    background-color: #922a8d;
+    color: white;
+}
+
+.checkout_page button:hover {
+    background-color: white !important;
+    color: #808080 !important;
+    border: 0.01em solid grey !important;
+}
+
+.checkout_page .ant-space,
+.checkout_page .ant-space-item,
+.checkout_page .ant-radio-group {
+    width: 100%;
+}
+
+.checkout_page .ant-radio-wrapper {
+    border: 0.01em solid grey;
+    border-radius: 5px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 30px;
+}
+
+.checkout_page .ant-radio-wrapper .anticon {
+    font-size: 25px;
+}
+
+.checkout_page .ant-radio-wrapper span:nth-child(2):not(.ant-radio-inner) {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+}
+
+.checkout_page .ant-radio-wrapper .ant-typography {
+    font-size: 15px;
+}
+
+.checkout_page thead,
+.checkout_page thead tr,
+.checkout_page thead th,
+.checkout_page tbody th {
+    background-color: rgba(0, 0, 0, 0.142) !important;
+    font-weight: 600 !important;
+    color: black !important;
 }

@@ -58,6 +58,7 @@ function Cart() {
             title: 'Price',
             dataIndex: 'price',
             key: 'adpricedress',
+            width: "150px",
             render: (text) => <Typography.Text>{text}$</Typography.Text>
 
         },
@@ -65,20 +66,23 @@ function Cart() {
             title: 'Quantity',
             dataIndex: 'quantity',
             key: 'quantity',
-            render: (text) => <Flex><PlusOutlined /><Typography.Text>{text}$</Typography.Text><MinusOutlined /></Flex>
-
+            width: "200px",
+            render: (text) => <Flex align='center' justify='center'> <Button icon={<PlusOutlined />} /><Typography.Text style={{ margin: "0 20px" }}>{text}</Typography.Text><Button icon={<MinusOutlined />} /></Flex>
         },
         {
             title: 'Subtotal',
-            dataIndex: '',
+            dataIndex: 'subtotal',
             key: 'subtotal',
+            width: "250px",
             render: (text, row) => <Typography.Text>{row.price * row.quantity}$</Typography.Text>
         },
         {
             title: 'Action',
             dataIndex: '',
             key: 'x',
-            render: () => <DeleteOutlined />,
+            render: () => <Flex justify='center' className='delete'>
+                <Button icon={<DeleteOutlined />} />
+            </Flex>,
         },
     ];
     const data = [
@@ -114,8 +118,10 @@ function Cart() {
                 bordered
                 columns={columns}
                 dataSource={data}
+                pagination={{ hideOnSinglePage: true, pageSize: 3, total: 10, defaultCurrent: 1, showSizeChanger: false }}
+
             />
-            <Flex className='wrap_btn'>
+            <Flex className='wrap_btn' justify='flex-end'>
                 <Button variant='warning' onClick={checkout}>
                     Checkout
                 </Button>
