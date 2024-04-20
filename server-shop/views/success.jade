@@ -1,0 +1,17 @@
+//
+   Created by vinhnt on 6/16/2017.
+
+doctype html
+html
+  head
+    title=title
+    link(rel='stylesheet', href='/stylesheets/jumbotron-narrow.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+  body
+block content
+    if code == "00"
+        p(style="text-align: center;font-size: 40px;margin-top:100px")  GD thành công
+    else
+        p(style="text-align: center; color: red;font-size: 40px;margin-top:100px") GD thất bại
+    p(style="text-align: center")
+        a.btn.btn-default(href='http://localhost:5173/client/checkout/success') Tiếp tục

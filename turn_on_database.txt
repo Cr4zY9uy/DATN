@@ -1,11 +1,14 @@
 [log]
 turn on database 
 run as administrator cmd
-1.cd C:\Program Files\MongoDB\Server\7.0
-2. mongod --port 27017 --dbpath replica_set\rs1\data --logpath replica_set\rs1\log\rs1.log --replSet rs0
+1.
+cd C:\Program Files\MongoDB\Server\7.0
+2.
+mongod --port 27017 --dbpath replica_set\rs1\data --logpath replica_set\rs1\log\rs1.log --replSet rs0
 mongod --port 27018 --dbpath replica_set\rs2\data --logpath replica_set\rs2\log\rs2.log --replSet rs0
 mongod --port 27019 --dbpath replica_set\rs3\data --logpath replica_set\rs3\log\rs3.log --replSet rs0
-3.mongosh --port 27017
+3.
+mongosh --port 27017
 
 turn on monstache
 monstache -f config.toml

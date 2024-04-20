@@ -51,7 +51,7 @@ router.post('/create_payment_url', function (req, res, next) {
         let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
         vnp_Params['vnp_SecureHash'] = signed;
         vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
-        return res.status(200).json({ url: vnpUrl })
+        return res.status(200).json({ url: vnpUrl });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -59,7 +59,7 @@ router.post('/create_payment_url', function (req, res, next) {
 
 router.get('/vnpay_return', function (req, res, next) {
     let vnp_Params = req.query;
-
+    console.log(123456);
     let secureHash = vnp_Params['vnp_SecureHash'];
 
     delete vnp_Params['vnp_SecureHash'];
@@ -76,11 +76,12 @@ router.get('/vnpay_return', function (req, res, next) {
 
     if (secureHash === signed) {
         //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
-
-        res.status(200).json({ message: 'success', code: vnp_Params['vnp_ResponseCode'] })
+        // res.redirect('http://localhost:5173/client/checkout/success/')
+        res.render('success', { code: vnp_Params['vnp_ResponseCode'] })
+        // return res.status(200).json({ message: 'success', url: 'checkout/success', code: vnp_Params['vnp_ResponseCode'] })
     } else {
-        
-        res.status(500).json({ message: "failure" })
+
+        return res.status(500).json({ message: "failure" })
     }
 });
 

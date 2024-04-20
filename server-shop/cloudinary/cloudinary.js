@@ -7,4 +7,9 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_APIKEY,
     api_secret: process.env.CLOUDINARY_APISECRET
 });
-export default cloudinary;
+
+const options = {
+    upload_preset: process.env.UPLOAD_PRESET
+};
+
+export { cloudinary, options };

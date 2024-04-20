@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const user_schema = new mongoose.Schema({
     username: {
         type: String,
@@ -14,6 +16,12 @@ const user_schema = new mongoose.Schema({
         max: 50,
         trim: true
     },
+    address: {
+        type: String,
+        min: 3,
+        max: 150,
+        trim: true
+    },
     password: {
         type: String,
         require: true,
@@ -24,8 +32,8 @@ const user_schema = new mongoose.Schema({
     gender: {
         type: String,
         require: true,
-        enum: ["Female", "Male", "Other"],
-        default: "Other",
+        enum: ["female", "male", "other"],
+        default: "other",
         trim: true
     },
     role: {
@@ -33,14 +41,7 @@ const user_schema = new mongoose.Schema({
         enum: [0, 1, 2, 3],
         default: 0,
     },
-    last_name: {
-        type: String,
-        require: true,
-        min: 6,
-        max: 50,
-        trim: true
-    },
-    first_name: {
+    name: {
         type: String,
         require: true,
         min: 6,
@@ -71,5 +72,7 @@ const user_schema = new mongoose.Schema({
     {
         timestamps: true
     })
+
+user_schema.plugin(moongosePaginate)
 export default mongoose.model("users", user_schema);
 

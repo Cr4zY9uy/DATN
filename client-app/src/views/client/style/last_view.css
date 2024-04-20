@@ -2,11 +2,14 @@
     width: 70px;
     height: 70px;
 }
-.last_view_item h4{
+
+.last_view_item .ant-typography {
     font-size: 16px;
     font-weight: 400;
     margin-bottom: 0;
+    width: 100px;
 }
+
 .last_view_item {
     margin-top: 10px;
 }

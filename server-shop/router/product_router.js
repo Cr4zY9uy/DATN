@@ -1,11 +1,11 @@
 import { Router } from "express";
 import {
-    edit_product,
+    // edit_product,
     delete_product_one,
     delete_product_list,
     delete_product_all,
     detail_product,
-    add_product,
+    // add_product,
     hot_product,
     category_product,
     by_name_product,
@@ -19,9 +19,9 @@ import { add_product_validator, edit_product_validator } from "../validator/prod
 const router = Router();
 
 
-router.post("/product/add", checkAuth, add_product_validator, add_product);
+// router.post("/product/add", checkAuth, add_product_validator, add_product);
 
-router.put("/product/edit/:id", checkAuth, edit_product_validator, edit_product);
+// router.put("/product/edit/:id", checkAuth, edit_product_validator, edit_product);
 
 router.get("/product", all_product);
 router.get("/product", getProduct);

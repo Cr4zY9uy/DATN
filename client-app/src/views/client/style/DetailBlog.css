@@ -1,0 +1,16 @@
+.detail_blog {
+    padding: 0 150px;
+    margin-bottom: 100px;
+}
+
+.detail_blog .ant-breadcrumb {
+    margin: 60px 100px;
+}
+
+.detail_blog .nav span {
+    color: black !important
+}
+
+.detail_blog .nav button:hover   span {
+    color: #922a8d !important
+}

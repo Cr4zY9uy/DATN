@@ -1,40 +1,33 @@
 import { GoogleOutlined } from "@ant-design/icons";
 import { Button, Divider, Flex, Form, Input, Typography } from "antd";
-import { login, loginByGoogle } from "../../../services/user_service";
+import { login } from "../../../services/user_service";
 import "./login.css";
-import { Link, NavLink } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Notification from "../../../utils/configToastify";
+import { useEffect } from "react";
 function Login(props) {
+    const navigate = useNavigate()
     const hanldeLogin = async (e) => {
         try {
             const rs = await login(e);
-            if (rs.status !== 200) {
-                console.log('!ok');
+            if (rs.status === 200) {
+                Notification({ message: "Login successfully!", type: "success" })
+                navigate('/client')
             }
-            else {
-                sessionStorage.setItem("isLog", true)
-                console.log(rs.data.user_id);
-                // eslint-disable-next-line
-                props.setUserId(rs.data.user_id)
+            // else {
+            //     sessionStorage.setItem("isLog", true)
+            //     console.log(rs.data.user_id);
+            //     // eslint-disable-next-line
+            //     props.setUserId(rs.data.user_id)
 
 
-            }
+            // }
         } catch (error) {
-            alert(error.message);
+            Notification({ message: `${error.response.data.message}`, type: "error" })
+
         }
     }
-
-    const loginGoogle = async () => {
-        try {
-            console.log("Attempting Google login...");
-            const rs = await loginByGoogle()
-            console.log(rs);
-            if (rs)
-                Notification({ message: "Login fail", type: "error" })
-        } catch (error) {
-            Notification({ message: "Login fail", type: "error" })
-        }
-    }
+    useEffect(() => { document.title = "Login" }, [])
 
     return (
 
@@ -50,6 +43,7 @@ function Login(props) {
                     onFinish={hanldeLogin}>
                     <Form.Item
                         name="email"
+                        hasFeedback
                         rules={[
                             {
                                 required: true,
@@ -68,6 +62,7 @@ function Login(props) {
                     </Form.Item>
                     <Form.Item
                         name="password"
+                        hasFeedback
                         rules={[
                             {
                                 required: true,
@@ -81,17 +76,16 @@ function Login(props) {
                         <Input.Password visibilityToggle placeholder="Password" size="large" />
                     </Form.Item>
                     <Flex vertical align="center" justify="center" className="button_group">
-                        <Link>Forget password?</Link>
+                        <Link to={'/forget-password'}>Forget password?</Link>
                         <Form.Item>
                             <Button type="primary" htmlType="submit" className="login">Login</Button>
                         </Form.Item>
-                        <Typography.Text>Don&apos;t have an account? <Link>Sign up</Link></Typography.Text>
+                        <Typography.Text>Don&apos;t have an account? <Link to={'/register'}>Sign up</Link></Typography.Text>
                     </Flex>
                 </Form>
                 <Divider>Or</Divider>
                 <Flex vertical align="center" className="button_group">
-                    {/* <Button htmlType="button" className="google" style={{ backgroundColor: "#18228f" }} icon={<GoogleOutlined style={{ color: "#fff" }} />} type="primary"onClick={loginGoogle}  >Login by Google</Button> */}
-                    <NavLink to={'http://localhost:8080/api/auth/google'}>Login google</NavLink>
+                    <Button type="link" icon={<GoogleOutlined />} className="google" style={{ backgroundColor: "#18228f", lineHeight: "30px", color: "white", marginBottom: "30px" }} href="http://localhost:8081/api/auth/google" >Login by google</Button>
                 </Flex>
 
             </Flex>

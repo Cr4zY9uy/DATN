@@ -1,8 +1,8 @@
 import "../style/modal_search.css"
-import { Select } from "antd";
+import { Flex, Select } from "antd";
 import useDebounce from "../functions/useDebounce";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
 import { CloseOutlined } from "@ant-design/icons";
 function Modal_Search(props) {
     const { Option } = Select;
@@ -16,7 +16,12 @@ function Modal_Search(props) {
     };
     const handleSearch = () => {
         props.onClose();
-        navigate(`/search/${searchOption}/${searchInput}`);
+        navigate({
+            pathname: "search",
+            search: `?${createSearchParams({
+                keyword: searchInput
+            })}`
+        });
     }
     const inputSearch = useDebounce(searchInput, 2000);
     useEffect(() => {
@@ -36,6 +41,7 @@ function Modal_Search(props) {
                         }
                     }
                     }
+                    autoFocus
                 />
             </div>
         </div>

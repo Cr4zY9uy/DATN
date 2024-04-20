@@ -1,73 +1,73 @@
-import { upload_image } from "../cloudinary/upload_image.js";
+// import { upload_image } from "../cloudinary/upload_image.js";
 import product_model from "../models/product_model.js"
 
-export const add_product = async (req, res) => {
-    try {
-        const data = req.body;
-        const checkExistId = await product_model.findOne({ product_id: data.product_id });
-        if (checkExistId != null) {
-            return res.status(400).json({ messsage: "Product id is existed" });
-        }
-        const checkExistName = await product_model.findOne({ title: data.title });
-        if (checkExistName != null) {
-            return res.status(400).json({ messsage: "Product name is existed" });
-        }
-        try {
-            const uploadedImage = await upload_image(data.thumbnail);
-            data.thumbnail = uploadedImage;
-        } catch (uploadError) {
-            return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
-        }
-        const product = await product_model.create(data);
-        if (product) {
-            return res.status(201).json({ product, message: "Add a product successfully" });
-        }
-        else {
-            return res.status(400).json({ error: error.message });
-        }
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
+// export const add_product = async (req, res) => {
+//     try {
+//         const data = req.body;
+//         const checkExistId = await product_model.findOne({ product_id: data.product_id });
+//         if (checkExistId != null) {
+//             return res.status(400).json({ messsage: "Product id is existed" });
+//         }
+//         const checkExistName = await product_model.findOne({ title: data.title });
+//         if (checkExistName != null) {
+//             return res.status(400).json({ messsage: "Product name is existed" });
+//         }
+//         try {
+//             const uploadedImage = await upload_image(data.thumbnail);
+//             data.thumbnail = uploadedImage;
+//         } catch (uploadError) {
+//             return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
+//         }
+//         const product = await product_model.create(data);
+//         if (product) {
+//             return res.status(201).json({ product, message: "Add a product successfully" });
+//         }
+//         else {
+//             return res.status(400).json({ error: error.message });
+//         }
+//     } catch (error) {
+//         return res.status(500).json({ message: error.message });
+//     }
+// }
 
-export const edit_product = async (req, res) => {
-    try {
-        const product_id = req.params.id;
-        const data = req.body;
-        const find = await product_model.findOne({ product_id });
-        if (!find) {
-            return res.status(404).json({ message: "Product does not exist" });
-        }
+// export const edit_product = async (req, res) => {
+//     try {
+//         const product_id = req.params.id;
+//         const data = req.body;
+//         const find = await product_model.findOne({ product_id });
+//         if (!find) {
+//             return res.status(404).json({ message: "Product does not exist" });
+//         }
 
-        if (data.thumbnail !== "") {
-            try {
-                const uploadedImage = await upload_image(data.thumbnail);
-                data.thumbnail = uploadedImage;
-            } catch (uploadError) {
-                return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
-            }
-        } else {
-            data.thumbnail = find.thumbnail;
-        }
-        const update_product = await product_model.findOneAndUpdate(
-            { product_id },
-            {
-                title: data.title,
-                price: data.price,
-                description: data.description,
-                qty: data.qty,
-                category_name: data.category_name,
-                thumbnail: data.thumbnail,
-                price_promotion: data.price_promotion,
-                status: data.status
-            },
-            { new: true }
-        );
-        return res.status(200).json({ updated_product: update_product });
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
+//         if (data.thumbnail !== "") {
+//             try {
+//                 const uploadedImage = await upload_image(data.thumbnail);
+//                 data.thumbnail = uploadedImage;
+//             } catch (uploadError) {
+//                 return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
+//             }
+//         } else {
+//             data.thumbnail = find.thumbnail;
+//         }
+//         const update_product = await product_model.findOneAndUpdate(
+//             { product_id },
+//             {
+//                 title: data.title,
+//                 price: data.price,
+//                 description: data.description,
+//                 qty: data.qty,
+//                 category_name: data.category_name,
+//                 thumbnail: data.thumbnail,
+//                 price_promotion: data.price_promotion,
+//                 status: data.status
+//             },
+//             { new: true }
+//         );
+//         return res.status(200).json({ updated_product: update_product });
+//     } catch (error) {
+//         return res.status(500).json({ message: error.message });
+//     }
+// }
 
 export const detail_product = async (req, res) => {
     const product_id = req.params.id;

@@ -25,7 +25,6 @@ function Blog() {
                         <Typography.Text style={{ textIndent: "20px" }}>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</Typography.Text>
                     </Flex>
                 </Flex>
-
                 <Flex className="blog">
                     <Flex className="img_hover_zoom">
                         <img src="/data/blog/blog3.png" alt="apple1" />

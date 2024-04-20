@@ -40,6 +40,10 @@ header .icon {
 
 }
 
+.header-logo a {
+    height: 50px;
+}
+
 .header-link {
     display: flex;
     justify-content: center;
@@ -50,16 +54,15 @@ header .icon {
 }
 
 .header-icon {
-    width: 15%;
+    width: 13%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .header-icon button {
     border: none;
     background-color: white;
-    margin: 0px 20px;
 
 }
 
@@ -82,7 +85,7 @@ header .icon {
     position: absolute;
     text-align: center;
     line-height: 19px;
-    right: 110px;
+    right: 150px;
     top: 10px;
 }
 
@@ -95,7 +98,6 @@ header .wrap_search_modal {
 header .main_menu {
     position: relative;
     height: 100%;
-    display: flex;
     align-items: center;
 }
 
@@ -116,6 +118,10 @@ header .main_menu .sub_menu a:hover {
 
 .header-icon .cart {
     position: relative;
+}
+
+.header-icon .cart a {
+    margin: 0;
 }
 
 .header-icon span {
@@ -171,4 +177,17 @@ header .main_menu .user {
 header .main_menu:hover .user {
     display: flex;
     flex-direction: column;
+}
+
+.ant-popover-inner .notification {
+    margin-bottom: 12px;
+}
+
+.ant-popover-inner .notification:last-child {
+    margin-bottom: 0;
+}
+
+.ant-popover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
+    top: 64px !important
 }

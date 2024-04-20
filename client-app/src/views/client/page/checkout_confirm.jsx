@@ -1,220 +1,354 @@
-// import "../style/checkout_confirm.css";
-// import { Breadcrumb, Table, Form, Button } from "antd";
-// import { connect } from "react-redux";
-// import { NavLink, useNavigate } from "react-router-dom";
-// import ORDER_ACTION from "../../../redux/order/order_action";
-// import { add_order } from "../../../services/order_service";
-// import CART_ACTION from "../../../redux/cart/cart_action";
-// import { DeleteOutlined } from "@ant-design/icons";
-function Checkout_Confirm() {
-    // const navigate = useNavigate();
-    // // const orderList = props.state[1].order;
-    // // const order = orderList[orderList.length - 1];
-    // // const subTotal = order.products.reduce((total, item) => { return total + item.price * (1 - item.price_promotion) * item.quantity }, 0)
-    // // const cld = new Cloudinary({
-    // //     cloud: {
-    // //         cloudName: 'dv7ni8uod'
-    // //     }
-    // // });
-    // // const handleSubmit = async () => {
-    // //     try {
-    // //         const rs = await add_order(order);
-    // //         if (rs.status === 201) {
-
-    // //             // props.deleteCart();
-    // //             navigate("/order_success");
-    // //         }
-    // //     } catch (err) {
-    // //         console.log(err.message);
-    // //     }
-    // // }
-    // const cartColumns = [
-    //     {
-    //         title: 'No',
-    //         dataIndex: 'no',
-    //         key: 'no',
-    //     },
-    //     {
-    //         title: 'Name',
-    //         dataIndex: 'name',
-    //         key: 'name',
-    //     },
-    //     {
-    //         title: 'Price',
-    //         dataIndex: 'price',
-    //         key: 'adpricedress',
-    //         render: (text) => <p>{text}$</p>
-
-    //     },
-    //     {
-    //         title: 'Quantity',
-    //         dataIndex: 'quantity',
-    //         key: 'quantity',
-    //     },
-    //     {
-    //         title: 'Subtotal',
-    //         dataIndex: '',
-    //         key: 'subtotal',
-    //         render: (text, row) => <p>{row.price * row.quantity}$</p>
-    //     },
-    //     {
-    //         title: 'Action',
-    //         dataIndex: '',
-    //         key: 'x',
-    //         render: () => <DeleteOutlined />,
-    //     },
-    // ];
-    // const cartData = [
-    //     {
-    //         key: 1,
-    //         no: '1',
-    //         name: 'John Brown',
-    //         price: 311,
-    //         quantity: 120,
-    //         subtotal: 1000,
-    //     },
-    //     {
-    //         key: 2,
-    //         no: '2',
-    //         name: 'Jinn Killer',
-    //         price: 311,
-    //         quantity: 120,
-    //         subtotal: 1000,
-    //     },
-
-    // ];
-
-    // const userColumns = [
-    //     {
-    //         title: 'Name',
-    //         dataIndex: 'name',
-    //         key: 'no',
-    //     },
-    //     {
-    //         title: 'Phone',
-    //         dataIndex: 'phone',
-    //         key: 'phone',
-    //     },
-    //     {
-    //         title: 'Email',
-    //         dataIndex: 'email',
-    //         key: 'email',
-    //     },
-    //     {
-    //         title: 'Address',
-    //         dataIndex: 'address',
-    //         key: 'address',
-    //     },
-    //     {
-    //         title: 'Note',
-    //         dataIndex: 'note',
-    //         key: 'note',
-    //     }
-    // ];
-    // const userData = [
-    //     {
-    //         key: 1,
-    //         name: 'John Brown',
-    //         phone: '03898234123',
-    //         email: '9ajsdj9@gmail.com',
-    //         address: 'asd@gmail.com',
-    //         note: 'asdiu asdnoid qwdnoqd',
-    //     },
-    //     {
-    //         key: 2,
-    //         name: 'John Brown',
-    //         phone: '03898234123',
-    //         email: '9ajsdj9@gmail.com',
-    //         address: 'asd@gmail.com',
-    //         note: 'asdiu asdnoid qwdnoqd',
-    //     },
-
-    // ];
-    // return (
-    //     <div className="checkout_confirm_page container">
-    //         <Breadcrumb>
-    //             <Breadcrumb.Item>
-    //                 <NavLink to={'/client'}>HOME</NavLink>
-    //             </Breadcrumb.Item>
-    //             <Breadcrumb.Item active>
-    //                 <NavLink to={'/client/checkout_confirm'}>CHECKOUT CONFIRM</NavLink>
-    //             </Breadcrumb.Item>
-    //         </Breadcrumb>
-    //         <Table
-    //             columns={cartColumns}
-    //             dataSource={cartData}
-    //         />
-    //         <div className="items pt-5">
-    //             <h1><i className="bi bi-truck"></i>Shipping address</h1>
-    //             <div className="info">
-    //                 <div className="row wrap_bill d-flex justify-content-between">
-    //                     <div className="col-6">
-    //                         <Table
-    //                             columns={userColumns}
-    //                             dataSource={userData}
-    //                         />
-    //                     </div>
-    //                     <div className="col-6 cost" >
-    //                         <Table bordered responsive >
-    //                             <tbody>
-    //                                 <tr>
-    //                                     <th>Subtotal</th>
-    //                                     <td>
-    //                                         {subTotal}$
-    //                                     </td>
-    //                                 </tr>
-    //                                 <tr>
-    //                                     <th>
-    //                                         Tax
-    //                                     </th>
-    //                                     <td>{Math.ceil(subTotal * 0.01)}$</td>
-    //                                 </tr>
-    //                                 <tr>
-    //                                     <th>
-    //                                         Shipping
-    //                                     </th>
-    //                                     <td>{order.shipping_cost}$</td>
-    //                                 </tr>
-    //                                 <tr>
-
-    //                                     <th>
-    //                                         Total
-    //                                     </th>
-    //                                     <th>{subTotal * 1.01}$</th>
-    //                                 </tr>
-    //                                 <tr>
-    //                                     <th><i className="bi bi-credit-card-2-back-fill"></i>PAYMENT METHOD:</th>
-    //                                     <td>{order.payment_method}</td>
-    //                                 </tr>
-    //                             </tbody>
-
-    //                         </Table>
-    //                         <div className='wrap_btn'>
-    //                             <Button variant='secondary' onClick={() => { navigate("/cart") }}>
-    //                                 back to cart
-    //                             </Button>
-    //                             <Button variant='warning' onClick={handleSubmit} disabled={!order}>
-    //                                 confirm
-    //                             </Button>
-
-    //                         </div>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </div>
-    // );
-}
-const mapStateToProps = (state, ownState) => {
-    return {
-        state: [state.cart_reducer, state.order_reducer]
+import { useEffect, useState } from "react";
+import "../style/checkout_confirm.css";
+import { Breadcrumb, Table, Form, Button, Descriptions, Input, InputNumber, Select, Radio, Space, Flex, Typography } from "antd";
+import { connect } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { redirect } from 'react-router-dom'
+import ORDER_ACTION from "../../../redux/order/order_action";
+import { CreditCardOutlined, DisconnectOutlined, MoneyCollectOutlined, SendOutlined, TruckOutlined } from "@ant-design/icons";
+import { createBill } from "../../../services/payment_service";
+function CheckoutConfirm() {
+    document.title = "Check out";
+    const [form] = Form.useForm()
+    // const cart = props.state[0].cart;
+    // const order = props.state[1].order;
+    useEffect(() => {
+        form.setFieldValue("first_name", "Nguyen Van")
+        form.setFieldValue("last_name", "Anh")
+        form.setFieldValue("email", "usas@gmail.com")
+        form.setFieldValue("phone", 12312938)
+        form.setFieldValue("address", "Anh")
+        form.setFieldValue("country", "jack")
+        form.setFieldValue("note", "usas@gmail.com")
+        form.setFieldValue("payment", "vnpay")
+        form.setFieldValue("shipping", "free")
+    }, [])
+    const navigate = useNavigate();
+    const navigateCheckout = () => {
+        navigate('/client/checkout')
     }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        deleteCart: (cart) => {
-            dispatch({ type: CART_ACTION.DELETE_CART, payload: cart });
+    const navigateEnd = async () => {
+        // navigate('/client/checkout/success')
+        const rs = await createBill({ amount: 100000, language: 'vn', bankCode: "VNBANK" });
+        window.location.assign(rs.data.url)
+
+    }
+    // const subTotal = cart.reduce((total, item) => { return total + item.price * (1 - item.price_promotion) * item.quantity }, 0)
+    // const [data, setData] = useState({});
+
+    // const items = cart.map((product) => ({
+    //     product_id: product.product_id,
+    //     title: product.title,
+    //     thumbnail: product.thumbnail,
+    //     quantity: product.quantity,
+    //     price: product.price,
+    //     price_promotion: product.price_promotion,
+    // }))
+    // const items_tax = items.map(obj => ({ ...obj, tax: 0.01 }))
+
+
+    const cartColumns = [
+
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'adpricedress',
+            render: (text) => <p>{text}$</p>
+
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        },
+        {
+            title: 'Subtotal',
+            dataIndex: '',
+            key: 'subtotal',
+            render: (text, row) => <p>{row.price * row.quantity}$</p>
+        },
+
+    ];
+    const cartData = [
+        {
+            key: 1,
+            name: 'John Brown',
+            price: 311,
+            quantity: 120,
+            subtotal: 1000,
+        },
+        {
+            key: 2,
+            name: 'Jinn Killer',
+            price: 311,
+            quantity: 120,
+            subtotal: 1000,
+        },
+
+    ];
+    const items = [
+        {
+            key: '1',
+            label: 'Subtotal',
+            children: <Typography.Text>1000$</Typography.Text>,
+            span: 3
+        },
+        {
+            key: '2',
+            label: 'Tax',
+            children: <Typography.Text>10$</Typography.Text>,
+            span: 3
+
+        },
+        {
+            key: '3',
+            label: 'Total',
+            children: <Typography.Text>1010$</Typography.Text>,
+            span: 3
+
         }
+    ];
+
+    // const handleSubmit = (e) => {
+    //     const submitData = { ...data, order_id, payment_method, shipping_method, products: items_tax, shipping_cost: shippingCost[shipping_method] };
+    //     if (!data.first_name || !data.last_name || !data.email || !data.phone || !data.address || !data.country || !items) {
+
+    //     }
+    //     else {
+    //         order.push(submitData);
+    //         props.addToOrder(order);
+    //         Store.addNotification({
+    //             title: "Sucess!!",
+    //             message: "You add an order successfully!",
+    //             type: "success",
+    //             insert: "top",
+    //             container: "top-right",
+    //             animationIn: ["animate__animated", "animate__fadeIn"],
+    //             animationOut: ["animate__animated", "animate__fadeOut"],
+    //             dismiss: {
+    //                 duration: 1500,
+    //                 onScreen: true
+    //             }
+    //         });
+    //         navigate("/checkout_confirm");
+    //     }
+
+    // }
+    const formItemLayout = {
+        labelCol: {
+            xs: {
+                span: 24,
+            },
+            sm: {
+                span: 6,
+            },
+        },
+        wrapperCol: {
+            xs: {
+                span: 24,
+            },
+            sm: {
+                span: 14,
+            },
+        },
+    };
+    const onFinish = (value) => {
+        console.log(value);
     }
+    return (
+        <Flex className="checkout_confirm_page container" vertical>
+            <Breadcrumb>
+                <Breadcrumb.Item>
+                    <NavLink to={'/client'}>HOME</NavLink>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    <NavLink to={'/client/checkout/confirm'}>CHECKOUT CONFIRM</NavLink>
+                </Breadcrumb.Item>
+            </Breadcrumb>
+            <Flex>
+                <Form
+                    form={form}
+                    {...formItemLayout}
+                    style={{
+                        width: "100%"
+                    }}
+                    onFinish={onFinish}
+                >
+                    <Flex gap='large'>
+                        <Flex vertical style={{ width: "50%" }}>
+                            <Form.Item
+                                label="First name"
+                                name="first_name"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input!',
+                                    }, {
+                                        min: 3,
+                                        message: "At least 3 characters"
+                                    }
+                                ]}
+                            >
+                                <Input disabled />
+                            </Form.Item>
+                            <Form.Item
+                                label="Last name"
+                                name="last_name"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input!',
+                                    }, {
+                                        min: 3,
+                                        message: "At least 3 characters"
+                                    }
+                                ]}
+                            >
+                                <Input disabled />
+                            </Form.Item>
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input!',
+                                    },
+                                    {
+                                        min: 6,
+                                        message: "At least 6 characters"
+                                    },
+                                    {
+                                        type: 'email',
+                                        message: 'Please input an email address'
+                                    }
+                                ]}
+                            >
+                                <Input disabled />
+                            </Form.Item>
+                            <Form.Item
+                                label="Phone number"
+                                name="phone"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input!',
+                                    }
+                                ]}
+                            >
+                                <InputNumber
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                    minLength={10}
+                                    maxLength={13}
+                                    disabled
+                                />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Address"
+                                name="address"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input!',
+                                    }, {
+                                        min: 3,
+                                        message: "At least 3 characters"
+                                    }
+                                ]}
+                            >
+                                <Input disabled />
+                            </Form.Item>
+                            <Form.Item
+                                label="Country"
+                                name="country"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input!',
+                                    },
+                                ]}
+                            >
+                                <Select options={[
+                                    { value: 'jack', label: 'Jack' },
+                                    { value: 'lucy', label: 'Lucy' },
+                                    { value: 'Yiminghe', label: 'yiminghe' },
+                                    { value: 'disabled', label: 'Disabled', disabled: true },
+                                ]} disabled />
+                            </Form.Item>
+                            <Form.Item
+                                label="Note"
+                                name="note"
+                            >
+                                <Input.TextArea disabled />
+                            </Form.Item>
+                            <Form.Item
+                                label="Payment method"
+                                name="payment"
+                            >
+                                <Radio.Group disabled>
+                                    <Space direction='horizontal' wrap={true}>
+                                        <Radio value={'cod'} className="radio"><MoneyCollectOutlined /><Typography.Text>COD</Typography.Text></Radio>
+                                        <Radio value={'vnpay'} className="radio"><CreditCardOutlined /><Typography.Text>VNPAY</Typography.Text></Radio>
+                                    </Space>
+                                </Radio.Group>
+                            </Form.Item>
+                            <Form.Item
+                                label="Shipping method"
+                                name="shipping"
+                            >
+                                <Radio.Group disabled>
+                                    <Space direction='horizontal' wrap={true}>
+                                        <Radio value={'free'} className="radio"><DisconnectOutlined /><Typography.Text>Free</Typography.Text></Radio>
+                                        <Radio value={'standard'} className="radio"><TruckOutlined /><Typography.Text>Standard</Typography.Text></Radio>
+                                        <Radio value={'express'} className="radio"><SendOutlined /><Typography.Text>Express</Typography.Text></Radio>
+                                    </Space>
+                                </Radio.Group>
+                            </Form.Item>
+                        </Flex>
+                        <Space direction="vertical" style={{ width: "50%" }}>
+                            <Table
+                                columns={cartColumns}
+                                dataSource={cartData}
+                                pagination={{
+                                    hideOnSinglePage: true, pageSize: 3, total: 10, defaultCurrent: 1, showSizeChanger: false
+                                }}
+                            />
+                            <Descriptions bordered items={items} className="sumary" />
+                            <Flex gap="large" justify="center" className="wrap_btn">
+                                <Button type="primary" htmlType="button" onClick={navigateCheckout}>
+                                    Back to checkout
+                                </Button>
+                                <Button type="primary" htmlType="submit" onClick={navigateEnd}>
+                                    Place order
+                                </Button>
+                            </Flex>
+                        </Space>
+                    </Flex>
+                </Form>
+            </Flex >
+
+        </Flex >
+    );
 }
-export default Checkout_Confirm; 
+// const mapStateToProps = (state, ownState) => {
+//     return {
+//         state: [state.cart_reducer, state.order_reducer]
+//     }
+// }
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         addToOrder: (order) => {
+//             dispatch({ type: ORDER_ACTION.ADD_ORDER, payload: order });
+//         }
+//     }
+// }
+
+export default CheckoutConfirm; 
