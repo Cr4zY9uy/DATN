@@ -1,0 +1,88 @@
+.product_relate-list {
+    height: 110vh;
+}
+
+.product_relate-list img {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px 10px 0px 0px !important;
+}
+
+.product_relate-list .item_related {
+    height: 450px;
+    width: calc(100%/3.2);
+    position: relative;
+    transition: .7s all;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+
+
+
+.product_relate-list .item_related:hover {
+    transform: translateY(-8%);
+    height: 550px;
+    z-index: 1100;
+    background-color: #fff;
+    /* 143% is 100%
+            width: 350px;
+
+     100% is X% ---> X = 70% so we move by (100% - 70%)
+  */
+}
+
+.product_relate-list .item_related button {
+    opacity: 0;
+    /* Initially hidden */
+    transition: opacity 0.4s ease-in-out;
+    /* Smooth transition */
+}
+
+.product_relate-list .item_related:hover button {
+    opacity: 1;
+    /* Make button visible */
+}
+
+.product_relate-list h2 {
+    margin-bottom: 50px;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+.product_relate-list .button_group button {
+    width: 65px;
+    height: 65px;
+    transition: all .3s ease-in-out;
+}
+
+.product_relate-list .button_group button span {
+    font-size: 28px;
+}
+
+.product_relate-list .button_group button:first-child:hover span {
+    color: rgb(214, 171, 42);
+    border-color: rgb(214, 171, 42) !important;
+}
+
+.product_relate-list .button_group button:last-child:hover span {
+    color: #c32a2a;
+    border-color: #c32a2a !important;
+}
+
+.product_relate-list .item_related p {
+    font-weight: 600 !important;
+    font-size: 20px;
+}
+
+.product_relate-list .item_related .discount {
+    font-weight: 600 !important;
+    font-size: 18px;
+    color: #d9a1a3;
+}
+
+.product_relate-list .item_related .title {
+    font-weight: 400;
+}
+

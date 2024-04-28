@@ -84,7 +84,7 @@ function Login(props) {
                     </Flex>
                 </Form>
                 <Divider>Or</Divider>
-                <Flex vertical align="center" className="button_group">
+                <Flex vertical align="center" className="button_group" ju>
                     <Button type="link" icon={<GoogleOutlined />} className="google" style={{ backgroundColor: "#18228f", lineHeight: "30px", color: "white", marginBottom: "30px" }} href="http://localhost:8081/api/auth/google" >Login by google</Button>
                 </Flex>
 

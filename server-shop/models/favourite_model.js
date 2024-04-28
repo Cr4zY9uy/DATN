@@ -1,34 +1,41 @@
 import mongoose from "mongoose";
+
 const favourite_schema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     products: [
         {
-            product_id: {
+            productId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'products',
+                ref: 'Product',
                 require: true
             },
-            product_name: {
+            name: {
                 type: String,
                 require: true,
                 min: 3,
                 max: 50,
                 trim: true
             },
-            stars: {
-                type: Number,
-                require: true,
-                min: 0
-            },
-            price: {
-                type: Number,
-                require: true,
-                min: 10000
+            rating: {
+                ratingId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Rating',
+                    require: true
+                },
+                star:{
+                    type: Number,
+                    require: true,
+                    min: 0
+                }
             },
             isActive: {
                 type: Boolean,
                 default: true
             },
-            thumbnail: [{
+            images: [{
                 type: String,
                 require: true
             }],
@@ -38,5 +45,4 @@ const favourite_schema = new mongoose.Schema({
     {
         timestamps: true
     })
-favourite_schema.index({})
-export default mongoose.model("favourites", favourite_schema);
+export default mongoose.model("Favourite", favourite_schema);

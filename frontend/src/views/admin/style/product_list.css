@@ -1,0 +1,89 @@
+.product_list {
+    padding: 0 50px;
+}
+
+.caption {
+    font-weight: 300;
+    margin: 20px 0;
+}
+
+.product_list .anticon.anticon-menu-unfold {
+    padding-right: 6px;
+}
+
+.wrap_delete {
+    border-right: none;
+}
+
+.wrap_insert {
+    border-left: none;
+    text-align: right;
+}
+
+.child {
+    width: 25px;
+    height: 25px;
+}
+
+.wrap_parent {
+    padding: 6px 12px;
+    border: 0.01rem solid rgba(128, 128, 128, 0.544);
+    width: 42px;
+    height: 38px;
+    border-radius: 5px;
+    margin-right: 20px;
+    z-index: -1;
+}
+
+.parent {
+    width: 18px;
+    height: 18px;
+}
+
+.wrap {
+    width: 42px;
+    margin-right: 10px;
+}
+
+.wrap:hover {
+    background-color: rgba(128, 128, 128, 0.316);
+}
+
+
+.product_hot {
+    font-weight: 500;
+    background-color: rgb(40, 167, 69);
+    width: 40px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+}
+
+.product_list table {
+    table-layout: auto;
+}
+
+.product_list table td:nth-child(4) img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.product_list table th:nth-child(4),
+.product_list table td:nth-child(4) {
+    max-width: 100px;
+    min-width: 80px;
+}
+
+.product_list table th:nth-child(8),
+.product_list table td:nth-child(8) {
+    max-width: 240px;
+    min-width: 180px;
+}
+
+.product_list .ant-pagination {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 40px;
+
+}

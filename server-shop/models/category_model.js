@@ -34,4 +34,4 @@ const category_schema = new mongoose.Schema({
     })
 
 category_schema.plugin(moongosePaginate)
-export default mongoose.model("categories", category_schema);
+export default mongoose.model("Category", category_schema);

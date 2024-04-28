@@ -1,11 +1,7 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const product_schema = new mongoose.Schema({
-    sku_id: {
-        type: String,
-        require: true,
-        min: 5,
-        max: 10
-    },
     name: {
         type: String,
         require: true,
@@ -18,30 +14,42 @@ const product_schema = new mongoose.Schema({
         min: 5,
         max: 300
     },
-    quantity: {
-        type: Number,
-        min: 0,
-        require: true
-    },
     origin: {
         type: String,
         require: true,
         trim: true
     },
+    quantity: {
+        sold: {
+            type: Number,
+            min: 0,
+            default: 0
+        },
+        inTrade: {
+            type: Number,
+            min: 0,
+            default: 0
+        },
+        unSold: {
+            type: Number,
+            min: 0,
+            default: 0
+        }
+    },
     category: {
-        category_id: {
+        categoryId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "categories",
+            ref: "Category",
             require: true,
         },
-        category_name: {
+        name: {
             type: String,
             require: true,
             min: 5,
             max: 50
         }
     },
-    thumbnail: [{
+    images: [{
         type: String,
         require: true
     }],
@@ -49,13 +57,28 @@ const product_schema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    variant: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'variants',
-    }]
+    variant: [
+        {
+            variantId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Variant',
+                require: true
+            },
+            price: {
+                type: Number,
+                require: true
+            },
+            name: {
+                type: String,
+                require: true
+            }
+        }
+    ]
 }
     ,
     {
         timestamps: true
     })
-export default mongoose.model("products", product_schema);
+
+product_schema.plugin(moongosePaginate)
+export default mongoose.model("Product", product_schema);

@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { login, register, logout, refresh_token, getAll, detailUser, deleteUser, resetPassword, updateUser, forgetPassword } from "../controllers/user_controller.js";
+import { login, register, logout, refresh_token, getAll, detailUser, deleteUser, resetPassword, updateUser, forgetPassword, getCurrentUser } from "../controllers/user_controller.js";
 import { register_validator, login_validator } from "../validator/user_validator.js";
 import passport from "passport";
+import { authRole, checkAuth } from "../middleware/check_auth.js";
 
 const router = Router();
 router.get('/auth/google', passport.authenticate('google'));
@@ -9,6 +10,7 @@ router.get('/auth/google/callback', passport.authenticate('google', { session: f
 
 router.get('/users', getAll)
 router.get('/users/detail/:user_id', detailUser)
+router.get('/user', checkAuth, authRole([0, 1, 2, 3]), getCurrentUser)
 
 router.put('/users/update/:user_id', updateUser)
 router.put('/reset-password', resetPassword)

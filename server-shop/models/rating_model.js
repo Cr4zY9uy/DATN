@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const rating_schema = new mongoose.Schema({
     star: {
         type: Number,
@@ -8,12 +10,12 @@ const rating_schema = new mongoose.Schema({
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         require: true
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'products',
+        ref: 'Product',
         require: true
     },
     isActive: {
@@ -24,4 +26,6 @@ const rating_schema = new mongoose.Schema({
     {
         timestamps: true
     })
-export default mongoose.model("ratings", rating_schema);
+rating_schema.plugin(moongosePaginate)
+
+export default mongoose.model("Rating", rating_schema);

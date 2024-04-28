@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const comment_schema = new mongoose.Schema({
     content: {
         type: String,
@@ -7,14 +9,14 @@ const comment_schema = new mongoose.Schema({
         max: 50,
         trim: true,
     },
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         require: true
     },
-    product: {
+    productId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'products',
+        ref: 'Product',
         require: true
     },
     isActive: {
@@ -25,4 +27,6 @@ const comment_schema = new mongoose.Schema({
     {
         timestamps: true
     })
-export default mongoose.model("comments", comment_schema);
+
+comment_schema.plugin(moongosePaginate)
+export default mongoose.model("Comment", comment_schema);

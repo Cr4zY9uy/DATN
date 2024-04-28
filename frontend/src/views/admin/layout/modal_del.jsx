@@ -1,0 +1,97 @@
+import { useMutation } from '@tanstack/react-query';
+import { Button, Flex, Modal } from 'antd';
+import { useContext } from 'react';
+import { queryClient } from '../../../main';
+import { deleteCategoryList, deleteCategoryOne } from '../../../services/category_service';
+import { ACTION } from '../../../store/modal';
+import { ModalContext } from '../../../store/modal/provider';
+import Notification from '../../../utils/configToastify';
+import { TypeDeleteAdmin } from '../../../utils/enum';
+import '../style/modal_del.css';
+import { deleteBannerList, deleteBannerOne } from '../../../services/banner_service';
+function DeleteModal(props) {
+    const id = props.id_del;
+    const type = props.type_del;
+
+    const { state, dispatch } = useContext(ModalContext)
+    const isOpen = state?.currentModal
+    const onClose = () => {
+        dispatch({ type: ACTION.CLOSE_MODAL })
+    }
+
+    const deleteOneCategory = useMutation({
+        mutationFn: (id) => deleteCategoryOne(id),
+        onSuccess: () => {
+            Notification({ message: "Delete category successfully!", type: "success" })
+            queryClient.invalidateQueries({ queryKey: ['category_admin'] })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "error" })
+        }
+    })
+
+    const deleteListCategory = useMutation({
+        mutationFn: (id) => deleteCategoryList(id),
+        onSuccess: () => {
+            Notification({ message: "Delete categories successfully!", type: "success" })
+            queryClient.invalidateQueries({ queryKey: ['category_admin'] })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "error" })
+        }
+    })
+
+    const deleteOneBanner = useMutation({
+        mutationFn: (id) => deleteBannerOne(id),
+        onSuccess: () => {
+            Notification({ message: "Delete banner successfully!", type: "success" })
+            queryClient.invalidateQueries({ queryKey: ['banner_admin'] })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "error" })
+        }
+    })
+
+    const deleteListBanner = useMutation({
+        mutationFn: (id) => deleteBannerList(id),
+        onSuccess: () => {
+            Notification({ message: "Delete banners successfully!", type: "success" })
+            queryClient.invalidateQueries({ queryKey: ['banner_admin'] })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "error" })
+        }
+    })
+    const handleDelete = () => {
+        switch (type) {
+            case TypeDeleteAdmin.CATEGORY_ONE:
+                deleteOneCategory.mutate(id)
+                break;
+            case TypeDeleteAdmin.CATEGORY_LIST:
+                deleteListCategory.mutate(id)
+                break;
+            case TypeDeleteAdmin.BANNER_ONE:
+                deleteOneBanner.mutate(id)
+                break;
+            case TypeDeleteAdmin.BANNER_LIST:
+                deleteListBanner.mutate(id)
+                break;
+            default:
+                break
+        }
+
+    }
+    return (
+        <Modal open={isOpen} closable={false} footer={null} width={500} centered={true} className='deleteModal'>
+            <Flex vertical align='center' justify='center' gap={20}>
+                <p className='words'>Do you want to DELETE {typeof id !== 'string' ? 'these items' : "this item"} ?</p>
+                <Flex gap='large'>
+                    <Button htmlType="submit" danger type='primary'
+                        onClick={() => { handleDelete(), onClose() }}>Delete</Button>
+                    <Button onClick={onClose}>Cancel</Button>
+                </Flex>
+            </Flex>
+        </Modal >
+    );
+}
+export default DeleteModal;

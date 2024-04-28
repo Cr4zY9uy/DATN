@@ -41,7 +41,14 @@ const user_schema = new mongoose.Schema({
         enum: [0, 1, 2, 3],
         default: 0,
     },
-    name: {
+    firstName: {
+        type: String,
+        require: true,
+        min: 6,
+        max: 50,
+        trim: true
+    },
+    lastName: {
         type: String,
         require: true,
         min: 6,
@@ -64,7 +71,7 @@ const user_schema = new mongoose.Schema({
     image: {
         type: String
     },
-    isLocked: {
+    isActive: {
         type: Boolean,
         default: false
     }
@@ -74,5 +81,5 @@ const user_schema = new mongoose.Schema({
     })
 
 user_schema.plugin(moongosePaginate)
-export default mongoose.model("users", user_schema);
+export default mongoose.model("User", user_schema);
 

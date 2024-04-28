@@ -1,0 +1,38 @@
+.search_page {
+    margin-bottom: 100px;
+    padding: 0 50px;
+}
+
+
+.search_page .breadcrumb-item+.breadcrumb-item::before {
+    content: "\2794" !important;
+    color: black;
+}
+
+.search_page .breadcrumb-item a {
+    font-size: 16px;
+    text-decoration: none;
+    color: rgb(102, 101, 101);
+    font-weight: 500;
+}
+
+.search_page .breadcrumb-item.active a {
+    color: rgb(23, 23, 23);
+
+}
+
+.search_page .breadcrumb-item a:hover {
+    color: rgb(23, 23, 23);
+
+}
+
+.search_page nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 100px;
+    margin-top: 60px;
+}
+
+.search_page .text-center {
+    width: 100%;
+}

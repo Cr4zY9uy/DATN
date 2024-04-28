@@ -1,55 +1,72 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const order_schema = new mongoose.Schema({
-    first_name: {
+    firstNameReceiver: {
         type: String,
-        require: true
+        require: true,
+        min: 3,
+        max: 50,
+        trim: true
     },
-    last_name: {
+    lastNameReceiver: {
         type: String,
-        require: true
+        require: true,
+        min: 3,
+        max: 50,
+        trim: true
     },
-    phone: {
+    phoneReceiver: {
         type: String,
-        require: true
+        require: true,
+        min: 10,
+        max: 13,
+        trim: true
     },
-    email: {
+    emailReceiver: {
         type: String,
-        require: true
+        require: true,
+        min: 5,
+        max: 50,
+        trim: true
     },
-    address: {
+    addressReceiver: {
         type: String,
-        require: true
+        require: true,
+        min: 5,
+        max: 50,
+        trim: true
     },
-    payment_method: {
+    paymentMethod: {
         type: String,
         enum: ['Credit card', 'Paypal', 'COD'],
         require: true
     },
-    shipping_method: {
+    shippingMethod: {
         type: String,
         enum: ['Express', 'Free', 'Standard'],
         require: true
     },
-    payment_status: {
+    paymentStatus: {
         type: String,
         enum: ['Unpaid', 'Partial payment', 'Paid', 'Return'],
         default: 'Unpaid',
     },
-    shipping_status: {
+    shippingStatus: {
         type: String,
         enum: ['Not sent', 'Sending', 'Shipping done'],
         default: 'Not sent',
     },
-    order_status: {
+    orderStatus: {
         type: String,
         enum: ['New', 'Processing', 'Hold', 'Canceled', 'Done', 'Failed'],
         default: 'New',
     },
     products: [
         {
-            product_id: {
+            productId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'products',
+                ref: 'Product',
                 require: true
             },
             name: {
@@ -59,10 +76,9 @@ const order_schema = new mongoose.Schema({
                 max: 50,
                 trim: true
             },
-            price: {
+            subPrice: {
                 type: Number,
-                min: 10000,
-                max: 30000000,
+                min: 1000,
                 require: true
             },
             quantity: {
@@ -70,23 +86,24 @@ const order_schema = new mongoose.Schema({
                 min: 0,
                 require: true
             },
-            thumbnail: [{
+            images: [{
                 type: String,
                 require: true
             }],
-            tax: {
-                type: Number,
-                min: 0,
-                max: 1,
-                require: true
-            },
+
         }
     ],
-    shipping_cost: {
+    tax: {
+        type: Number,
+        min: 0,
+        max: 1,
+        default: 0.09
+    },
+    shippingCost: {
         type: Number,
         min: 0,
     },
-    received: {
+    total: {
         type: Number,
         min: 0,
         default: 0,
@@ -99,4 +116,7 @@ const order_schema = new mongoose.Schema({
     {
         timestamps: true
     })
-export default mongoose.model("orders", order_schema);
+
+
+order_schema.plugin(moongosePaginate)
+export default mongoose.model("Order", order_schema);

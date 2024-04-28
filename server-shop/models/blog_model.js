@@ -1,27 +1,28 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const blog_schema = new mongoose.Schema({
     title: {
         type: String,
         require: true,
         min: 6,
-        max: 50,
         trim: true,
         unique: true
     },
     user: {
-        user_id: {
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'users',
+            ref: 'User',
             require: true
         },
-        last_name: {
+        firstName: {
             type: String,
             require: true,
             min: 6,
             max: 50,
             trim: true
         },
-        first_name: {
+        lastName: {
             type: String,
             require: true,
             min: 6,
@@ -33,11 +34,7 @@ const blog_schema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        minLength: 20,
-    },
-    image: {
-        type: String,
-        require: true
+        min: 20,
     },
     order: {
         type: Number,
@@ -51,4 +48,6 @@ const blog_schema = new mongoose.Schema({
     {
         timestamps: true
     })
-export default mongoose.model("blogs", blog_schema);
+
+blog_schema.plugin(moongosePaginate)
+export default mongoose.model("Blog", blog_schema);

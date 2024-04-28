@@ -1,0 +1,3 @@
+const currentUser = {}
+
+export { currentUser }

@@ -1,0 +1,46 @@
+.edit_category_panel {
+    height: 100%;
+    min-height: 80vh;
+}
+
+.edit_category_panel .caption {
+    font-weight: 300;
+    margin: 20px 0;
+}
+
+.edit_category_panel .anticon.anticon-form {
+    padding-right: 6px;
+}
+
+.edit_category_panel .ant-card {
+    box-shadow: 0 0 1px rgba(0, 0, 0, .125), 0 1px 3px rgba(0, 0, 0, .2);
+    width: 100% !important;
+    margin-bottom: 20px;
+}
+
+.edit_category_panel .ant-form-item-control-input {
+    width: 50vw;
+}
+
+.edit_category_panel .ant-form-item-control-input input {
+    height: 40px;
+    width: 50vw;
+}
+
+.edit_category_panel .ant-form-item-control-input .ant-select.ant-select-in-form-item {
+    height: 50px;
+}
+
+.edit_category_panel .ant-form label {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.edit_category_panel .ant-col.ant-form-item-label {
+    line-height: 50px;
+}
+
+.edit_category_panel .ant-upload-wrapper {
+    height: 50px;
+    margin-bottom: -10px;
+}
