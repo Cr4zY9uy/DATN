@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs"
 import user_model from "../models/user_model.js";
 import jwt, { decode } from "jsonwebtoken"
-import randToken from "rand-token"
 import { filterXSS } from 'xss'
 import { options } from "../paginate/options.js";
 import { sendEmail } from "../nodemailer/nodemailer_config.js";
@@ -61,7 +60,8 @@ export const login = async (req, res) => {
         res.cookie("access_token", accessToken, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 1000 * 24 });
         return res.status(200).json({
             user_id: user._id,
-            name: user.name,
+            firstName: user.firstName,
+            lastName: user.lastName,
             role: user.role,
             username: user.username,
             email: user.email
@@ -201,17 +201,17 @@ export const getAll = async (req, res) => {
 }
 
 export const updateUser = async (req, res) => {
-    const { name, phone, email, image, role, username, password, address } = req.body
+    const { firstName, lastName, phone, image, role, password, address } = req.body
     const { user_id } = req.params
     const updatedFields = {};
-    if (username) updatedFields.username = username;
-    if (email) updatedFields.email = email;
-    if (name) updatedFields.name = name;
+    if (firstName) updatedFields.firstName = firstName;
+    if (lastName) updatedFields.lastName = lastName;
     if (phone) updatedFields.phone = phone;
     if (image) updatedFields.image = image;
     if (role) updatedFields.role = role;
     if (password) updatedFields.password = password
     if (address) updatedFields.address = address
+
     try {
         const updatedUser = await user_model.findOneAndUpdate({ _id: user_id }, updatedFields, { new: true })
         if (updatedUser) return res.status(200).json({ ...updatedUser });
@@ -286,9 +286,10 @@ export const resetPassword = async (req, res) => {
     }
 }
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (req, res) => {
     try {
-        return
+        const user = req.user;
+        return res.status(200).json({ ...user })
     } catch (error) {
         return res.status(500).json({ message: error.message })
 

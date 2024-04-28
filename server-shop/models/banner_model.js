@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const banner_schema = new mongoose.Schema({
     title: {
         type: String,
@@ -12,8 +14,8 @@ const banner_schema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        minLength: 20,
-        maxLength: 50
+        min: 20,
+        max: 50
     },
     image: {
         type: String,
@@ -31,4 +33,6 @@ const banner_schema = new mongoose.Schema({
     {
         timestamps: true
     })
-export default mongoose.model("banners", banner_schema);
+
+banner_schema.plugin(moongosePaginate)
+export default mongoose.model("Banner", banner_schema);

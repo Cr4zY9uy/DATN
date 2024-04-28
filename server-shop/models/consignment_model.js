@@ -1,28 +1,37 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const consignment_schema = new mongoose.Schema(
     {
-        products: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'products',
-            default: [],
-        },
-        totalMoney: {
+        products: [
+            {
+                productId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Product',
+                },
+                quantity: {
+                    type: Number,
+                    min: 0,
+                    require: true
+                },
+                expireDate: {
+                    type: Date,
+                    require: true
+                }
+            }],
+        noney: {
             type: Number,
             required: true,
-            min: 10000
+            min: 1000
         },
-        expireDate: {
-            type: String,
+        importDate: {
+            type: Date,
             require: true,
             trim: true
-        },
-        isDisable: {
-            type: Boolean,
-            default: false,
-        },
-
+        }
     },
     { timestamps: true }
 );
 
-export default mongoose.model("consignments", consignment_schema);
+consignment_schema.plugin(moongosePaginate)
+export default mongoose.model("Consignment", consignment_schema);

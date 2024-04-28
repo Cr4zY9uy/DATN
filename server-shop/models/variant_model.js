@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
+
 const comment_schema = new mongoose.Schema({
     name: {
         type: String,
@@ -7,18 +9,23 @@ const comment_schema = new mongoose.Schema({
         max: 50,
         trim: true,
     },
+    isMin: {
+        type: Boolean,
+        require: true
+    },
     isActive: {
         type: Boolean,
         default: true
     },
-    price: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'prices',
-        }
-    ]
+    price: {
+        type: Number,
+        require: true,
+        min: 0
+    }
 },
     {
         timestamps: true
     })
-export default mongoose.model("comments", comment_schema);
+
+comment_schema.plugin(moongosePaginate)
+export default mongoose.model("Comment", comment_schema);

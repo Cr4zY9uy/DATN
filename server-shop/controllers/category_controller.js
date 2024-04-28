@@ -2,83 +2,77 @@
 import category_model from "../models/category_model.js"
 import { options } from "../paginate/options.js";
 
-// export const add_category = async (req, res) => {
-//     try {
-//         const data = req.body;
-//         const checkExistId = await category_model.findOne({ category_id: data.category_id });
-//         if (checkExistId != null) {
-//             return res.status(400).json({ messsage: "Category id is existed" });
-//         }
-//         const checkExistName = await category_model.findOne({ name: data.name });
-//         if (checkExistName != null) {
-//             return res.status(400).json({ messsage: "Category name is existed" });
-//         }
-//         try {
-//             const uploadedImage = await upload_image(data.image);
-//             data.image = uploadedImage;
-//         } catch (uploadError) {
-//             return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
-//         }
-//         const category = await category_model.create(data);
-//         if (category) {
-//             return res.status(201).json({ category, message: "Add a category successfully" });
-//         }
-//         else {
-//             return res.status(400).json({ message: error.message });
-//         }
-//     } catch (error) {
-//         return res.status(500).json({ message: error.message });
-//     }
-// }
+export const add_category = async (req, res) => {
 
-// export const edit_category = async (req, res) => {
-//     try {
-//         const category_id = req.params.id;
-//         const data = req.body;
-//         const find = await category_model.findOne({ category_id });
-//         if (!find) {
-//             return res.status(404).json({ message: "Category does not exist" });
-//         }
+    const { name, image, description, order, isActive } = req.body;
 
-//         if (data.image !== "") {
-//             try {
-//                 const uploadedImage = await upload_image(data.image);
-//                 data.image = uploadedImage;
-//             } catch (uploadError) {
-//                 return res.status(404).json({ message: "Error uploading image", error: uploadError.message });
-//             }
-//         } else {
-//             data.image = find.image;
-//         }
-//         const update_category = await category_model.findOneAndUpdate(
-//             { category_id },
-//             { name: data.name, description: data.description, image: data.image },
-//             { new: true }
-//         );
-//         return res.status(200).json({ updated_category: update_category });
-//     } catch (error) {
-//         return res.status(500).json({ message: error.message });
-//     }
-// }
+    try {
+        const checkExistName = await category_model.findOne({ name: name });
+        if (checkExistName != null) {
+            return res.status(400).json({ messsage: "Category name is existed" });
+        }
+
+        const checkExistOrder = await category_model.findOne({ order: order });
+        if (checkExistOrder) {
+            return res.status(400).json({ message: "Category order already taken" });
+        }
+
+        const category = await category_model.create({ name, image, description, order, isActive });
+        if (category) {
+            return res.status(201).json({ category, message: "Add a category successfully" });
+        }
+
+        return res.status(400).json({ message: "Add a category unsuccessfully " })
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export const update_category = async (req, res) => {
+
+    const category_id = req.params.id;
+    const { name, image, description, isActive, order } = req.body;
+    const data = {};
+    if (name) data.name = name;
+    if (description) data.description = description;
+    if (isActive !== '') data.isActive = isActive;
+    if (image) data.image = image
+    if (order) data.order = order
+    try {
+        const category = await category_model.findOne({ _id: category_id });
+        if (!category) {
+            return res.status(404).json({ message: "Category does not exist" });
+        }
+        if (order && order !== category.order) {
+            const checkExistOrder = await category_model.findOne({ order: order });
+            if (checkExistOrder) {
+                return res.status(400).json({ message: "Category order already taken" });
+            }
+        }
+
+        const updated_category = await category_model.findOneAndUpdate(
+            { _id: category_id },
+            data,
+            { new: true }
+        );
+        if (updated_category)
+            return res.status(200).json({ ...updated_category._doc });
+        return res.status(400).json({ message: "Update unsuccessfully " })
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
 
 export const detail_category = async (req, res) => {
     try {
         const category_id = req.params.id;
-        const data = await category_model.findOne({ category_id: category_id }).select("category_id name description image")
+        const data = await category_model.findOne({ _id: category_id })
         if (data === null) {
             return res.status(404).json({ message: "Category no exists" });
         }
-        else {
-
-            return res.status(200).json({
-                category: {
-                    category_id: data.category_id,
-                    name: data.name,
-                    description: data.description,
-                    image: data.image
-                }
-            });
-        }
+        return res.status(200).json({
+            ...data._doc
+        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -87,7 +81,7 @@ export const detail_category = async (req, res) => {
 export const delete_category_one = async (req, res) => {
     try {
         const id = req.params.id;
-        const data = await category_model.findOneAndDelete({ category_id: id });
+        const data = await category_model.findOneAndDelete({ _id: id });
         if (data !== null) {
             return res.status(200).json({ message: "Category deleted successfully" });
         } else {
@@ -98,27 +92,18 @@ export const delete_category_one = async (req, res) => {
     }
 }
 
-export const delete_category_all = async (req, res) => {
-    try {
-        const data = await category_model.deleteMany({ "category_id": { $exists: true } });
-        if (data) {
-            return res.status(200).json({ message: "Categories deleted successfully" });
-        } else {
-            return res.status(404).json({ message: "Categories not found" });
-        }
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-}
 
 export const delete_category_list = async (req, res) => {
     try {
-        const category_id = req.body.category_id;
+        const category_id = req.body.id;
         if (!category_id || category_id.length === 0) {
             return res.status(400).json({ message: "Please provide list of category_id" });
         }
-        const data = await category_model.deleteMany({ category_id: { $in: category_id } });
-
+        const existingCategories = await category_model.find({ _id: { $in: category_id } });
+        if (existingCategories.length !== category_id.length) {
+            return res.status(404).json({ message: "One or more categories not found" });
+        }
+        const data = await category_model.deleteMany({ _id: { $in: category_id } });
         if (data) {
             return res.status(200).json({ message: "Categories deleted successfully" });
         } else {
@@ -130,26 +115,38 @@ export const delete_category_list = async (req, res) => {
 };
 
 export const paginate_category = async (req, res) => {
+    const { name, description, isActive, sortOrder, sortName, page } = req.query
     const limit = 6;
-    const page = parseInt(req.query.page) ? parseInt(req.query.page) : 1;
     const skip = (page - 1) * limit;
+    const query = {};
+    if (name) query.name = name;
+    if (description) query.description = description;
+    if (isActive) query.isActive = isActive;
+    let sortKind = {};
+    if (sortOrder) {
+        if (sortOrder === 'ascend') {
+            sortKind.order = 1;
+        } else {
+            sortKind.order = -1;
+        }
+    }
+
+    if (sortName) {
+        if (sortName === 'ascend') {
+            sortKind.name = 1;
+        } else {
+            sortKind.name = -1;
+        }
+    }
+
     try {
-        const dataAll = await category_model.find().sort({ createdAt: -1 });
-        const data = dataAll.slice(skip, skip + limit);
-        const total_page = Math.ceil(dataAll.length / limit);
-        if (data.length === 0) {
+        const dataAll = await category_model.paginate(query, {
+            offset: skip, page: page, limit: limit, sort: sortKind
+        });
+        if (dataAll.totalDocs === 0) {
             return res.status(404).json({ message: "No category" });
         }
-        else {
-            const category_list = data.map((category) => ({
-                category_id: category.category_id,
-                name: category.name,
-                description: category.description,
-                image: category.image
-            })
-            );
-            return res.status(200).json({ category_list, total_page: total_page, total_product: dataAll.length, page: page });
-        }
+        return res.status(200).json({ ...dataAll });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -166,3 +163,4 @@ export const all_category = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
+

@@ -1,0 +1,145 @@
+.category_items {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.category_items h1 {
+    text-transform: uppercase;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+
+.category_items .item img {
+    height: 340px;
+    width: 100%;
+}
+
+
+
+.category_items .item {
+    height: 450px;
+    width: calc(90%/3);
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+
+.category_items .price {
+    font-weight: 300;
+    text-decoration: line-through;
+    color: rgba(128, 128, 128, 0.608);
+    font-size: 14px;
+}
+
+.category_items .promotion {
+    color: #ff2c26;
+    font-weight: 600;
+    font-size: 15px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.category_items .price_promo {
+    text-wrap: wrap;
+    margin-bottom: 5px;
+}
+
+.category_items button {
+    color: #922a8d;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    margin-top: 5px;
+    display: none;
+}
+
+.category_items button:hover {
+    border-color: white !important;
+    color: white !important;
+    background-color: #922a8d !important;
+
+}
+
+.category_items .item .buy {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    height: 70px;
+}
+
+.category_items .item:hover .buy {
+    display: block;
+    animation: SlideUp .6s ease-in-out;
+}
+
+.category_items .country {
+    color: #9a9a9a;
+    font-weight: 300;
+    margin: 0 !important;
+}
+
+.category_items .title {
+    font-weight: 600;
+    font-size: 18px;
+    margin: 0 !important;
+    margin-bottom: 5px !important;
+}
+
+.category_items .item a {
+    position: relative;
+}
+
+.category_items .item .favourite {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    position: absolute;
+    z-index: 10;
+    top: 10px;
+    right: 20px;
+    display: none;
+}
+
+.category_items .item .favourite:hover {
+    background-color: rgb(183, 38, 38) !important;
+}
+
+.category_items .item:hover .favourite {
+    animation: SlideLeft .9s ease-in-out;
+    display: block;
+}
+
+.category_items .item .favourite:hover span {
+    color: white !important;
+}
+
+.category_items .item .favourite span {
+    color: red;
+    font-size: 30px;
+}
+
+
+
+@keyframes SlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes SlideLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}

@@ -1,0 +1,8 @@
+.blog_list_admin .ant-form-item {
+    margin-bottom: 0;
+}
+
+.blog_list_admin img {
+    height: 100px;
+    width: 100px;
+}

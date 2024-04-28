@@ -18,6 +18,8 @@ import ProductDetail from "../views/client/page/ProductDetail";
 import { ChangePassword } from "../views/client/page/ChangePassword";
 import { DetailBlog } from "../views/client/page/DetailBlog";
 import Search from "../views/client/page/search";
+import { LayoutAdmin } from "../layouts/LayoutAdmin";
+import { Overview } from "../views/admin/page/OverviewAdmin";
 
 export const router = createBrowserRouter([
   {
@@ -27,69 +29,67 @@ export const router = createBrowserRouter([
   { path: 'forget-password', element: <Forget /> },
   { path: 'change-password/:token', element: <Reset /> },
   { path: 'register', element: <Register /> },
-  // {
-  //   path: 'admin',
-  //   element: (
-  //       <LayoutSuperAdmin />
-  //   ),
-  //   children: [
-  //     { index: true, element: <Overview /> },
-  //     { path: 'overview', element: <Overview /> },
-  //     {
-  //       path: 'users',
+  {
+    path: 'admin',
+    element: <LayoutAdmin />,
+    children: [
+      { index: true, element: <Overview /> },
+      { path: 'overview', element: <Overview /> },
+      // {
+      //   path: 'users',
 
-  //       element: <Outlet />,
-  //       children: [
-  //         { index: true, element: <ListUser /> },
+      //   element: <Outlet />,
+      //   children: [
+      //     { index: true, element: <ListUser /> },
 
-  //         {
-  //           path: ':user_id',
-  //           element: <DetailUser />
-  //         },
-  //         { path: 'create', element: <CreateUser /> }
-  //       ]
-  //     },
-  //     {
-  //       path: 'partners',
-  //       element: <Partners />,
-  //       children: [
-  //         { index: true, element: <ListOfPartners /> },
-  //         { path: 'add-new-partner', element: <AddNewPartner /> },
-  //         { path: ':partner_id', element: <PartnerDetail /> }
-  //       ]
-  //     },
+      //     {
+      //       path: ':user_id',
+      //       element: <DetailUser />
+      //     },
+      //     { path: 'create', element: <CreateUser /> }
+      //   ]
+      // },
+      // {
+      //   path: 'partners',
+      //   element: <Partners />,
+      //   children: [
+      //     { index: true, element: <ListOfPartners /> },
+      //     { path: 'add-new-partner', element: <AddNewPartner /> },
+      //     { path: ':partner_id', element: <PartnerDetail /> }
+      //   ]
+      // },
 
-  //     {
-  //       path: 'address',
-  //       element: <Outlet />,
-  //       children: [
-  //         {
-  //           path: 'province-city',
-  //           element: <Outlet />,
-  //           children: [{ index: true, element: <ListOfProvinces /> }]
-  //         },
-  //         {
-  //           path: 'district-town',
-  //           element: <Outlet />,
-  //           children: [
-  //             { index: true, element: <ListOfDistrictTown /> },
-  //             { path: 'add-new-district', element: <AddNewPartner /> },
-  //             { path: ':district_id', element: <PartnerDetail /> }
-  //           ]
-  //         },
-  //         {
-  //           path: 'ward-commune',
-  //           element: <Outlet />,
-  //           children: [
-  //             { index: true, element: <ListOfWardCommune /> },
-  //             { path: 'add-new-ward', element: <AddNewPartner /> },
-  //             { path: ':ward_id', element: <PartnerDetail /> }
-  //           ]
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // },
+      // {
+      //   path: 'address',
+      //   element: <Outlet />,
+      //   children: [
+      //     {
+      //       path: 'province-city',
+      //       element: <Outlet />,
+      //       children: [{ index: true, element: <ListOfProvinces /> }]
+      //     },
+      //     {
+      //       path: 'district-town',
+      //       element: <Outlet />,
+      //       children: [
+      //         { index: true, element: <ListOfDistrictTown /> },
+      //         { path: 'add-new-district', element: <AddNewPartner /> },
+      //         { path: ':district_id', element: <PartnerDetail /> }
+      //       ]
+      //     },
+      //     {
+      //       path: 'ward-commune',
+      //       element: <Outlet />,
+      //       children: [
+      //         { index: true, element: <ListOfWardCommune /> },
+      //         { path: 'add-new-ward', element: <AddNewPartner /> },
+      //         { path: ':ward_id', element: <PartnerDetail /> }
+      //       ]
+      //     }
+      //   ]
+      // }
+    ]
+  },
 
   // {
   //   path: 'users',
@@ -134,7 +134,7 @@ export const router = createBrowserRouter([
   //     },
   //     { path: 'create', element: <CreateDrug /> }
   //   ]
-  // }
+  // },
 
   {
     path: '/client',

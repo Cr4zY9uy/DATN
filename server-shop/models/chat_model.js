@@ -4,14 +4,14 @@ import moongosePaginate from 'mongoose-paginate-v2'
 const chat_schema = new mongoose.Schema({
     roomId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         require: true,
     },
     message: [{
         sender: {
             id: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'users',
+                ref: 'User',
                 require: true
             },
             role: {
@@ -26,12 +26,15 @@ const chat_schema = new mongoose.Schema({
         content: {
             type: String,
             required: true,
+            trim: true,
+            min: 3
         },
-        day: {
+        daySending: {
             type: Date,
-            default: new Date(),
+            default: Date.now(),
         }
     }]
 }, { timestamps: true })
 
-export default mongoose.model('chats', chat_schema)
+chat_schema.plugin(moongosePaginate)
+export default mongoose.model('Chat', chat_schema)

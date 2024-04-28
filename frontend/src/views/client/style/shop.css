@@ -1,0 +1,181 @@
+.shop .products_filter {
+    display: flex;
+    padding: 100px 20px;
+}
+
+.shop .filterCAP {
+    width: 20%;
+    margin-right: 30px;
+}
+
+.shop .products_cate {
+    width: 70%;
+}
+
+.shop .filterCAP,
+.shop .filterCate,
+.shop .filterPrice {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    color: #000000ce;
+}
+
+.shop .filterCate {
+    padding: 0px 0 30px;
+}
+
+
+.shop .filterCAP h5 {
+    font-size: 25px;
+}
+
+
+.shop .clear {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.shop .cate_hidden,
+.shop .price_hidden {
+    padding-top: .8rem;
+    margin-bottom: .8rem;
+    color: #ff0000bd;
+    font-size: 1.4rem;
+    line-height: .3px;
+}
+
+.shop .breadcrumb-item+.breadcrumb-item::before {
+    content: "\2794" !important;
+    color: black;
+}
+
+.shop .breadcrumb-item a {
+    font-size: 16px;
+    text-decoration: none;
+    color: rgb(102, 101, 101);
+    font-weight: 500;
+}
+
+.shop .breadcrumb-item.active a {
+    color: rgb(23, 23, 23);
+
+}
+
+.shop .breadcrumb-item a:hover {
+    color: rgb(23, 23, 23);
+
+}
+
+.shop nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.shop {
+    padding: 0 50px;
+}
+
+.shop .shop_item img {
+    width: 100%;
+}
+
+.shop .shop_item p {
+    line-height: 7px;
+}
+
+
+
+
+.shop .shop_item p {
+    color: rgb(241, 28, 28);
+    font-size: 20px;
+}
+
+.shop .shop_item h4 {
+    font-weight: 400;
+    margin-bottom: 0px;
+    font-size: 24px;
+}
+
+.shop .shop_item .price {
+    text-decoration: line-through;
+    color: rgb(128, 128, 128);
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.shop .shop_item .discount {
+    color: red;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.shop .ant-checkbox-group {
+    display: flex !important;
+    flex-direction: column;
+}
+
+.shop .products_result {
+    background-color: white;
+    padding: 30px 10px;
+    width: 100%
+}
+
+.shop .products_result .ant-rate-star {
+    font-size: 15px;
+    margin-right: 2px;
+}
+
+.shop .products_result .shop_item button {
+    color: #922a8d;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 13px;
+    margin-top: 10px;
+    width: 90%;
+    height: 38px;
+
+}
+
+.shop .products_result button:hover {
+    border-color: white !important;
+    color: white !important;
+    background-color: #922a8d !important;
+
+}
+
+
+.shop .ant-select {
+    width: 260px !important;
+    margin-bottom: 10px;
+    height: 100%;
+}
+
+.shop .filter_tag .ant-space-item,
+.shop .filter_tag .ant-tag {
+    height: 100%;
+}
+
+.shop .filter_tag {
+    height: 100%;
+}
+
+.shop .filter_tag .ant-tag {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    line-height: 19px;
+    font-weight: 400;
+}
+
+.shop .filter_tag .ant-tag .anticon-close {
+    font-size: 13px;
+    margin-left: 15px;
+}
+
+.shop .filter_tag .ant-space-item:nth-child(3) {
+    display: flex;
+    align-items: center;
+}

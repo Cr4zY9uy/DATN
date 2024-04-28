@@ -1,0 +1,41 @@
+.category_page {
+    margin-bottom: 100px;
+    padding: 0 50px;
+}
+
+
+
+.category_page .breadcrumb-item+.breadcrumb-item::before {
+    content: "\2794" !important;
+    color: black;
+}
+
+.category_page .breadcrumb-item a {
+    font-size: 16px;
+    text-decoration: none;
+    color: rgb(102, 101, 101);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.category_page .breadcrumb-item.active a {
+    color: rgb(23, 23, 23);
+
+}
+
+.category_page .breadcrumb-item a:hover {
+    color: rgb(23, 23, 23);
+
+}
+
+.category_page nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 100px;
+    margin-top: 60px;
+}
+
+.category_pagination{
+    margin-bottom: 50px;
+    font-size: 20px;
+}

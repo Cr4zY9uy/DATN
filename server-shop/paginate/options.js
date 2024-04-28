@@ -1,5 +1,5 @@
 const options = {
-    limit: 10,
+    limit: 6,
     sort: { createdAt: -1 }
 };
 

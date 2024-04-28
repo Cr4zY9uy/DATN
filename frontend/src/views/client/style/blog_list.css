@@ -1,0 +1,80 @@
+.blog_list h1 {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #922a8d;
+    font-size: 30px;
+}
+
+.blog_list .products .discount {
+    text-decoration: line-through;
+}
+
+.blog {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+
+.blog p,
+.blog h4 {
+    padding-left: 30px;
+    padding-right: 10px;
+}
+
+.blog .img_hover_zoom {
+    height: 45%;
+    overflow: hidden;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.blog .info {
+    padding: 0 20px;
+}
+
+.blog .info span:first-of-type {
+    color: #b7b7b7;
+}
+
+.blog p {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.379);
+}
+
+
+.blog h4 {
+    font-weight: 400;
+    padding-bottom: 20px;
+}
+
+.blog img {
+    height: 100%;
+    width: 100%;
+    transition: transform 1s ease;
+}
+
+.blog_list {
+    background-color: rgb(244, 243, 243);
+    padding: 0 50px;
+    margin-bottom: 100px;
+}
+
+.blog_list h4 {
+    margin: 0 !important;
+    padding: 0;
+}
+
+
+.blog_list .blog {
+    background-color: rgb(249, 250, 249);
+
+}
+
+.img_hover_zoom:hover img {
+    transform: scale(1.5);
+}

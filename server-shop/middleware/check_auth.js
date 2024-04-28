@@ -32,7 +32,8 @@ export const checkAuth = async (req, res, next) => {
                 if (decoded.role < 0 || decoded.role > 4) {
                     return res.status(405).json({ message: "Not allowed to access" });
                 }
-                req.user = user;
+                const { password, refreshToken, ...userWithoutPassword } = user._doc;
+                req.user = userWithoutPassword;
                 next();
             });
 

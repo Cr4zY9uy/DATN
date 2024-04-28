@@ -1,0 +1,87 @@
+.cart_page {
+    padding: 0px 50px;
+    margin-bottom: 100px;
+}
+
+:root {
+    --blue: #1e90ff;
+    --white: #ffffff;
+    --font-family-header: Arial;
+    --font-size-header: 30px;
+
+}
+
+.cart_page .ant-breadcrumb {
+    margin-top: 60px;
+}
+
+.cart_page table th:first-child,
+.cart_page table tr:first-child {
+    width: 40px !important;
+}
+
+.cart_page table td:last-child,
+.cart_page table th:last-child {
+    width: 20px !important;
+}
+
+.cart_page table button {
+    padding: 10px;
+}
+
+.cart_page table tbody td {
+    padding: 20px;
+}
+
+.cart_page .quantity {
+    width: 130px;
+}
+
+.cart_page table td,
+.cart_page table th {
+    vertical-align: middle;
+}
+
+.cart_page .wrap_btn button {
+    text-transform: uppercase;
+    width: 200px;
+    height: 80px;
+    font-size: 20px;
+    font-weight: 400;
+    background-color: #922a8d;
+    color: white;
+}
+
+.cart_page .delete button {
+    border: none;
+    color: red;
+}
+
+.cart_page .delete button:hover {
+    color: red !important;
+}
+
+.cart_page .wrap_btn button:hover {
+    background-color: white !important;
+    color: #808080 !important;
+    border: 0.01em solid grey !important;
+}
+
+.cart_page .wrap_btn {
+    margin: 20px 0;
+}
+
+
+.cart_page nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 100px;
+}
+
+.cart_page thead {
+    background-color: #eaebec;
+}
+
+.cart_page thead tr th {
+    background-color: inherit;
+}
