@@ -4,20 +4,20 @@ import { Link, useNavigate } from "react-router-dom";
 import Notification from "../../../utils/configToastify";
 import { register } from "../../../services/user_service";
 import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
 function Register() {
     const { Option } = Select;
     const navigate = useNavigate()
-    const hanldeLogin = async (e) => {
-        try {
-            const rs = await register(e);
-            if (rs.status === 201) {
-                Notification({ message: "Register successfully!", type: "success" })
-                navigate('/')
-            }
-        } catch (error) {
-            Notification({ message: `${error.response.data.message}`, type: "error" })
-        }
-    }
+    const { mutate } = useMutation({
+        mutationKey: ['register_account'],
+        mutationFn: (data) => register(data),
+        onSuccess: () => {
+            Notification({ message: "Register successfully!", type: "success" })
+            navigate('/')
+        },
+        onError: (error) => Notification({ message: `${error.response.data.message}`, type: "error" })
+    })
+
     useEffect(() => { document.title = "Sign up" }, [])
 
     return (
@@ -31,10 +31,10 @@ function Register() {
                     labelCol={{ span: 7 }}
                     wrapperCol={{ span: 100 }}
                     layout="horizontal"
-                    onFinish={hanldeLogin}>
+                    onFinish={mutate}>
                     <Flex vertical >
                         <Form.Item
-                            name="name"
+                            name="firstName"
                             hasFeedback
                             rules={[
                                 {
@@ -42,8 +42,8 @@ function Register() {
                                     message: 'Please input!',
                                 },
                                 {
-                                    min: 6,
-                                    message: "At least 6 characters"
+                                    min: 3,
+                                    message: "At least 3 characters"
                                 },
                                 {
                                     max: 50,
@@ -51,9 +51,28 @@ function Register() {
                                 }
                             ]}
                         >
-                            <Input type="text" placeholder="Name" size="large" />
+                            <Input type="text" placeholder="First name" size="large" />
                         </Form.Item>
-
+                        <Form.Item
+                            name="lastName"
+                            hasFeedback
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input!',
+                                },
+                                {
+                                    min: 3,
+                                    message: "At least 3 characters"
+                                },
+                                {
+                                    max: 50,
+                                    message: "At max 50 characters"
+                                }
+                            ]}
+                        >
+                            <Input type="text" placeholder="Last name" size="large" />
+                        </Form.Item>
                         <Form.Item
                             name="phone"
                             hasFeedback

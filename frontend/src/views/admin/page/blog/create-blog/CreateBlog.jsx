@@ -18,13 +18,15 @@ import { queryClient } from "../../../../../main";
 import { addBlog } from "../../../../../services/blog_service";
 import Notification from "../../../../../utils/configToastify";
 import './CreateBlog.css';
+import { useState } from "react";
+import { markdownToHtml } from "../../../../../components/RichTextEditor/parser";
 
 
 
 function CreateBlog() {
     const navigate = useNavigate();
-
     const [form] = Form.useForm();
+    const [value, setValue] = useState('');
     const { mutate } = useMutation({
         mutationFn: (data) => addBlog(data),
         onSuccess: () => {
@@ -39,6 +41,7 @@ function CreateBlog() {
 
     const handleSubmit = (value) => {
         mutate(value)
+        // console.log(value);
     }
 
 
@@ -95,7 +98,7 @@ function CreateBlog() {
                                         }
                                     ]}
                                     hasFeedback >
-                                    <Editor />
+                                    <Editor isFetch={false} />
 
                                 </Form.Item>
 

@@ -1,0 +1,45 @@
+.detail_order {
+    padding: 0 50px;
+    margin-bottom: 100px;
+}
+
+.detail_order .ant-table-wrapper {
+    width: 100%;
+}
+
+.detail_order nav {
+    margin: 60px 0 100px;
+}
+
+.detail_order .ant-card {
+    width: 100%;
+}
+
+.detail_order h5 {
+    margin: 0;
+}
+
+.detail_order span.ant-typography {
+    font-size: 15px;
+    padding-top: 2px;
+}
+
+.detail_order .ant-table-wrapper {
+    margin: 20px 0;
+}
+
+.detail_order .sumary {
+    width: 40%;
+}
+
+.detail_order .ant-card-meta-title {
+    font-size: 20px;
+}
+
+.detail_order .ant-select-selector {
+    width: 250px !important;
+}
+
+.detail_order th {
+    background-color: rgba(0, 0, 0, 0.142) !important;
+}

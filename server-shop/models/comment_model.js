@@ -5,7 +5,7 @@ const comment_schema = new mongoose.Schema({
     content: {
         type: String,
         require: true,
-        min: 6,
+        min: 3,
         max: 50,
         trim: true,
     },

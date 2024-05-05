@@ -6,27 +6,25 @@ import { markdownToHtml } from "./parser";
 
 
 
-export default function Editor(props) {
+export default function Editor({ value, isFetch, onChange }) {
 
-    const [value, setValue] = useState(markdownToHtml(props.value || ""));
+    const [valueSet, setValue] = useState(value || "");
     const reactQuillRef = useRef(null);
-    console.log(value);
-    const onChange = (content) => {
+    console.log('value    ', value);
+    console.log('value  ', value);
+    const handleOnChange = useCallback((content) => {
         setValue(content);
-        console.log(value);
-        if (props.onChange) {
-            props.onChange(value);
+        if (onChange) {
+            onChange(content);
         }
-    };
+    }, [onChange]);
 
     useEffect(() => {
-        const quill = reactQuillRef.current;
-        if (props.value) {
-            const delta = quill.clipboard.dangerouslyPasteHTML(props.value)
-            quill.getEditor().setContents(delta, 'silent');
+        if (isFetch && reactQuillRef.current && value) {
+            const delta = reactQuillRef.current.getEditor();
+            delta.clipboard.dangerouslyPasteHTML(value);
         }
-
-    }, [props.value])
+    }, [value, isFetch]);
 
     const imageHandler = useCallback(() => {
         const input = document.createElement("input");
@@ -97,8 +95,8 @@ export default function Editor(props) {
                 "video",
                 "code-block",
             ]}
-            value={value.toString()}
-            onChange={onChange}
+            value={value}
+            onChange={handleOnChange}
         />
     );
 }

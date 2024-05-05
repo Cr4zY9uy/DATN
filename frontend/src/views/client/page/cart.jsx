@@ -2,39 +2,60 @@ import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Breadcrumb, Button, Flex, Table, Typography } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import "./../style/cart.css";
+import { useContext, useEffect, useState } from 'react';
+import { ACTION_CART, CartContext } from '../../../store/cart';
+import Notification from '../../../utils/configToastify';
 
 function Cart() {
     document.title = "Cart";
     const navigate = useNavigate();
-    // const cart = props.state.cart;
-    // const [quantities, setQuantities] = useState(cart.map(item => item.quantity));
+    const { state, dispatch } = useContext(CartContext)
+    const [products, setProducts] = useState([])
+    const minus = (productId) => {
+        const updatedProducts = products.map(product => {
+            if (product.id === productId && product.quantityBuy > 1) {
+                return { ...product, quantityBuy: product.quantityBuy - 1 };
+            }
+            return product;
+        });
+
+        setProducts(updatedProducts);
+        dispatch({ type: ACTION_CART.UPDATE_CART, payload: updatedProducts });
+
+    };
+
+    const plus = (productId, maxQuantity) => {
+        const updatedProducts = products.map(product => {
+            if (product.id === productId && product.quantityBuy < maxQuantity) {
+                return { ...product, quantityBuy: product.quantityBuy + 1 };
+            }
+            return product;
+        });
+        setProducts(updatedProducts);
+        dispatch({ type: ACTION_CART.UPDATE_CART, payload: updatedProducts });
+
+    };
 
 
-    // const minus = (index) => {
-    //     const newQuantities = [...quantities];
-    //     newQuantities[index] = Math.max(newQuantities[index] - 1, 0);
-    //     setQuantities(newQuantities);
-    //     updateCartWithQuantity(index, newQuantities[index]);
-    // };
+    const deleteItem = (id) => {
+        dispatch({ type: ACTION_CART.DELETE_ITEM, payload: id })
+        Notification({ message: "Delete item successfully!", type: "success" })
+    }
 
-    // const plus = (index) => {
-
-    //     const newQuantities = [...quantities];
-    //     newQuantities[index] += 1;
-    //     if (newQuantities[index] > cart[index].qty - 1) {
-    //         newQuantities[index] = cart[index].qty;
-    //     }
-    //     setQuantities(newQuantities);
-    //     updateCartWithQuantity(index, newQuantities[index]);
-    // };
-
-    // const updateCartWithQuantity = (index, newQuantity) => {
-    //     const updatedCart = cart.map((item, i) => ({
-    //         ...item,
-    //         quantity: i === index ? newQuantity : item.quantity
-    //     }));
-    //     props.addToCart(updatedCart);
-    // };
+    useEffect(() => {
+        setProducts(state?.currentCart?.map((item, index) => ({
+            no: index + 1,
+            id: item?.id,
+            name: item?.name,
+            price: item?.price,
+            quantityBuy: item?.quantityBuy,
+            image: item?.images && item?.images.length > 0 ? item?.images : item?.image,
+            maxQuantity: item?.quantity
+        })))
+        return () => {
+            setProducts([])
+        }
+    }, [state, setProducts])
 
     const checkout = () => {
         navigate("/client/checkout")
@@ -47,9 +68,29 @@ function Cart() {
             key: 'no',
         },
         {
+            title: "Image",
+            dataIndex: "image",
+            key: 'image',
+            hidden: true
+        },
+        {
+            title: "ID",
+            dataIndex: "id",
+            key: 'id',
+            hidden: true
+        },
+        {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            render: (text, row) => <Flex gap={10}>
+                <Typography.Text>{text}</Typography.Text>
+                {Array.isArray(row.image) ? (
+                    <img src={row.image.length > 0 ? row.image[0] : ''} width={60} height={60} />
+                ) : (
+                    <img src={row.image} width={60} height={60} />
+                )}
+            </Flex>
         },
         {
             title: 'Price',
@@ -61,46 +102,42 @@ function Cart() {
         },
         {
             title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
+            dataIndex: 'quantityBuy',
+            key: 'quantityBuy',
             width: "200px",
-            render: (text) => <Flex align='center' justify='center'> <Button icon={<PlusOutlined />} /><Typography.Text style={{ margin: "0 20px" }}>{text}</Typography.Text><Button icon={<MinusOutlined />} /></Flex>
+            align: 'center',
+            render: (text, row) =>
+                <Flex align='center' justify='center'>
+                    <Button icon={<PlusOutlined />} onClick={() => plus(row.id, row.maxQuantity)} />
+                    <Typography.Text style={{ margin: "0 20px" }}>{text}</Typography.Text>
+                    <Button icon={<MinusOutlined />} onClick={() => minus(row.id)} />
+                </Flex>
+        },
+        {
+            title: 'Max quantity',
+            dataIndex: 'maxQuantity',
+            key: 'maxQuantity',
+            hidden: true
         },
         {
             title: 'Subtotal',
             dataIndex: 'subtotal',
             key: 'subtotal',
             width: "250px",
-            render: (text, row) => <Typography.Text>{row.price * row.quantity}$</Typography.Text>
+            render: (text, row) => <Typography.Text>{row.price * row.quantityBuy}$</Typography.Text>
         },
         {
             title: 'Action',
             dataIndex: '',
             key: 'x',
-            render: () => <Flex justify='center' className='delete'>
-                <Button icon={<DeleteOutlined />} />
+            render: (_text, row) => <Flex justify='center' className='delete'>
+                <Button icon={<DeleteOutlined />} onClick={() => deleteItem(row.id)} />
             </Flex>,
         },
     ];
-    const data = [
-        {
-            key: 1,
-            no: '1',
-            name: 'John Brown',
-            price: 311,
-            quantity: 120,
-            subtotal: 1000,
-        },
-        {
-            key: 2,
-            no: '2',
-            name: 'Jinn Killer',
-            price: 311,
-            quantity: 120,
-            subtotal: 1000,
-        },
-
-    ];
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
     return (
         <Flex className='container cart_page' vertical>
             <Breadcrumb>
@@ -114,12 +151,12 @@ function Cart() {
             <Table
                 bordered
                 columns={columns}
-                dataSource={data}
-                pagination={{ hideOnSinglePage: true, pageSize: 3, total: 10, defaultCurrent: 1, showSizeChanger: false }}
+                dataSource={products}
+                pagination={{ hideOnSinglePage: true, pageSize: 3, total: state?.currentCart?.length ?? 0, defaultCurrent: 1, showSizeChanger: false }}
 
             />
             <Flex className='wrap_btn' justify='flex-end'>
-                <Button variant='warning' onClick={checkout}>
+                <Button variant='warning' onClick={checkout} disabled={!state?.currentCart || state?.currentCart?.length < 1}>
                     Checkout
                 </Button>
             </Flex>

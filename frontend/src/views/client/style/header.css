@@ -57,7 +57,7 @@ header .icon {
     width: 13%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .header-icon button {
@@ -85,7 +85,7 @@ header .icon {
     position: absolute;
     text-align: center;
     line-height: 19px;
-    right: 150px;
+    right: 120px;
     top: 10px;
 }
 
@@ -110,6 +110,7 @@ header .main_menu .sub_menu a {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 13px;
+
 }
 
 header .main_menu .sub_menu a:hover {
@@ -136,11 +137,13 @@ header .main_menu .sub_menu {
     top: 100%;
     left: -40px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
+
 }
 
 header .main_menu:hover .sub_menu {
     display: flex;
     flex-direction: column;
+
 }
 
 .header-link a {

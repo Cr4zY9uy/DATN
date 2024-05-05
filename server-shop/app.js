@@ -17,7 +17,17 @@ import rateLimit from "express-rate-limit";
 import cors from "cors";
 import router_banner from './router/banner_router.js'
 import router_blog from './router/blog_router.js'
-
+import session from "express-session";
+import passport from "passport";
+import { connectToGoogle } from "./google/google-auth.js";
+app.use(
+    session({
+        resave: false,
+        saveUninitialized: true,
+        secret: "SECRET",
+        // cookie: { maxAge: 172800000 }
+    })
+);
 var upload = multer()
 
 app.use(cookieParser());
@@ -54,6 +64,11 @@ app.use(rateLimit({
     }
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
 app.use("/api/", order_router)
 app.use("/api/", router_auth);
 app.use("/api/", router_order);
@@ -64,5 +79,6 @@ app.use("/api/", router_upload)
 app.use("/api/", router_chat)
 app.use("/api/", router_banner)
 app.use("/api/", router_blog)
+connectToGoogle()
 
 export default app

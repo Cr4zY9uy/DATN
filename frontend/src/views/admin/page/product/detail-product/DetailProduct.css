@@ -1,0 +1,32 @@
+.group_link .ant-flex {
+    width: 50%;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.group_link {
+    background-color: #eaeaea;
+    border-radius: 5px;
+    padding: 3px;
+    margin-bottom: 50px;
+}
+
+.group_link .ant-flex .link {
+
+    height: 100%;
+    width: 100%;
+}
+
+.group_link .ant-flex a {
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+}
+
+.active_link {
+    background-color: white;
+}

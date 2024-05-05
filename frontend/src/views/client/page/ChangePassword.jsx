@@ -1,12 +1,23 @@
 import { Flex, Form, Breadcrumb, Input, Button, Typography } from 'antd'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import '../style/ChangePassword.css'
 import Notification from '../../../utils/configToastify'
+import { useMutation } from '@tanstack/react-query'
+import { resetPasswordCurrentUser } from '../../../services/user_service'
 
 export const ChangePassword = () => {
     const [form] = Form.useForm()
+    const navigate = useNavigate()
+    const { mutate } = useMutation({
+        mutationFn: (data) => resetPasswordCurrentUser(data),
+        onSuccess: () => {
+            Notification({ message: "Change password successfully", type: "success" })
+            navigate("/client")
+        },
+        onError: () => Notification({ message: "Change password unsuccessfully", type: "error" })
+    })
     const handleSubmit = (e) => {
-        console.log(e);
+        mutate(e);
     }
 
 

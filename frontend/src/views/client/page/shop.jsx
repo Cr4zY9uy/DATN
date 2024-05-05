@@ -1,19 +1,63 @@
 import { CloseOutlined, ShoppingOutlined, SortAscendingOutlined } from "@ant-design/icons";
-import "../style/shop.css"
-import { Flex, Pagination, Typography, Checkbox, Radio, Space, Tag, Select, Empty, Rate } from "antd";
-import { Breadcrumb, Button } from "antd";
-import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { Breadcrumb, Button, Checkbox, Empty, Flex, Pagination, Radio, Rate, Select, Space, Tag, Typography } from "antd";
+import { useContext, useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { optionCategory } from "../../../services/category_service";
+import { listProduct } from "../../../services/product_service";
+import useDebounce from "../../../utils/useDebounce";
+import "../style/shop.css";
+import { ACTION_CART, CartContext } from "../../../store/cart";
+import Notification from "../../../utils/configToastify";
+import { UserContext } from "../../../store/user";
+
+const getCategoryLabels = (categoryFilter, optionsCategory) => {
+    return categoryFilter.map(filterId => {
+        const category = optionsCategory.find(option => option.value === filterId);
+        return category ? category.label : '';
+    });
+};
+
+
+
 function Shop() {
     const [categoryFilter, setCategoryFilter] = useState([])
     const [priceFilter, setPriceFilter] = useState('')
-    const [isEmpty, setIsEmpty] = useState(false)
+    const [isEmpty, setIsEmpty] = useState(true)
+    const [optionsCategory, setOptionsCategory] = useState([])
+    const cart = useContext(CartContext)
+    const user = useContext(UserContext)
+    const info = user?.state?.currentUser
+    const addToCart = (product) => {
+        if (info) {
+            cart?.dispatch({ type: ACTION_CART.ADD_CART, payload: { ...product, quantityBuy: 1 } })
+            Notification({ message: "Add to cart successully!", type: "success" })
+        }
+        else {
+            Notification({ message: "You have to login first!", type: "error" })
+
+        }
+    };
+
+    const [sortName, setSortName] = useState('')
+    const [sortPrice, setSortPrice] = useState('')
+    const [sortDate, setSortDate] = useState('')
+
+    const searchSortName = useDebounce(sortName, 500)
+    const searchSortPrice = useDebounce(sortPrice, 500)
+    const searchSortDate = useDebounce(sortDate, 500)
+
+    const [total, setTotal] = useState(0)
+    const [products, setProducts] = useState([])
+    const [page, setPage] = useState(1)
+    const navigate = useNavigate()
+
     const onChangeCategory = (checkedValues) => {
         setCategoryFilter(checkedValues)
     };
+
     const onChangePrice = (e) => {
         setPriceFilter(e.target.value);
-        setIsEmpty(true)
     };
 
     useEffect(() => {
@@ -24,23 +68,85 @@ function Shop() {
         }
     }, [])
 
-    const optionsCategory = [
-        {
-            label: 'Apple',
-            value: 'Apple',
-        },
-        {
-            label: 'Pear',
-            value: 'Pear',
-        },
-        {
-            label: 'Orange',
-            value: 'Orange',
-        },
-    ];
-    const handleChange = (value) => {
-        console.log(value);
+    const handleChange = (e) => {
+        if (!e) {
+            setSortDate('');
+            setSortName('');
+            setSortPrice('');
+        }
+
+        const [sortField, sortOrder] = e?.value?.split('=');
+
+        switch (sortField) {
+            case 'sortName':
+                setSortName(sortOrder);
+                setSortPrice('');
+                setSortDate('');
+                break;
+            case 'sortPrice':
+                setSortPrice(sortOrder);
+                setSortName('');
+                setSortDate('');
+                break;
+            case 'sortDate':
+                setSortDate(sortOrder);
+                setSortName('');
+                setSortPrice('');
+                break;
+            default:
+                setSortDate('');
+                setSortName('');
+                setSortPrice('');
+                break;
+        }
     };
+
+    const optionsCategories = useQuery({
+        queryKey: ['optionsCategories'],
+        queryFn: () => optionCategory()
+    })
+
+    const productShop = useQuery({
+        queryKey: ['shop', page, categoryFilter, priceFilter, searchSortName, searchSortPrice, searchSortDate],
+        queryFn: () => listProduct(page, '', '', categoryFilter.join(','), searchSortName, searchSortPrice, searchSortDate, priceFilter.split(' - ')[0], priceFilter.split(' - ')[1]),
+        placeholderData: keepPreviousData
+    })
+
+    useEffect(() => {
+        if (!optionsCategories?.isSuccess) return
+        const rawData = optionsCategories?.data?.data?.data
+        setOptionsCategory(rawData?.map(item => ({
+            value: item?._id,
+            label: item?.name
+        })))
+        return () => {
+            setOptionsCategory([])
+        }
+    }, [optionsCategories?.isSuccess, optionsCategories?.data])
+
+
+    useEffect(() => {
+        if (!productShop?.isSuccess) {
+            return
+        }
+        const rawData = productShop?.data?.data?.products
+        setProducts(rawData?.docs?.map(item => ({
+            id: item?._id,
+            name: item?.name,
+            image: item?.images[0],
+            price: item?.price,
+            quantity: item?.quantity?.inTrade
+        })))
+        setTotal(rawData?.totalDocs)
+        setIsEmpty(false)
+        return () => {
+            setProducts([])
+            setIsEmpty(false)
+        }
+    }, [productShop?.isSuccess, productShop?.data])
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
     return (
         <Flex className="shop" vertical>
             <Breadcrumb>
@@ -77,8 +183,12 @@ function Shop() {
                                 <Tag
                                     closable
                                     onClose={() => setCategoryFilter([])}
+                                    style={{
+                                        textWrap: "wrap",
+                                        maxWidth: "300px"
+                                    }}
                                 >
-                                    {categoryFilter.join(', ')}
+                                    {getCategoryLabels(categoryFilter, optionsCategory).join(', ')}
                                 </Tag>
                             )}
                             {priceFilter && (
@@ -107,27 +217,27 @@ function Shop() {
                             onChange={handleChange}
                             options={[
                                 {
-                                    value: 'price_asc',
+                                    value: 'sortPrice=ascend',
                                     label: 'Price ascending',
                                 },
                                 {
-                                    value: 'price_dec',
+                                    value: 'sortPrice=descend',
                                     label: 'Price descending',
                                 },
                                 {
-                                    value: 'newer',
+                                    value: 'sortDate=ascend',
                                     label: 'Newer',
                                 },
                                 {
-                                    value: 'older',
+                                    value: 'sortDate=descend',
                                     label: 'Older',
                                 },
                                 {
-                                    value: 'name_asc',
+                                    value: 'sortName=ascend',
                                     label: 'Name: A-Z',
                                 },
                                 {
-                                    value: 'name_dec',
+                                    value: 'sortName=descend',
                                     label: 'Name: Z-A',
                                 },
                             ]}
@@ -136,34 +246,21 @@ function Shop() {
                     <Flex className="products_result d-flex row text-center" gap="16px" vertical>
                         {isEmpty ? <Empty /> :
                             <>
-                                <Flex className='result'><h3>Showing <span>1 - 10</span> of 100 results</h3></Flex>
-                                <Flex gap={"16px"}>
-                                    <Flex className="shop_item col-4" vertical align="center">
-                                        <img src="/data/fruits/pineapple1.png" alt="pineapple" />
-                                        <Typography.Title level={4}>Apple 1</Typography.Title>
-                                        <Typography.Text className="discount">10$<span className="price">50$</span></Typography.Text>
-                                        <Rate allowHalf disabled defaultValue={2} />
-                                        <Button icon={<ShoppingOutlined />} >add to cart</Button>
-                                    </Flex>
-
-                                    <Flex className="shop_item col-4" vertical align="center">
-                                        <img src="/data/fruits/pineapple1.png" alt="pineapple" />
-                                        <Typography.Title level={4}>Apple 1</Typography.Title>
-                                        <Typography.Text className="discount">10$<span className="price">50$</span></Typography.Text>
-                                        <Rate allowHalf disabled defaultValue={2} />
-                                        <Button icon={<ShoppingOutlined />} >add to cart</Button>
-                                    </Flex>
-                                    <Flex className="shop_item col-4" vertical align="center">
-                                        <img src="/data/fruits/pineapple1.png" alt="pineapple" />
-                                        <Typography.Title level={4}>Apple 1</Typography.Title>
-                                        <Typography.Text className="discount">10$<span className="price">50$</span></Typography.Text>
-                                        <Rate allowHalf disabled defaultValue={2} />
-                                        <Button icon={<ShoppingOutlined />} >add to cart</Button>
-                                    </Flex>
+                                <Flex className='result'><h3>Showing <span>1 - {total > 6 ? 6 : total}</span> of {total} results</h3></Flex>
+                                <Flex gap={"16px"} wrap="wrap">
+                                    {products.map(item => (
+                                        <Flex className="shop_item col-4" vertical align="center" key={item?.id}>
+                                            <img src={item?.image} alt={item?.name} width={60} height={150} onClick={() => navigate(`/client/product/${item?.id}`)} />
+                                            <Typography.Title level={5} ellipsis={true}>{item?.name}</Typography.Title>
+                                            <Typography.Text className="discount">10$<span className="price">{item?.price}$</span></Typography.Text>
+                                            <Rate allowHalf disabled defaultValue={2.5} />
+                                            <Button icon={<ShoppingOutlined />} onClick={() => addToCart(item)}>add to cart</Button>
+                                        </Flex>
+                                    ))}
                                 </Flex>
                             </>
                         }
-                        <Pagination style={{ textAlign: "center", padding: "70px 0" }} defaultCurrent={1} total={50} pageSize={5} hideOnSinglePage showSizeChanger={false}
+                        <Pagination style={{ textAlign: "center", padding: "70px 0" }} defaultCurrent={1} total={total} pageSize={6} hideOnSinglePage showSizeChanger={false} onChange={setPage}
                         />
 
                     </Flex>

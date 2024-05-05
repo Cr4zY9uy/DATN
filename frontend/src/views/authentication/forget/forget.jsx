@@ -4,21 +4,22 @@ import "./forget.css";
 import { useEffect } from "react";
 import { forgetPassword } from "../../../services/user_service";
 import Notification from "../../../utils/configToastify";
+import { useMutation } from "@tanstack/react-query";
 function Forget() {
     const [form] = Form.useForm();
     const navigate = useNavigate()
-    const handleSubmit = async (e) => {
-        try {
-            const rs = await forgetPassword(e);
-            if (rs.status === 200) {
-                Notification({ message: "Send email successfully!", type: "success" })
-                navigate('/')
-            }
-        } catch (error) {
-            Notification({ message: `${error.response.data.message}`, type: "error" })
-        }
-    }
+    const { mutate } = useMutation({
+        mutationKey: ['forget_password'],
+        mutationFn: (data) => forgetPassword(data),
+        onSuccess: () => {
+            Notification({ message: "Send email successfully!", type: "success" })
+            navigate('/')
+        },
+        onError: (error) => Notification({ message: `${error.response.data.message}`, type: "error" })
+    })
+
     useEffect(() => { document.title = "Forget password" }, [])
+
     return (
 
         <Flex className="forget_wrap" justify="center" align="center">
@@ -31,7 +32,7 @@ function Forget() {
                     wrapperCol={{ span: 100 }}
                     form={form}
                     layout="horizontal"
-                    onFinish={handleSubmit}>
+                    onFinish={mutate}>
                     <Form.Item
                         name="email"
                         hasFeedback

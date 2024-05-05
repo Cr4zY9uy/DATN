@@ -24,7 +24,7 @@ function UpdateBlog() {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const { blog_id } = useParams()
-    const [initialContent, setInitialContent] = useState('')
+    const [blog, setBlog] = useState('')
 
     const { isSuccess, data } = useQuery({
         queryKey: ['blog_detail', blog_id],
@@ -39,7 +39,7 @@ function UpdateBlog() {
         form.setFieldValue("content", data?.data?.content);
         form.setFieldValue("order", data?.data?.order);
         form.setFieldValue("isActive", data?.data?.isActive);
-        setInitialContent(data?.data?.content)
+        setBlog(data?.data?.content)
 
     }, [data, form, isSuccess]);
 
@@ -57,7 +57,7 @@ function UpdateBlog() {
         mutate({ ...e, id: blog_id });
         navigate('/admin/blog')
     }
-
+    console.log(form.getFieldValue('content'));
     return (
         <Flex className="update_blog_panel container" vertical>
             <h2 className='caption'><PlusOutlined />Update a blog</h2>
@@ -110,7 +110,7 @@ function UpdateBlog() {
                                         }
                                     ]}
                                     hasFeedback >
-                                    <Editor value={initialContent} />
+                                    <Editor isFetch={true} value={blog} onChange={setBlog} />
                                 </Form.Item>
 
                             </Flex>

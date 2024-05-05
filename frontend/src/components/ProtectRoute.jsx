@@ -10,6 +10,14 @@ export const ProtectRoute = ({ children }) => {
     const { state } = useContext(UserContext)
     useEffect(() => {
         if (!state.currentUser) {
+            if (location.pathname.includes("/client/cart")
+                || location.pathname.includes("/client/checkout")
+                || location.pathname.includes("/client/checkout/confirm")
+                || location.pathname.includes("/client/checkout/success")
+                || location.pathname.includes("/client/checkout/user")
+            ) {
+                navigate('/client', { replace: true })
+            }
             if (location.pathname.startsWith('/client')
                 || location.pathname.startsWith('/register')
                 || location.pathname.startsWith('/forget-password')
@@ -17,8 +25,10 @@ export const ProtectRoute = ({ children }) => {
                 || location.pathname === '/') {
                 return
             }
+
             navigate('/', { replace: true })
         }
+
         const isAllowed = location.pathname.startsWith(
             state?.currentUser?.role === ROLE.CUSTOMER
                 ? '/client'

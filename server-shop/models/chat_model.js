@@ -8,16 +8,10 @@ const chat_schema = new mongoose.Schema({
         require: true,
     },
     message: [{
-        sender: {
-            id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-                require: true
-            },
-            role: {
-                type: Number,
-                require: true
-            }
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            require: true,
         },
         isRead: {
             type: Boolean,
@@ -29,7 +23,7 @@ const chat_schema = new mongoose.Schema({
             trim: true,
             min: 3
         },
-        daySending: {
+        daySent: {
             type: Date,
             default: Date.now(),
         }

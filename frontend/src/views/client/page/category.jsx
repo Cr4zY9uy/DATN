@@ -4,54 +4,66 @@ import { NavLink, useParams } from "react-router-dom";
 import Banner_Big from "../layout/banner_big";
 import ProductGrid from "../layout/product_grid";
 import "./../style/category.css";
+import { useQuery } from "@tanstack/react-query";
+import { productByCategory } from "../../../services/product_service";
 function Category() {
     const { category_id } = useParams();
-    // const [product, setProduct] = useState([]);
+    const [products, setProducts] = useState([]);
     const [page, setPage] = useState(1);
-    // const [totalProducts, setTotalProducts] = useState(10)
-    // const load_product_cate = async () => {
-    //     try {
-    //         const rs = await product_by_cate(name, page);
-    //         setProduct(rs.data.product_list);
-    //         setTotalProducts(rs.data.total_product);
-    //     } catch (err) {
-    //         console.log(err.message);
-    //     }
-    // }
+    console.log(page);
+    const [categoryName, setCategoryName] = useState('')
+    const [total, setTotal] = useState(0)
 
-    // useEffect(() => {
-    //     load_product_cate();
-    // }, [name, page])
+    const { isSuccess, data } = useQuery({
+        queryKey: ['product_by_cate', category_id, page],
+        queryFn: () => productByCategory(category_id, page),
+        enabled: !!page || !!category_id
+    })
 
     useEffect(() => {
-        document.title = category_id;
+        if (!isSuccess) return
+        const rawData = data?.data?.products
+        setProducts(rawData?.docs?.map(item => ({
+            id: item?._id,
+            name: item?.name,
+            price: item?.price,
+            origin: item?.origin,
+            image: item?.images[0]
+        })))
+        setCategoryName(rawData?.docs[0]?.categoryId?.name)
+        setTotal(rawData?.totalDocs)
+    }, [isSuccess, data])
+
+    useEffect(() => {
+        document.title = categoryName.toUpperCase();
         return () => {
             document.title = ""
         }
-    }, [category_id])
+    }, [categoryName])
     return (
         <>
-            <Banner_Big info={category_id} />
+            <Banner_Big info={categoryName.toUpperCase()} />
             <Flex className="category_page" vertical>
                 <Breadcrumb>
                     <Breadcrumb.Item>
-                        <NavLink to={'/'}>HOME</NavLink>
+                        <NavLink to={'/client'}>HOME</NavLink>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item active>
-                        <NavLink to={`/category/${name}`}>{name}</NavLink>
+                        <NavLink to={`/client/category/${category_id}`}>{categoryName.toUpperCase()}</NavLink>
                     </Breadcrumb.Item>
                 </Breadcrumb>
-                <Flex className="category_pagination" justify="center"><p className=" text-left">Showing <b>1</b> - <b>10</b> results of <b>10</b> results</p></Flex>
+                <Flex className="category_pagination" justify="center"><p className=" text-left">Showing <b>{total !== 0 ? 1 : 0}</b> - <b>{total < 6 ? total : 6}</b> results of <b>{total}</b> results</p></Flex>
                 <Flex className="category_items" wrap="wrap" gap="50px">
-                    {[...Array(10)].slice(1, 7).map((item, index) => {
-                        return <ProductGrid products={{ product_id: 1, title: "Keo bong gon cuc ngon", price: 1024133, price_promotion: 0.1, qty: 10 }} key={index} />
+                    {products.map((item) => {
+                        return <ProductGrid products={item} key={item.id} />
                     })}
                 </Flex>
                 <Flex justify="center">
                     <Pagination
-                        total={15}
-                        pageSize={9}
+                        total={total}
+                        pageSize={6}
                         current={page}
+                        defaultCurrent={1}
                         hideOnSinglePage
                         showSizeChanger={false}
                         onChange={(page) => setPage(page)} />

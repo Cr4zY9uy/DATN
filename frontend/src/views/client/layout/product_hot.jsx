@@ -2,22 +2,40 @@ import { Badge, Button, Flex, Typography } from "antd";
 import "./../style/product_hot.css";
 import { Link } from "react-router-dom";
 import { ShoppingOutlined } from "@ant-design/icons";
+import { ACTION_CART, CartContext } from "../../../store/cart";
+import { useContext } from "react";
+import Notification from "../../../utils/configToastify";
+import { UserContext } from "../../../store/user";
 
 function Product_Hot(props) {
     const product = props.products;
+    const cart = useContext(CartContext)
+    const user = useContext(UserContext)
+    const info = user?.state?.currentUser?.user_id
+    const addToCart = () => {
+        if (info) {
+
+            cart?.dispatch({ type: ACTION_CART.ADD_CART, payload: { ...product, quantityBuy: 1 } })
+            Notification({ message: "Add to cart successully!", type: "success" })
+        }
+        else {
+            Notification({ message: "You have to login first!", type: "error" })
+
+        }
+    };
     return (
-        <Flex className='item' key={product.product_id} vertical>
-            <Link to={`/product/${product.product_id}`}>
+        <Flex className='item' key={product?.id} vertical>
+            <Link to={`/client/product/${product?.id}`} style={{ backgroundColor: "white" }}>
                 <Badge.Ribbon text={'-10%'} color="red" placement="start">
-                    <img src="/data/banner/banner-home-1.png" loading="lazy" />
+                    <img src={product?.image} loading="lazy" />
                 </Badge.Ribbon>
             </Link>
             <Flex className="pt-4" vertical>
-                <Typography.Title level={5} className="country">Korea</Typography.Title>
-                <Typography.Title level={4} className="title">{product.title}</Typography.Title >
+                <Typography.Title level={5} className="country">{product?.origin}</Typography.Title>
+                <Typography.Title level={4} className="title">{product?.name}</Typography.Title >
                 <Typography.Text className="price_promo">
                     <Typography.Text className="promotion">
-                        {parseFloat(product.price * (1 - parseFloat(product.price_promotion))).toLocaleString('en-US', {
+                        {parseFloat(product?.price * (1 - parseFloat(product?.price_promotion))).toLocaleString('en-US', {
                             style: 'currency',
                             currency: 'USD', // Adjust currency code as needed
                             minimumFractionDigits: 0, // Set minimum decimal places to 0
@@ -25,7 +43,7 @@ function Product_Hot(props) {
                         })}
                     </Typography.Text>
                     <Typography.Text className="price">
-                        {product.price.toLocaleString('en-US', {
+                        {product?.price.toLocaleString('en-US', {
                             style: 'currency',
                             currency: 'USD', // Adjust currency code as needed
                             minimumFractionDigits: 0, // Set minimum decimal places to 0
@@ -34,7 +52,7 @@ function Product_Hot(props) {
                     </Typography.Text>
                 </Typography.Text>
             </Flex>
-            <Button icon={<ShoppingOutlined />} >add to cart</Button>
+            <Button icon={<ShoppingOutlined />} onClick={addToCart}>add to cart</Button>
         </Flex>
 
     );

@@ -2,24 +2,41 @@ import { Link } from "react-router-dom";
 import { Badge, Button, Flex, Typography } from "antd";
 import "./../style/product_grid.css";
 import { HeartOutlined, ShoppingOutlined } from "@ant-design/icons";
+import { useContext } from "react";
+import { ACTION_CART, CartContext } from "../../../store/cart";
+import Notification from "../../../utils/configToastify";
+import { UserContext } from "../../../store/user";
 function ProductGrid(props) {
     const product = props?.products;
     const type = props?.type
+    const cart = useContext(CartContext)
+    const user = useContext(UserContext)
+    const info = user?.state?.currentUser?.user_id
+    const addToCart = () => {
+        if (info) {
+            cart?.dispatch({ type: ACTION_CART.ADD_CART, payload: { ...product, quantityBuy: 1 } })
+            Notification({ message: "Add to cart successully!", type: "success" })
+        }
+        else {
+            Notification({ message: "You have to login first!", type: "error" })
+        }
+    };
+
     return (
-        <Flex className='item' key={product.product_id} vertical>
-            <Link to={`/client/product/${product.product_id}`}>
+        <Flex className='item' key={product.id} vertical>
+            <Link to={`/client/product/${product.id}`}>
                 {!type &&
                     (<><Button className="favourite" icon={<HeartOutlined />} />
                         <Badge.Ribbon text={'-10%'} color="red" placement="start" /></>)}
-                <img src="/data/banner/banner-home-1.png" loading="lazy" />
+                <img src={product.image} loading="lazy" />
 
             </Link>
             <Flex className="pt-4" vertical>
                 {!type &&
                     (<>
-                        <Typography.Title level={5} className="country">Korea</Typography.Title>
+                        <Typography.Title level={5} className="country">{product.origin}</Typography.Title>
                     </>)}
-                <Typography.Title level={4} className="title">{product.title}</Typography.Title >
+                <Typography.Title level={4} className="title">{product.name}</Typography.Title >
                 {!type &&
                     (<>
                         <Typography.Text className="price_promo">
@@ -41,7 +58,7 @@ function ProductGrid(props) {
                             </Typography.Text>
                         </Typography.Text> </>)}
             </Flex>
-            {!type && <Button icon={<ShoppingOutlined />} className="buy">add to cart</Button>}
+            {!type && <Button icon={<ShoppingOutlined />} className="buy" onClick={addToCart}>add to cart</Button>}
 
         </Flex>
     );

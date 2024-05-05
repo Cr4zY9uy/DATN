@@ -3,7 +3,7 @@ import { Button, Flex, Modal } from 'antd';
 import { useContext } from 'react';
 import { queryClient } from '../../../main';
 import { deleteCategoryList, deleteCategoryOne } from '../../../services/category_service';
-import { ACTION } from '../../../store/modal';
+import { ACTION_MODAL } from '../../../store/modal';
 import { ModalContext } from '../../../store/modal/provider';
 import Notification from '../../../utils/configToastify';
 import { TypeDeleteAdmin } from '../../../utils/enum';
@@ -16,7 +16,7 @@ function DeleteModal(props) {
     const { state, dispatch } = useContext(ModalContext)
     const isOpen = state?.currentModal
     const onClose = () => {
-        dispatch({ type: ACTION.CLOSE_MODAL })
+        dispatch({ type: ACTION_MODAL.CLOSE_MODAL })
     }
 
     const deleteOneCategory = useMutation({
@@ -62,6 +62,7 @@ function DeleteModal(props) {
             Notification({ message: `${error.response.data.message}`, type: "error" })
         }
     })
+    
     const handleDelete = () => {
         switch (type) {
             case TypeDeleteAdmin.CATEGORY_ONE:

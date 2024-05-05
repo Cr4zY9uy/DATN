@@ -1,62 +1,74 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import Login from '../views/authentication/login/login'
-import { LayoutClient } from "../layouts/LayoutClient";
-import Home from "../views/client/page/home";
-import Blog_Page from "../views/client/page/blog";
-import Shop from "../views/client/page/shop";
-import Cart from "../views/client/page/cart";
-import Checkout from "../views/client/page/checkout";
-import CheckoutConfirm from "../views/client/page/checkout_confirm";
-import Forget from "../views/authentication/forget/forget";
-import Reset from "../views/authentication/reset/reset";
-import Register from "../views/authentication/register/register";
-import OrderSuccess from "../views/client/page/order_success";
-import Category from "../views/client/page/category";
-import { DetailUser } from "../views/client/page/DetailUser";
-import { Wishlist } from "../views/client/page/Wishlist";
-import ProductDetail from "../views/client/page/ProductDetail";
-import { ChangePassword } from "../views/client/page/ChangePassword";
-import { DetailBlog } from "../views/client/page/DetailBlog";
-import Search from "../views/client/page/search";
-import { LayoutAdmin } from "../layouts/LayoutAdmin";
-import { Overview } from "../views/admin/page/OverviewAdmin";
-import { CategoryList } from "../views/admin/page/category/category-list/Category";
-import CreateCategory from "../views/admin/page/category/create-category/CreateCategory";
-import UpdateCategory from "../views/admin/page/category/update-category/UpdateCategory";
-import { ProtectRoute } from "../components/ProtectRoute";
 import { AuthProvider } from "../components/AuthProvider";
+import { ProtectRoute } from "../components/ProtectRoute";
+import { LayoutAdmin } from "../layouts/LayoutAdmin";
+import { LayoutClient } from "../layouts/LayoutClient";
 import { ModalProvider } from "../store/modal/provider";
 import { BannerList } from "../views/admin/page/banner/banner-list/Banner";
 import CreateBanner from "../views/admin/page/banner/create-banner/CreateBanner";
 import UpdateBanner from "../views/admin/page/banner/update-banner/UpdateBanner";
-import { BlogList } from "../views/admin/page/blog/blog-list/Blog";
-import CreateBlog from "../views/admin/page/blog/create-blog/CreateBlog";
-import UpdateBlog from "../views/admin/page/blog/update-blog/UpdateBlog";
+import { CategoryList } from "../views/admin/page/category/category-list/Category";
+import CreateCategory from "../views/admin/page/category/create-category/CreateCategory";
+import UpdateCategory from "../views/admin/page/category/update-category/UpdateCategory";
+import { Overview } from "../views/admin/page/OverviewAdmin";
+import CreateProduct from "../views/admin/page/product/create-product/CreateProduct";
+import { DetailProduct } from "../views/admin/page/product/detail-product/DetailProduct";
+import { ProductList } from "../views/admin/page/product/product-list/ProductList";
+import Forget from "../views/authentication/forget/forget";
+import Login from '../views/authentication/login/login';
+import Register from "../views/authentication/register/register";
+import Reset from "../views/authentication/reset/reset";
+import Cart from "../views/client/page/cart";
+import Category from "../views/client/page/category";
+import { ChangePassword } from "../views/client/page/ChangePassword";
+import Checkout from "../views/client/page/checkout";
+import CheckoutConfirm from "../views/client/page/checkout_confirm";
+import { DetailUser } from "../views/client/page/DetailUser";
+import Home from "../views/client/page/home";
+import OrderSuccess from "../views/client/page/order_success";
+import ProductDetail from "../views/client/page/ProductDetail";
+import Search from "../views/client/page/search";
+import Shop from "../views/client/page/shop";
+import { Wishlist } from "../views/client/page/Wishlist";
+import { OrderDetail } from "../views/client/page/Orders/OrderDetail";
+import { OrderList } from "../views/client/page/Orders/OrderList";
+import { LastViewProductProvider } from "../store/productLastView";
+import { CartProvider } from "../store/cart";
+import { OrderProvider } from "../store/order/provider";
+import { LogProvider } from "../store/typeLog/provider";
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element:
       (<ProtectRoute>
-        <Login />
-      </ProtectRoute>),
+        <LogProvider>
+          <Login />
+        </LogProvider>
+      </ProtectRoute>)
   },
   {
     path: 'forget-password', element:
       (<ProtectRoute>
-        <Forget />
+        <LogProvider>
+          <Forget />
+        </LogProvider>
       </ProtectRoute>)
   },
   {
     path: 'change-password/:token', element:
       (<ProtectRoute>
-        <Reset />
+        <LogProvider>
+          <Reset />
+        </LogProvider>
       </ProtectRoute>)
   },
   {
     path: 'register', element:
       (<ProtectRoute>
-        <Register />
+        <LogProvider>
+          <Register />
+        </LogProvider>
       </ProtectRoute>)
   },
   {
@@ -65,7 +77,9 @@ export const router = createBrowserRouter([
       <ProtectRoute>
         <AuthProvider>
           <ModalProvider>
-            <LayoutAdmin />
+            <LogProvider>
+              <LayoutAdmin />
+            </LogProvider>
           </ModalProvider>
         </AuthProvider>
       </ProtectRoute>),
@@ -91,14 +105,18 @@ export const router = createBrowserRouter([
         ]
       },
       {
-        path: 'blog',
+        path: 'product',
         element: <Outlet />,
         children: [
-          { index: true, element: <BlogList /> },
-          { path: 'create', element: <CreateBlog /> },
-          { path: ':blog_id', element: <UpdateBlog /> }
+          { index: true, element: <ProductList /> },
+          { path: 'create', element: <CreateProduct /> },
+          {
+            path: ':product_id',
+            element: <DetailProduct />
+          }
         ]
-      }
+      },
+
       // {
       //   path: 'users',
 
@@ -168,37 +186,6 @@ export const router = createBrowserRouter([
   //     { path: 'create', element: <CreateUserAdmin /> }
   //   ]
   // },
-  // {
-  //   path: 'drugs',
-  //   element: <Outlet />,
-  //   children: [
-  //     { index: true, element: <ListOfDrug /> },
-  //     { path: 'create', element: <CreateDrug /> },
-  //     {
-  //       path: ':drug_id',
-  //       element: <DetailDrug />,
-  //       children: [
-  //         {
-  //           index: true,
-  //           element: <Information />
-  //         },
-  //         {
-  //           path: 'infor',
-  //           element: <Information />
-  //         },
-  //         {
-  //           path: 'variations',
-  //           element: <Variant />
-  //         },
-  //         {
-  //           path: 'sell-prices',
-  //           element: <PriceTable />
-  //         }
-  //       ]
-  //     },
-  //     { path: 'create', element: <CreateDrug /> }
-  //   ]
-  // },
 
   {
     path: '/client',
@@ -206,7 +193,11 @@ export const router = createBrowserRouter([
       <ProtectRoute>
         <AuthProvider>
           <ModalProvider>
-            <LayoutClient />
+            <CartProvider>
+              <LogProvider>
+                <LayoutClient />
+              </LogProvider>
+            </CartProvider>
           </ModalProvider>
         </AuthProvider>
       </ProtectRoute>
@@ -216,18 +207,10 @@ export const router = createBrowserRouter([
       { path: 'home', element: <Home /> },
       { path: 'search', element: <Search /> },
       {
-        path: 'blog',
-        element: <Outlet />,
-        children: [
-          { index: true, element: <Blog_Page /> },
-          {
-            path: ':blog_id',
-            element: <DetailBlog />
-          }
-        ]
-      },
-      {
-        path: 'product/:product_id', element: <ProductDetail />
+        path: 'product/:id', element:
+          <LastViewProductProvider>
+            <ProductDetail />
+          </LastViewProductProvider>
       },
       {
         path: 'shop',
@@ -247,19 +230,41 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <DetailUser /> },
           { path: 'wishlist', element: <Wishlist /> },
-          { path: 'change-password', element: <ChangePassword /> }
+          { path: 'change-password', element: <ChangePassword /> },
+          {
+            path: 'orders',
+            element: <Outlet />,
+            children: [
+              {
+                index: true,
+                element: <OrderList />
+              },
+              { path: ':order_id', element: <OrderDetail /> }
+            ]
+          }
         ]
       },
       {
         path: 'checkout',
         element: <Outlet />,
         children: [
-          { index: true, element: <Checkout /> },
-          { path: "confirm", element: <CheckoutConfirm /> },
+          {
+            index: true, element:
+              <OrderProvider>
+                <Checkout />
+              </OrderProvider>
+          },
+          {
+            path: "confirm", element:
+              <OrderProvider>
+                <CheckoutConfirm />
+              </OrderProvider>
+          },
           { path: "success", element: <OrderSuccess /> }
 
         ]
-      }]
+      }
+    ]
   }
 
 ])

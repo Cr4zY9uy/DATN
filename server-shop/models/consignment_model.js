@@ -3,6 +3,11 @@ import moongosePaginate from 'mongoose-paginate-v2'
 
 const consignment_schema = new mongoose.Schema(
     {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            require: true,
+        },
         products: [
             {
                 productId: {
@@ -11,7 +16,12 @@ const consignment_schema = new mongoose.Schema(
                 },
                 quantity: {
                     type: Number,
-                    min: 0,
+                    min: 1,
+                    require: true
+                },
+                importMoney: {
+                    type: Number,
+                    min: 1,
                     require: true
                 },
                 expireDate: {
@@ -19,10 +29,10 @@ const consignment_schema = new mongoose.Schema(
                     require: true
                 }
             }],
-        noney: {
+        money: {
             type: Number,
             required: true,
-            min: 1000
+            min: 1
         },
         importDate: {
             type: Date,
