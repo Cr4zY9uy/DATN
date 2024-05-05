@@ -80,3 +80,15 @@ export const add_order = async (order) => {
     }
 }
 
+export const editOrder = ({ id, ...order }) => api.put(URL.ORDER.CRUD + `/${id}`, order)
+
+export const detailOrder = (id) => api.get(URL.ORDER.CRUD + `/${id}`)
+
+export const addOrder = (order) => api.post(URL.ORDER.CRUD, order)
+
+export const orderByUser = (userId, page, sortCreated) =>
+    api.get(URL.ORDER.BY_USER + `/${userId}`, {
+        params: {
+            page, sortCreated
+        }
+    })

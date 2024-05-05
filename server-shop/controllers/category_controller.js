@@ -29,7 +29,6 @@ export const add_category = async (req, res) => {
 }
 
 export const update_category = async (req, res) => {
-
     const category_id = req.params.id;
     const { name, image, description, isActive, order } = req.body;
     const data = {};
@@ -43,6 +42,7 @@ export const update_category = async (req, res) => {
         if (!category) {
             return res.status(404).json({ message: "Category does not exist" });
         }
+        if (category.name.toLowerCase() === 'default') return
         if (order && order !== category.order) {
             const checkExistOrder = await category_model.findOne({ order: order });
             if (checkExistOrder) {
@@ -81,6 +81,10 @@ export const detail_category = async (req, res) => {
 export const delete_category_one = async (req, res) => {
     try {
         const id = req.params.id;
+        console.log(id);
+        const checkDefault = await category_model.findOne({ _id: id })
+        if (checkDefault.name.toLowerCase() === 'default')
+            return res.status(400).json({ message: "Can't delete default category" });
         const data = await category_model.findOneAndDelete({ _id: id });
         if (data !== null) {
             return res.status(200).json({ message: "Category deleted successfully" });
@@ -100,6 +104,8 @@ export const delete_category_list = async (req, res) => {
             return res.status(400).json({ message: "Please provide list of category_id" });
         }
         const existingCategories = await category_model.find({ _id: { $in: category_id } });
+        const hasDefaultCategory = existingCategories.some(category => category.name.toLowerCase() === 'default');
+        if (hasDefaultCategory) return res.status(400).json({ message: "Can't delete default category" });
         if (existingCategories.length !== category_id.length) {
             return res.status(404).json({ message: "One or more categories not found" });
         }
@@ -117,7 +123,7 @@ export const delete_category_list = async (req, res) => {
 export const paginate_category = async (req, res) => {
     const { name, description, isActive, sortOrder, sortName, page } = req.query
     const limit = 6;
-    const skip = (page - 1) * limit;
+    const skip = page ? (page - 1) * limit : 0;
     const query = {};
     if (name) query.name = name;
     if (description) query.description = description;
@@ -154,13 +160,32 @@ export const paginate_category = async (req, res) => {
 
 export const all_category = async (req, res) => {
     try {
-        const data = await category_model.paginate({}, options);
-        if (data.totalDocs === 0) {
+        const data = await category_model.find({});
+        if (data.length === 0) {
             return res.status(404).json({ message: "No category" });
         }
-        else return res.status(200).json({ ...data });
+        else return res.status(200).json({ data });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 }
+
+export const product_by_category = async (req, res) => {
+    try {
+        const id = req.params.id
+        const data = await category_model.paginate({ _id: id }, {
+            ...options, populate: {
+                path: "_id",
+                model: "Product"
+            }
+        });
+        if (data.totalDocs === 0) {
+            return res.status(404).json({ message: "No category" });
+        }
+        return res.status(200).json({ ...data });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
 

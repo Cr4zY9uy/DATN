@@ -5,10 +5,13 @@ import "./login.css";
 import { Link, useNavigate } from "react-router-dom";
 import Notification from "../../../utils/configToastify";
 import { useContext, useEffect } from "react";
-import { ACTION, UserContext } from "../../../store/user";
+import { ACTION_USER, UserContext } from "../../../store/user";
 import { useMutation } from "@tanstack/react-query";
+import { LogContext } from "../../../store/typeLog/provider";
+import { ACTION_LOG } from "../../../store/typeLog";
 function Login() {
     const { dispatch } = useContext(UserContext)
+    const logGoogle = useContext(LogContext)
     const navigate = useNavigate()
     const { mutate } = useMutation({
         mutationKey: ['login'],
@@ -16,7 +19,7 @@ function Login() {
         onSuccess: (response) => {
             console.log(response);
             Notification({ message: "Login successfully!", type: "success" })
-            dispatch({ type: ACTION.LOGIN, payload: response.data })
+            dispatch({ type: ACTION_USER.LOGIN, payload: response.data })
             if (response.data.role === 0)
                 navigate('/client')
             navigate('/admin')
@@ -25,11 +28,20 @@ function Login() {
             Notification({ message: `${error.response.data.message}`, type: "error" })
         }
     })
+
+    const loginByGoogle = () => {
+        logGoogle.dispatch({ type: ACTION_LOG.IN })
+        window.open('http://localhost:8081/api/auth/google', '_self')
+    }
+
+
     const hanldeLogin = (e) => {
         mutate(e)
     }
 
     useEffect(() => { document.title = "Login" }, [])
+
+
 
     return (
 
@@ -87,7 +99,9 @@ function Login() {
                 </Form>
                 <Divider>Or</Divider>
                 <Flex vertical align="center" className="button_group">
-                    <Button type="link" icon={<GoogleOutlined />} className="google" style={{ backgroundColor: "#18228f", lineHeight: "30px", color: "white", marginBottom: "30px" }} href="http://localhost:8081/api/auth/google" >Login by google</Button>
+                    <Button icon={<GoogleOutlined />} className="google" style={{ backgroundColor: "#18228f", lineHeight: "30px", color: "white", marginBottom: "30px" }}
+                        onClick={loginByGoogle}
+                    >Login by google</Button>
                 </Flex>
 
             </Flex>

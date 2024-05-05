@@ -5,31 +5,53 @@ import { useMutation } from '@tanstack/react-query';
 import { Avatar, Flex, Layout, Popover } from "antd";
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { logout } from '../../../services/user_service';
-import { ACTION, UserContext } from '../../../store/user';
+import { logout, logoutGoogle } from '../../../services/user_service';
+import { ACTION_USER, UserContext } from '../../../store/user';
 import Notification from '../../../utils/configToastify';
 import "./../style/header.css";
+import { LogContext } from '../../../store/typeLog/provider';
 function HeaderClient() {
 
     const { Header } = Layout
     const { dispatch } = useContext(UserContext)
+    const logGoogle = useContext(LogContext)
+
+    const outGoogle = useMutation({
+        mutationKey: ['logout_google'],
+        mutationFn: () => logoutGoogle(),
+        retry: false,
+        onSuccess: () => {
+            Notification({ message: "Logout successully!", type: "success" });
+            dispatch({ type: ACTION_USER.LOGOUT })
+        },
+        onError: () => {
+            Notification({ message: `Logout unsuccessfully!`, type: "error" })
+        }
+    })
 
     const { mutate } = useMutation({
         mutationFn: () => logout(),
         onSuccess: () => {
             Notification({ message: "Logout successully!", type: "success" });
-            dispatch({ type: ACTION.LOGOUT })
+            dispatch({ type: ACTION_USER.LOGOUT })
         },
-        onError: (error) => {
-            Notification({ message: `${error.response.data.message}`, type: "error" })
+        onError: () => {
+            Notification({ message: `Logout unsuccessfully!`, type: "error" })
         }
     })
-
+    const handleLogout = () => {
+        if (logGoogle?.state?.isLogByGoogle) {
+            outGoogle.mutate()
+        }
+        else {
+            mutate()
+        }
+    }
     const content = (
         <Flex vertical gap={5} style={{ textDecoration: 'none' }}>
             <NavLink style={{ color: "#000" }}>Infomation</NavLink>
             <NavLink style={{ color: "#000" }}>Change password</NavLink>
-            <NavLink style={{ color: "#000" }} onClick={mutate}>Logout</NavLink>
+            <NavLink style={{ color: "#000" }} onClick={handleLogout}>Logout</NavLink>
         </Flex>
     );
     return (

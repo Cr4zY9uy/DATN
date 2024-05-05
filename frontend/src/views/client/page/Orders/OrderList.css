@@ -1,0 +1,16 @@
+.order_list {
+    padding: 0 50px;
+    margin-bottom: 100px;
+}
+
+.order_list .ant-table-wrapper {
+    width: 100%;
+}
+
+.order_list nav {
+    margin: 60px 0 100px;
+}
+
+.order_list th {
+    background-color: rgba(0, 0, 0, 0.142) !important;
+}

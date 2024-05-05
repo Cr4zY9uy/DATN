@@ -9,7 +9,7 @@ const sale_schema = new mongoose.Schema({
                 ref: 'Product',
                 require: true
             },
-            price_promotion: {
+            pricePromotion: {
                 type: Number,
                 min: 0,
                 max: 1,

@@ -8,12 +8,12 @@ const rating_schema = new mongoose.Schema({
         max: 5,
         require: true
     },
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         require: true
     },
-    product: {
+    productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         require: true

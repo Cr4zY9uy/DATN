@@ -1,0 +1,4 @@
+
+const lastViewProduct = []
+
+export { lastViewProduct }

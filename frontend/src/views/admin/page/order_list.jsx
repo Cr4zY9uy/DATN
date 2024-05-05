@@ -1,17 +1,12 @@
-import Table from 'react-bootstrap/Table';
-import "./../style/order_list.css";
-import { MenuUnfoldOutlined } from '@ant-design/icons';
-import { Button } from 'react-bootstrap';
-import checkParent from '../../../functions/checkboxAll';
-import { FormOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router';
+import { FormOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { Button, Pagination, Table } from 'antd';
 import { useEffect, useState } from 'react';
-import { Store } from 'react-notifications-component';
+import { useNavigate } from 'react-router';
+import checkParent from '../../../functions/checkboxAll';
+import convertToDate from '../../../functions/convertDate';
 import { delete_order_all, list_order } from '../../../services/order_service';
 import DeleteModal from '../layout/modal_del';
-import convertToDate from '../../../functions/convertDate';
-import { Pagination } from 'antd';
-import { refreshAccessToken } from '../../../services/user_service';
+import "./../style/order_list.css";
 function OrderList() {
     document.title = "Order list";
     const [type, setType] = useState("");
@@ -22,7 +17,7 @@ function OrderList() {
     const navigate = useNavigate();
     const [delStatus, setDelStatus] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     useEffect(() => {
         cate_list();
         setType("order");
@@ -60,68 +55,19 @@ function OrderList() {
         try {
             const res = await delete_order_all();
             if (res.status === 200) {
-                Store.addNotification({
-                    title: "Warning!!",
-                    message: "You delete all orders successfully!",
-                    type: "warning",
-                    insert: "top",
-                    container: "top-right",
-                    animationIn: ["animate__animated", "animate__fadeIn"],
-                    animationOut: ["animate__animated", "animate__fadeOut"],
-                    dismiss: {
-                        duration: 1000,
-                        onScreen: true
-                    }
-                });
+              
             }
             else if (res.status === 401 && res.data.message === "jwt expired") {
-                Store.addNotification({
-                    title: "Warning!!",
-                    message: "You can retry to delete all orders now!",
-                    type: "warning",
-                    insert: "top",
-                    container: "top-right",
-                    animationIn: ["animate__animated", "animate__fadeIn"],
-                    animationOut: ["animate__animated", "animate__fadeOut"],
-                    dismiss: {
-                        duration: 2000,
-                        onScreen: true
-                    }
-                });
+
                 try {
-                    const rs = await refreshAccessToken();
                     if (rs.status !== 201) {
-                        Store.addNotification({
-                            title: "Failure!!",
-                            message: "You can't delete all orders right now!",
-                            type: "danger",
-                            insert: "top",
-                            container: "top-right",
-                            animationIn: ["animate__animated", "animate__fadeIn"],
-                            animationOut: ["animate__animated", "animate__fadeOut"],
-                            dismiss: {
-                                duration: 2000,
-                                onScreen: true
-                            }
-                        });
+
                     }
                 } catch (error) {
                     console.log(error);
                 }
             } else {
-                Store.addNotification({
-                    title: "Failure!!",
-                    message: "You can't delete all orders right now!",
-                    type: "danger",
-                    insert: "top",
-                    container: "top-right",
-                    animationIn: ["animate__animated", "animate__fadeIn"],
-                    animationOut: ["animate__animated", "animate__fadeOut"],
-                    dismiss: {
-                        duration: 2000,
-                        onScreen: true
-                    }
-                });
+
             }
 
         } catch (error) {

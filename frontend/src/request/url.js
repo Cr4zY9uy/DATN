@@ -1,9 +1,8 @@
 const URL = {
     PRODUCT: {
-        CRUD: 'category',
-        DELETE_LIST: 'category/delete_list',
-        OPTIONS: 'category/options'
-
+        CRUD: 'product',
+        OPTIONS: 'product/options',
+        RECOMMEND: 'product/recommend'
     },
     CATEGORY: {
         CRUD: 'category',
@@ -17,6 +16,7 @@ const URL = {
         CRUD: "blog",
     },
     USER: {
+        CRUD: 'users',
         LOGIN: 'login',
         REGISTER: 'register',
         DELETE: "users/delete/",
@@ -27,12 +27,16 @@ const URL = {
         REFRESH_TOKEN: 'refresh_token',
         LOGOUT: 'logout',
         FORGOT: 'forget-password',
-        RESET: 'reset-password'
+        RESET: 'reset-password',
+        LOGIN_GOOGLE: 'login/google/success',
+        LOGOUT_GOOGLE: 'logout/google',
+        RESET_PASSWORD_CURRENT: 'reset-password-current'
     },
     ORDER: {
-        CRUD: 'category',
-        DELETE_LIST: 'category/delete_list',
-        OPTIONS: 'category/options'
+        CRUD: 'order',
+        DELETE_LIST: 'order/delete_list',
+        OPTIONS: 'order/options',
+        BY_USER: "order/user"
     },
     CHAT: {
         CRUD: 'chat',

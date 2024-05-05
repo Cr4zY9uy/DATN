@@ -1,39 +1,86 @@
 import { Breadcrumb, Button, Descriptions, Flex, Form, Input, InputNumber, Radio, Select, Space, Table, Typography } from "antd";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../style/checkout.css";
 
 import { CreditCardOutlined, DisconnectOutlined, MoneyCollectOutlined, SendOutlined, TruckOutlined } from "@ant-design/icons";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { CartContext } from "../../../store/cart";
+import { ACTION_ORDER } from "../../../store/order";
+import { OrderContext } from "../../../store/order/provider";
 function Checkout() {
-    document.title = "Check out";
+    document.title = "Checkout";
     const [form] = Form.useForm()
-    // const cart = props.state[0].cart;
-    // const order = props.state[1].order;
+
+    const cart = useContext(CartContext)
+    const order = useContext(OrderContext)
+
+    const [subTotal, setSubtotal] = useState(0)
+    const [options, setOptions] = useState([])
+    const [products, setProducts] = useState([])
+
+    const { data, isError } = useQuery({
+        queryKey: ['countries'],
+        queryFn: () => axios.get('https://countriesnow.space/api/v0.1/countries/capital'),
+        refetchOnWindowFocus: false,
+        placeholderData: keepPreviousData
+    })
+
     useEffect(() => {
-        form.setFieldValue("payment", "cod")
-        form.setFieldValue("shipping", "free")
-    }, [])
+        if (isError) return
+        const rawData = data?.data?.data
+        setOptions(rawData?.map(item => ({ value: item?.name, label: item?.name })))
+    }, [isError, data])
+
+    useEffect(() => {
+        form.setFieldValue("paymentMethod", "cod")
+        form.setFieldValue("shippingMethod", "free")
+    }, [form])
+    useEffect(() => {
+        if (order?.state?.currentOrder) {
+            form.setFieldValue("firstNameReceiver", order?.state?.currentOrder?.firstNameReceiver)
+            form.setFieldValue("lastNameReceiver", order?.state?.currentOrder?.lastNameReceiver)
+            form.setFieldValue("emailReceiver", order?.state?.currentOrder?.emailReceiver)
+            form.setFieldValue("phoneReceiver", order?.state?.currentOrder?.phoneReceiver)
+            form.setFieldValue("addressReceiver", order?.state?.currentOrder?.addressReceiver)
+            form.setFieldValue("countryReceiver", order?.state?.currentOrder?.countryReceiver)
+            form.setFieldValue("note", order?.state?.currentOrder?.note)
+            form.setFieldValue("paymentMethod", order?.state?.currentOrder?.paymentMethod)
+            form.setFieldValue("shippingMethod", order?.state?.currentOrder?.shippingMethod)
+        }
+    }, [order, form])
+
     const navigateConfirm = () => {
         navigate('/client/checkout/confirm')
     }
     const navigateCart = () => {
         navigate('/client/cart')
     }
+
     const navigate = useNavigate();
-    // const subTotal = cart.reduce((total, item) => { return total + item.price * (1 - item.price_promotion) * item.quantity }, 0)
-    // const [data, setData] = useState({});
+    useEffect(() => {
+        setProducts(cart?.state?.currentCart?.map(item => ({
+            name: item?.name,
+            price: item?.price,
+            quantity: item?.quantityBuy
+        })))
 
-    // const items = cart.map((product) => ({
-    //     product_id: product.product_id,
-    //     title: product.title,
-    //     thumbnail: product.thumbnail,
-    //     quantity: product.quantity,
-    //     price: product.price,
-    //     price_promotion: product.price_promotion,
-    // }))
-    // const items_tax = items.map(obj => ({ ...obj, tax: 0.01 }))
+        return () => {
+            setProducts([])
+        }
+    }, [setProducts, cart])
 
+    useEffect(() => {
+        if (products) {
+            const total = products.reduce((acc, product) => acc + product?.price * product?.quantity, 0);
+            setSubtotal(total)
+        }
 
+        return () => {
+            setSubtotal(0)
+        }
+    }, [products])
 
     const cartColumns = [
 
@@ -45,7 +92,7 @@ function Checkout() {
         {
             title: 'Price',
             dataIndex: 'price',
-            key: 'adpricedress',
+            key: 'price',
             render: (text) => <p>{text}$</p>
 
         },
@@ -56,77 +103,37 @@ function Checkout() {
         },
         {
             title: 'Subtotal',
-            dataIndex: '',
+            dataIndex: 'subtotal',
             key: 'subtotal',
             render: (text, row) => <p>{row.price * row.quantity}$</p>
         },
 
     ];
-    const cartData = [
-        {
-            key: 1,
-            name: 'John Brown',
-            price: 311,
-            quantity: 120,
-            subtotal: 1000,
-        },
-        {
-            key: 2,
-            name: 'Jinn Killer',
-            price: 311,
-            quantity: 120,
-            subtotal: 1000,
-        },
 
-    ];
     const items = [
         {
             key: '1',
             label: 'Subtotal',
-            children: <Typography.Text>1000$</Typography.Text>,
+            children: <Typography.Text>{subTotal}$</Typography.Text>,
             span: 3
         },
         {
             key: '2',
             label: 'Tax',
-            children: <Typography.Text>10$</Typography.Text>,
+            children: <Typography.Text>{(subTotal * 0.09).toFixed(2)}$</Typography.Text>,
             span: 3
 
         },
         {
             key: '3',
             label: 'Total',
-            children: <Typography.Text>1010$</Typography.Text>,
+            children: <Typography.Text>{(subTotal * 1.09).toFixed(2)}$</Typography.Text>,
             span: 3
 
         }
     ];
 
-    // const handleSubmit = (e) => {
-    //     const submitData = { ...data, order_id, payment_method, shipping_method, products: items_tax, shipping_cost: shippingCost[shipping_method] };
-    //     if (!data.first_name || !data.last_name || !data.email || !data.phone || !data.address || !data.country || !items) {
 
-    //     }
-    //     else {
-    //         order.push(submitData);
-    //         props.addToOrder(order);
-    //         Store.addNotification({
-    //             title: "Sucess!!",
-    //             message: "You add an order successfully!",
-    //             type: "success",
-    //             insert: "top",
-    //             container: "top-right",
-    //             animationIn: ["animate__animated", "animate__fadeIn"],
-    //             animationOut: ["animate__animated", "animate__fadeOut"],
-    //             dismiss: {
-    //                 duration: 1500,
-    //                 onScreen: true
-    //             }
-    //         });
-    //         navigate("/checkout_confirm");
-    //     }
-
-    // }
     const formItemLayout = {
         labelCol: {
             xs: {
@@ -146,8 +153,12 @@ function Checkout() {
         },
     };
     const onFinish = (value) => {
-        console.log(value);
+        order?.dispatch({ type: ACTION_ORDER.ADD_ORDER, payload: value })
+        navigateConfirm()
     }
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
     return (
         <Flex className="checkout_page container" vertical>
             <Breadcrumb>
@@ -171,7 +182,7 @@ function Checkout() {
                         <Flex vertical style={{ width: "50%" }}>
                             <Form.Item
                                 label="First name"
-                                name="first_name"
+                                name="firstNameReceiver"
                                 hasFeedback
                                 rules={[
                                     {
@@ -187,7 +198,7 @@ function Checkout() {
                             </Form.Item>
                             <Form.Item
                                 label="Last name"
-                                name="last_name"
+                                name="lastNameReceiver"
                                 hasFeedback
                                 rules={[
                                     {
@@ -203,7 +214,7 @@ function Checkout() {
                             </Form.Item>
                             <Form.Item
                                 label="Email"
-                                name="email"
+                                name="emailReceiver"
                                 hasFeedback
                                 rules={[
                                     {
@@ -224,27 +235,37 @@ function Checkout() {
                             </Form.Item>
                             <Form.Item
                                 label="Phone number"
-                                name="phone"
+                                name="phoneReceiver"
                                 hasFeedback
                                 rules={[
                                     {
                                         required: true,
                                         message: 'Please input!',
+
+                                    },
+                                    {
+                                        min: 10,
+                                        message: 'Please input at least 10 numbers!',
+
+                                    },
+                                    {
+                                        max: 13,
+                                        message: 'Please input no more 13 numbers!',
+
                                     }
                                 ]}
                             >
-                                <InputNumber
+                                <Input
                                     style={{
                                         width: '100%',
                                     }}
-                                    minLength={10}
-                                    maxLength={13}
+
                                 />
                             </Form.Item>
 
                             <Form.Item
                                 label="Address"
-                                name="address"
+                                name="addressReceiver"
                                 hasFeedback
                                 rules={[
                                     {
@@ -260,7 +281,7 @@ function Checkout() {
                             </Form.Item>
                             <Form.Item
                                 label="Country"
-                                name="country"
+                                name="countryReceiver"
                                 hasFeedback
                                 rules={[
                                     {
@@ -269,12 +290,15 @@ function Checkout() {
                                     },
                                 ]}
                             >
-                                <Select options={[
-                                    { value: 'jack', label: 'Jack' },
-                                    { value: 'lucy', label: 'Lucy' },
-                                    { value: 'Yiminghe', label: 'yiminghe' },
-                                    { value: 'disabled', label: 'Disabled', disabled: true },
-                                ]} />
+                                <Select
+                                    showSearch
+                                    options={options}
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                                    filterSort={(optionA, optionB) =>
+                                        (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                                    }
+                                />
                             </Form.Item>
                             <Form.Item
                                 label="Note"
@@ -284,7 +308,7 @@ function Checkout() {
                             </Form.Item>
                             <Form.Item
                                 label="Payment method"
-                                name="payment"
+                                name="paymentMethod"
                             >
                                 <Radio.Group>
                                     <Space direction='horizontal' wrap={true}>
@@ -295,7 +319,7 @@ function Checkout() {
                             </Form.Item>
                             <Form.Item
                                 label="Shipping method"
-                                name="shipping"
+                                name="shippingMethod"
                             >
                                 <Radio.Group>
                                     <Space direction='horizontal' wrap={true}>
@@ -309,9 +333,9 @@ function Checkout() {
                         <Space direction="vertical" style={{ width: "50%" }}>
                             <Table
                                 columns={cartColumns}
-                                dataSource={cartData}
+                                dataSource={products}
                                 pagination={{
-                                    hideOnSinglePage: true, pageSize: 3, total: 10, defaultCurrent: 1, showSizeChanger: false
+                                    hideOnSinglePage: true, pageSize: 3, total: cart?.state?.currentCart?.length, defaultCurrent: 1, showSizeChanger: false
                                 }}
                             />
                             <Descriptions bordered items={items} className="sumary" />
@@ -319,7 +343,7 @@ function Checkout() {
                                 <Button type="primary" htmlType="button" onClick={navigateCart}>
                                     Back to cart
                                 </Button>
-                                <Button type="primary" htmlType="submit" onClick={navigateConfirm}>
+                                <Button type="primary" htmlType="submit" >
                                     Checkout
                                 </Button>
                             </Flex>

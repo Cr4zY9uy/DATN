@@ -9,7 +9,7 @@ import DeleteModal from '../../../layout/modal_del';
 import './BannerList.css';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ModalContext } from '../../../../../store/modal/provider';
-import { ACTION } from '../../../../../store/modal';
+import { ACTION_MODAL } from '../../../../../store/modal';
 import { queryClient } from '../../../../../main';
 
 export const BannerList = () => {
@@ -135,7 +135,7 @@ export const BannerList = () => {
       width: 100,
       key: 'x',
       render: (text, row) => <Flex justify='center' className='delete' gap={5}>
-        <Button danger type='primary' icon={<DeleteOutlined />} onClick={() => { dispatch({ type: ACTION.OPEN_MODAL }); setDelID(row.key), setTypeDelete('bannerOne') }} />
+        <Button danger type='primary' icon={<DeleteOutlined />} onClick={() => { dispatch({ type: ACTION_MODAL.OPEN_MODAL }); setDelID(row.key), setTypeDelete('bannerOne') }} />
         <Button icon={<EyeOutlined />} onClick={() => onEdit(row.key)} />
       </Flex>,
     },
@@ -217,7 +217,7 @@ export const BannerList = () => {
         </Form>
       </Flex>
       <Flex justify='space-between'>
-        <Button danger type='primary' disabled={selectedRowKeys.length === 0} icon={<DeleteOutlined />} onClick={() => { dispatch({ type: ACTION.OPEN_MODAL }), setTypeDelete("bannerList") }} />
+        <Button danger type='primary' disabled={selectedRowKeys.length === 0} icon={<DeleteOutlined />} onClick={() => { dispatch({ type: ACTION_MODAL.OPEN_MODAL }), setTypeDelete("bannerList") }} />
         <Button type='primary' icon={<PlusOutlined />} onClick={onAdd}> Add new banner</Button>
       </Flex>
       <Table

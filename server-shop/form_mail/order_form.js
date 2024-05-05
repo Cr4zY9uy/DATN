@@ -1,4 +1,21 @@
-export const order_form = () => `
+export const order_form = (data) => {
+    const { total, tax, products, paymentStatus } = data;
+    let subTotal
+    if (Array.isArray(products)) {
+        subTotal = products.reduce((pre, cur) => pre + cur.subPrice, 0)
+    }
+    const productRows = products.map((item, index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>
+                ${item.productId.name}
+                <img src="${item.productId.images}" width="50px" height="50px">
+            </td>
+            <td>${item.productId.price}$</td>
+            <td>${item.quantity}</td>
+        </tr>
+    `).join('');
+    return `
 <html>
 
 <head>
@@ -124,41 +141,13 @@ export const order_form = () => `
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>
-                            Fruit
-                            <img src="http://res.cloudinary.com/dv7ni8uod/image/upload/v1713202868/shop/rrydu2uzmvrqk8alf9r5.webp"
-                                width="50px" height="50px">
-                        </td>
-                        <td>100$</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>
-                            Fruit nice onely he loash
-                            <img src="http://res.cloudinary.com/dv7ni8uod/image/upload/v1713202868/shop/rrydu2uzmvrqk8alf9r5.webp"
-                                width="50px" height="50px">
-                        </td>
-                        <td>100$</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>
-                            Fruit nice onely he loash
-                            <img src="http://res.cloudinary.com/dv7ni8uod/image/upload/v1713202868/shop/rrydu2uzmvrqk8alf9r5.webp"
-                                width="50px" height="50px">
-                        </td>
-                        <td>100$</td>
-                        <td>1</td>
-                    </tr>
+                  ${productRows}
                 </tbody>
             </table>
-            <p><strong>Subtotal:</strong> 200$</p>
-            <p><strong>Tax:</strong> 2$</p>
-            <p style="margin-bottom:20px ;"><strong>Total:</strong> 202$</p>
+            <p><strong>Subtotal:</strong> ${subTotal ? subTotal : (total - tax)}$</p>
+            <p><strong>Tax:</strong> ${tax}$</p>
+            <p style="margin-bottom:20px ;"><strong>Total:</strong> ${total}$</p>
+            <p style="margin-bottom:20px ;"><strong>Payment status: ${paymentStatus}</strong></p>
             <p>Thanks for purchasing our products. Wish to see you in near future.</p>
             <p>Regards,</p>
             <h4>Scart</h4>
@@ -174,7 +163,7 @@ export const order_form = () => `
     </div>
 </body>
 
-</html>`
+</html>`}
 
 export const order_subject = `Order from Scart.`
 

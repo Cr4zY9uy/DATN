@@ -3,7 +3,7 @@ import { cartReducer } from "./reducer.js"
 import { currentCart } from "./state.js"
 import { createContext } from "react";
 
-const CartContext = createContext({
+export const CartContext = createContext({
     state: null,
     dispatch: () => undefined
 })

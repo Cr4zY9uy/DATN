@@ -85,3 +85,9 @@
 .ant-carousel:not(:hover) .slick-next {
     animation: slideOutToRight 0.5s ease-in-out forwards;
 }
+
+.slick-slider span {
+    display: flex !important ;
+    justify-content: center;
+    align-items: center;
+}

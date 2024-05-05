@@ -1,20 +1,32 @@
-import { BellOutlined, SearchOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Badge, Button, Flex, Popover } from "antd";
+import { Flex } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { optionCategory } from "../../../services/category_service";
-import { logout } from "../../../services/user_service";
-import { ACTION, UserContext } from "../../../store/user";
+import { logout, logoutGoogle } from "../../../services/user_service";
+import { ACTION_USER, UserContext } from "../../../store/user";
 import Notification from "../../../utils/configToastify";
 import "./../style/header.css";
 import Modal_Search from "./modal_search";
+import { CartContext } from "../../../store/cart";
+import { LogContext } from "../../../store/typeLog/provider";
+import { ACTION_LOG } from "../../../store/typeLog";
 
 function Headers() {
     const [searchView, setSearchView] = useState(false);
-    const [openPopover, setOpenPopover] = useState(false)
     const [category, setCategory] = useState([]);
-    const { dispatch, state } = useContext(UserContext)
+
+    const logGoogle = useContext(LogContext)
+    const user = useContext(UserContext)
+    const cart = useContext(CartContext)
+    const navigate = useNavigate()
+
+    const handleCart = () => {
+        if (!user?.state?.currentUser) Notification({ message: "You have to login first!", type: "error" })
+        else
+            navigate("/client/cart")
+    }
 
     const toggleSearchView = () => {
         setSearchView(!searchView);
@@ -24,12 +36,34 @@ function Headers() {
         mutationFn: () => logout(),
         onSuccess: () => {
             Notification({ message: "Logout successully!", type: "success" });
-            dispatch({ type: ACTION.LOGOUT })
+            user?.dispatch({ type: ACTION_USER.LOGOUT })
         },
         onError: (error) => {
             Notification({ message: `${error.response.data.message}`, type: "error" })
         }
     })
+
+    const outGoogle = useMutation({
+        mutationKey: ['logout_google'],
+        mutationFn: () => logoutGoogle(),
+        onSuccess: () => {
+            Notification({ message: "Logout successully!", type: "success" });
+            user?.dispatch({ type: ACTION_USER.LOGOUT })
+            logGoogle.dispatch({ type: ACTION_LOG.OUT })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "error" })
+        }
+    })
+    console.log(1234);
+    const handleLogout = () => {
+        if (logGoogle?.state?.isLogByGoogle) {
+            outGoogle.mutate()
+        }
+        else {
+            mutate()
+        }
+    }
 
     const { data, isError } = useQuery({
         queryKey: ['category_list_client'],
@@ -37,24 +71,17 @@ function Headers() {
     })
 
 
-    const notification = (
-        <Flex vertical>
-            <Flex className="notification">Products 1 is available</Flex>
-            <Flex className="notification">Products 2 is available</Flex>
-        </Flex>
-    )
-
     useEffect(() => {
         if (isError) return
-
-        setCategory(data?.data?.docs?.map((item) => ({
+        const rawData = data?.data?.data
+        setCategory(rawData?.map((item) => ({
             name: item.name,
             id: item._id
         })));
         return () => {
             setCategory([])
         }
-    }, [setCategory, isError, data, category])
+    }, [setCategory, isError, data])
 
     return (
         <>
@@ -72,14 +99,12 @@ function Headers() {
                                 <div>categories</div>
                                 <div className="sub_menu">
                                     {category?.map((item) => (
-                                        <NavLink key={item.id} to={`/category/${item.id}`}>{item.name}</NavLink>
+                                        <NavLink key={item.id} to={`/client/category/${item.id}`}>{item.name}</NavLink>
                                     ))}
 
                                 </div>
                             </Link>
-
                             <Link to={"shop"}>shop</Link>
-                            <Link to={"blog"}>blogs</Link>
                         </div>
                         <div className="header-icon">
                             <div>
@@ -87,14 +112,14 @@ function Headers() {
                             </div>
 
                             <div>
-                                <button className="cart"><NavLink to={'cart'}><ShoppingCartOutlined style={{ fontSize: '18px' }} /></NavLink></button>
-                                <div className="qty">0</div>
+                                <button className="cart" onClick={handleCart}><NavLink><ShoppingCartOutlined style={{ fontSize: '18px' }} /></NavLink></button>
+                                <div className="qty">{cart?.state?.currentCart?.length ?? 0}</div>
                             </div>
                             <>
                                 <div className="main_menu">
                                     <UserOutlined style={{ fontSize: '18px' }} />
                                     <div className="user">
-                                        {state.currentUser ? (<>
+                                        {(user?.state.currentUser !== null && user?.state.currentUser !== undefined) ? (<>
                                             <Link to={'user'}>
                                                 Infomation
                                             </Link>
@@ -107,7 +132,7 @@ function Headers() {
                                             <Link to={'user/orders'}>
                                                 Orders
                                             </Link>
-                                            <Link onClick={mutate}>
+                                            <Link onClick={handleLogout}>
                                                 Logout
                                             </Link>
                                         </>) : (
@@ -122,13 +147,6 @@ function Headers() {
                                         )}
 
                                     </div>
-                                </div>
-                                <div>
-                                    <Popover content={notification} trigger={'click'} arrow={false} open={openPopover}>
-                                    </Popover>
-                                    <Badge dot={true} offset={[-10, 8]}>
-                                        <Button icon={<BellOutlined style={{ fontSize: '18px' }} onClick={() => setOpenPopover(!openPopover)} />}></Button>
-                                    </Badge>
                                 </div>
                             </>
                         </div>

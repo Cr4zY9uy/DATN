@@ -1,26 +1,34 @@
 import URL from "../request/url"
 import api from "../request/api";
-export const paginate_product = async (page) => {
-    const url = URL.PRODUCT.PAGINATE + "?page=" + page;
-    try {
-        const rs = await api.get(url);
-        return rs;
+export const listProduct = (page, name, origin, categoryId, sortName, sortPrice, sortDate, start_price, end_price) => api.get(URL.PRODUCT.CRUD, {
+    params: {
+        page,
+        name,
+        origin,
+        categoryId,
+        sortName,
+        sortPrice,
+        sortDate,
+        start_price,
+        end_price,
     }
-    catch (error) {
-        return error.response;
-    }
-}
-export const detail_product_code = async (id) => {
-    const url = URL.PRODUCT.DETAIL + id;
-    try {
-        const rs = await api.get(url);
-        return rs;
-    }
-    catch (error) {
-        return error.response;
+})
 
+export const detailProduct = (id) => api.get(URL.PRODUCT.CRUD + `/${id}`)
+
+export const addProduct = (data) => api.post(URL.PRODUCT.CRUD, data)
+
+export const updateProduct = ({ id, ...data }) => api.put(URL.PRODUCT.CRUD + `/${id}`, data)
+
+
+export const productByCategory = (categoryId, page) => api.get(URL.PRODUCT.CRUD, {
+    params: {
+        page, categoryId
     }
-}
+})
+
+export const recommendProduct = (id) => api.get(URL.PRODUCT.RECOMMEND + `/${id}`)
+
 export const detail_product_name = async (name) => {
     const url = URL.PRODUCT.DETAIL + "?name=" + name;
     try {

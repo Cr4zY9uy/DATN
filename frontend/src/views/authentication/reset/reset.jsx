@@ -4,21 +4,22 @@ import "./reset.css";
 import { useEffect } from "react";
 import Notification from "../../../utils/configToastify";
 import { resetPassword } from "../../../services/user_service";
+import { useMutation } from "@tanstack/react-query";
 function Reset() {
     const navigate = useNavigate()
     const { token } = useParams()
     const [form] = Form.useForm();
-    const handleReset = async (e) => {
-        try {
-            const rs = await resetPassword({ ...e, token: token });
-            if (rs.status === 200) {
-                Notification({ message: "Reset password successfully!", type: "success" })
-                navigate('/')
-            }
-        } catch (error) {
-            Notification({ message: `${error.response.data.message}`, type: "error" })
-        }
-    }
+    const { mutate } = useMutation({
+        mutationKey: ['reset_password_forget'],
+        mutationFn: (data) => resetPassword({ ...data, token: token }),
+        onSuccess: () => {
+            Notification({ message: "Reset password successfully!", type: "success" })
+            navigate('/')
+        },
+        onError: (error) => Notification({ message: `${error.response.data.message}`, type: "error" })
+
+    })
+
     useEffect(() => { document.title = "Reset password" }, [])
 
     return (
@@ -32,7 +33,7 @@ function Reset() {
                     labelCol={{ span: 7 }}
                     wrapperCol={{ span: 100 }}
                     layout="horizontal"
-                    onFinish={handleReset}>
+                    onFinish={mutate}>
                     <Form.Item
                         name="password"
                         hasFeedback

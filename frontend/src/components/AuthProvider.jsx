@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useContext, useEffect } from 'react'
-import { ACTION, UserContext } from '../store/user'
+import { ACTION_USER, UserContext } from '../store/user'
 import { getMe } from '../services/user_service'
 import Notification from '../utils/configToastify'
 
@@ -14,9 +14,9 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         if (!isError) return
-        dispatch({ type: ACTION.LOGOUT })
+        dispatch({ type: ACTION_USER.LOGOUT })
         Notification({ message: "Token expired!!", type: 'error' })
-        
+
     }, [isError, dispatch])
 
     return children

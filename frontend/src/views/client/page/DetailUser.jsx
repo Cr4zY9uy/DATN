@@ -1,9 +1,13 @@
 import { Flex, Form, Breadcrumb, Input, Select, Button, Upload, Typography } from 'antd'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import CameraOutlined from '@ant-design/icons/CameraOutlined'
 import '../style/DetailUser.css'
 import { uploadImage } from '../../../services/upload_service'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { getMe, updateUser } from '../../../services/user_service'
+import { UserContext } from '../../../store/user'
+import Notification from '../../../utils/configToastify'
 // import Notification from '../../../utils/configToastify'
 
 export const DetailUser = () => {
@@ -11,9 +15,22 @@ export const DetailUser = () => {
     const { Option } = Select
     const [avatar, setAvatar] = useState('');
     const [fileList, setFileList] = useState([])
+    const user = useContext(UserContext)
+    const info = user?.state?.currentUser;
     const handleSubmit = (e) => {
-        console.log({ ...e, image: avatar });
+        mutate({ ...e, image: avatar, id: info.user_id });
     }
+    const navigate = useNavigate()
+    const { mutate } = useMutation({
+        mutationFn: (data) => updateUser(data),
+        onSuccess: () => {
+            Notification({ message: "Update user successfully", type: "success" })
+            navigate('/client')
+        },
+        onError: () => Notification({ message: "Update user unsuccessfully", type: "error" })
+
+    })
+
     const handleChange = async (e) => {
         setFileList(e.fileList)
         const formData = new FormData();
@@ -29,6 +46,25 @@ export const DetailUser = () => {
             console.log(error.message);
         }
     }
+    useEffect(() => {
+        form.setFieldValue('firstName', info?.firstName)
+        form.setFieldValue('lastName', info?.lastName)
+        form.setFieldValue('address', info?.address)
+        form.setFieldValue('gender', info?.gender)
+        form.setFieldValue('phone', info?.phone)
+
+        if (info?.image !== null && info?.image !== undefined) {
+            setFileList([{
+                uid: '1',
+                name: 'image.png',
+                url: info?.image,
+            },])
+            setAvatar(info?.image)
+        }
+    }, [info?.firstName, info?.lastName, info?.address, info?.gender, info?.image, form, info?.phone])
+
+
+
 
     return (
         <Flex vertical className='customer' align='center'>
@@ -77,9 +113,9 @@ export const DetailUser = () => {
                             </Upload>
 
                         </Form.Item>
-                        <Typography.Title level={3}>Name</Typography.Title>
+                        <Typography.Title level={3}>First name</Typography.Title>
                         <Form.Item
-                            name="name"
+                            name="firstName"
                             hasFeedback
                             rules={[
                                 {
@@ -87,8 +123,8 @@ export const DetailUser = () => {
                                     message: 'Please input!',
                                 },
                                 {
-                                    min: 6,
-                                    message: "At least 6 characters"
+                                    min: 3,
+                                    message: "At least 3 characters"
                                 },
                                 {
                                     max: 50,
@@ -96,7 +132,28 @@ export const DetailUser = () => {
                                 }
                             ]}
                         >
-                            <Input type="text" placeholder="Name" size="large" />
+                            <Input type="text" placeholder="First name" size="large" />
+                        </Form.Item>
+                        <Typography.Title level={3}>Last name</Typography.Title>
+                        <Form.Item
+                            name="lastName"
+                            hasFeedback
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input!',
+                                },
+                                {
+                                    min: 3,
+                                    message: "At least 3 characters"
+                                },
+                                {
+                                    max: 50,
+                                    message: "At max 50 characters"
+                                }
+                            ]}
+                        >
+                            <Input type="text" placeholder="Last name" size="large" />
                         </Form.Item>
                         <Typography.Title level={3}>Phone</Typography.Title>
                         <Form.Item

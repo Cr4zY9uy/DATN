@@ -14,10 +14,20 @@ const product_schema = new mongoose.Schema({
         min: 5,
         max: 300
     },
+    unit: {
+        type: String,
+        min: 5,
+        max: 20
+    },
     origin: {
         type: String,
         require: true,
         trim: true
+    },
+    price: {
+        type: Number,
+        min: 1,
+        require: true
     },
     quantity: {
         sold: {
@@ -36,18 +46,10 @@ const product_schema = new mongoose.Schema({
             default: 0
         }
     },
-    category: {
-        categoryId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Category",
-            require: true,
-        },
-        name: {
-            type: String,
-            require: true,
-            min: 5,
-            max: 50
-        }
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        require: true,
     },
     images: [{
         type: String,
@@ -57,23 +59,14 @@ const product_schema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    variant: [
-        {
-            variantId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Variant',
-                require: true
-            },
-            price: {
-                type: Number,
-                require: true
-            },
-            name: {
-                type: String,
-                require: true
-            }
-        }
-    ]
+    ratingId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Rating",
+    }],
+    saleId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Sale",
+    }]
 }
     ,
     {

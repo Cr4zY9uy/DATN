@@ -148,9 +148,7 @@
 
 
 .shop .ant-select {
-    width: 260px !important;
-    margin-bottom: 10px;
-    height: 100%;
+    min-width: 260px !important;
 }
 
 .shop .filter_tag .ant-space-item,
@@ -160,6 +158,7 @@
 
 .shop .filter_tag {
     height: 100%;
+    width: 500px;
 }
 
 .shop .filter_tag .ant-tag {
@@ -178,4 +177,8 @@
 .shop .filter_tag .ant-space-item:nth-child(3) {
     display: flex;
     align-items: center;
+}
+
+.shop .shop_item{
+    width: 30%;
 }

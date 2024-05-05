@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { queryClient } from '../../../../../main';
 import { listBlog, updateBlog } from '../../../../../services/blog_service';
-import { ACTION } from '../../../../../store/modal';
+import { ACTION_MODAL } from '../../../../../store/modal';
 import { ModalContext } from '../../../../../store/modal/provider';
 import Notification from '../../../../../utils/configToastify';
 import useDebounce from '../../../../../utils/useDebounce';
@@ -119,7 +119,7 @@ export const BlogList = () => {
       width: 100,
       key: 'x',
       render: (text, row) => <Flex justify='center' className='delete' gap={5}>
-        <Button danger type='primary' icon={<DeleteOutlined />} onClick={() => { dispatch({ type: ACTION.OPEN_MODAL }); setDelID(row.key), setTypeDelete('blogOne') }} />
+        <Button danger type='primary' icon={<DeleteOutlined />} onClick={() => { dispatch({ type: ACTION_MODAL.OPEN_MODAL }); setDelID(row.key), setTypeDelete('blogOne') }} />
         <Button icon={<EyeOutlined />} onClick={() => onEdit(row.key)} />
       </Flex>,
     },
@@ -194,7 +194,7 @@ export const BlogList = () => {
         </Form>
       </Flex>
       <Flex justify='space-between'>
-        <Button danger type='primary' disabled={selectedRowKeys.length === 0} icon={<DeleteOutlined />} onClick={() => { dispatch({ type: ACTION.OPEN_MODAL }), setTypeDelete("blogList") }} />
+        <Button danger type='primary' disabled={selectedRowKeys.length === 0} icon={<DeleteOutlined />} onClick={() => { dispatch({ type: ACTION_MODAL.OPEN_MODAL }), setTypeDelete("blogList") }} />
         <Button type='primary' icon={<PlusOutlined />} onClick={onAdd}> Add new blog</Button>
       </Flex>
       <Table

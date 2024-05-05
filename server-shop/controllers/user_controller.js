@@ -21,7 +21,7 @@ export const login = async (req, res) => {
             return res.status(404).json({ message: "Email not existed" });
         }
         if (user.isLocked) {
-            return res.status(401).json({ message: "Email is locked" });
+            return res.status(401).json({ message: "Account is locked" });
         }
         const verify = await bcrypt.compare(data.password, user.password);
         if (!verify) {
@@ -51,7 +51,7 @@ export const login = async (req, res) => {
                 .json({ message: 'Login fail, retry' });
         }
         if (!user.refreshToken) {
-            await user_model.findOneAndUpdate({ username: user.username }, { refreshToken: refreshToken })
+            await user_model.findOneAndUpdate({ _id: user._id }, { refreshToken: refreshToken })
         }
         else {
             refreshToken = user.refreshToken;
@@ -64,12 +64,18 @@ export const login = async (req, res) => {
             lastName: user.lastName,
             role: user.role,
             username: user.username,
-            email: user.email
+            email: user.email,
+            gender: user?.gender,
+            address: user?.address,
+            image: user?.image,
+            phone: user?.phone,
+
         })
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 }
+
 export const register = async (req, res) => {
 
     try {
@@ -95,10 +101,10 @@ export const register = async (req, res) => {
             if (!refreshToken) {
                 return res
                     .status(503)
-                    .json({ message: 'Login fail, retry' });
+                    .json({ message: 'Register fail, retry' });
             }
             if (!user.refreshToken) {
-                await user_model.findOneAndUpdate({ username: user.username }, { refreshToken: refreshToken })
+                await user_model.findOneAndUpdate({ _id: user._id }, { refreshToken: refreshToken })
             }
             else {
                 refreshToken = user.refreshToken;
@@ -122,6 +128,57 @@ export const logout = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+
+export const loginByGoogle = async (req, res) => {
+    const user = req.user
+    if (!user) return res
+        .status(503)
+        .json({ message: 'Login fail, retry' });
+    const dataForAccessToken = {
+        username: user?.username,
+        role: user?.role,
+        user_id: user?._id
+    };
+
+    const accessToken = jwt.sign(dataForAccessToken, accessTokenSecret, { expiresIn: accessTokenLife });
+    if (!accessToken) {
+        return res
+            .status(503)
+            .json({ message: 'Login fail, retry' });
+    }
+
+    const dataForRefreshToken = {
+        username: user.username,
+        user_id: user._id
+    };
+    let refreshToken = jwt.sign(dataForRefreshToken, refreshTokenSecret, { expiresIn: refreshTokenLife });
+    if (!refreshToken) {
+        return res
+            .status(503)
+            .json({ message: 'Login fail, retry' });
+    }
+    if (!user.refreshToken) {
+        await user_model.findOneAndUpdate({ _id: user._id }, { refreshToken: refreshToken })
+    }
+    else {
+        refreshToken = user.refreshToken;
+    }
+    res.cookie("refresh_token", refreshToken, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 1000 * 24 });
+    res.cookie("access_token", accessToken, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 1000 * 24 });
+    return res.status(200).json({
+        user_id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        username: user.username,
+        email: user.email,
+        address: user?.address,
+        gender: user?.gender,
+        phone: user?.phone,
+        image: user?.image
+    })
+}
+
 
 export const refresh_token = async (req, res) => {
     try {
@@ -278,7 +335,7 @@ export const resetPassword = async (req, res) => {
             if (data) {
                 return res.status(200).json({ message: "Reset password successfully" });
             }
-            return res.status(503).json({ message: 'Reset password successfully' });
+            return res.status(503).json({ message: 'Reset password unsuccessfully' });
         }
         return res.status(503).json({ message: 'Overtime request' });
     } catch (error) {
@@ -293,5 +350,36 @@ export const getCurrentUser = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: error.message })
 
+    }
+}
+
+
+
+
+
+export const resetPasswordCurrentUser = async (req, res) => {
+    try {
+        const data = req.body;
+        const currentUser = req.user
+        const user = await user_model.findById(currentUser._id);
+        if (!user) {
+            return res.status(400).json({ message: "Not allowed" });
+        }
+        if (user.isLocked) {
+            return res.status(401).json({ message: "Account is locked" });
+        }
+        const verify = await bcrypt.compare(data.current_password, user.password);
+        if (!verify) {
+            return res.status(404).json({ message: "Current password not true" });
+        }
+        const salt = await bcrypt.genSalt(12);
+        const hashed = await bcrypt.hash(data.new_password, salt)
+        const updatedUser = await user_model.findOneAndUpdate({ _id: currentUser._id }, { password: hashed }, { new: true })
+        if (updatedUser) {
+            return res.status(200).json({ message: "Reset password successfully" });
+        }
+        return res.status(503).json({ message: 'Reset password unsuccessfully' });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 }

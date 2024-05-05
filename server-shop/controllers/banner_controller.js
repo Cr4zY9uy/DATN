@@ -154,11 +154,11 @@ export const paginate_banner = async (req, res) => {
 
 export const all_banner = async (req, res) => {
     try {
-        const data = await banner_model.paginate({}, options);
-        if (data.totalDocs === 0) {
+        const data = await banner_model.find({})
+        if (data.length === 0) {
             return res.status(404).json({ message: "No banner" });
         }
-        else return res.status(200).json({ ...data });
+        else return res.status(200).json({ data });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

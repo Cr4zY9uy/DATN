@@ -1,48 +1,123 @@
 import { CreditCardOutlined, DisconnectOutlined, MoneyCollectOutlined, SendOutlined, TruckOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Descriptions, Flex, Form, Input, InputNumber, Radio, Select, Space, Table, Typography } from "antd";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { createBill } from "../../../services/payment_service";
 import "../style/checkout_confirm.css";
+import { ACTION_CART, CartContext } from "../../../store/cart";
+import { OrderContext } from "../../../store/order/provider";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { ACTION_ORDER } from "../../../store/order";
+import Notification from '../../../utils/configToastify'
+
+import { UserContext } from "../../../store/user";
+import { addOrder } from "../../../services/order_service";
 function CheckoutConfirm() {
     document.title = "Check out";
     const [form] = Form.useForm()
-    // const cart = props.state[0].cart;
-    // const order = props.state[1].order;
+    const [subTotal, setSubtotal] = useState(0)
+    const [products, setProducts] = useState([])
+
+    const [orderId, setOrderId] = useState('')
+    const user = useContext(UserContext)
+    const cart = useContext(CartContext)
+    const order = useContext(OrderContext)
+
+    const [options, setOptions] = useState([])
     useEffect(() => {
-        form.setFieldValue("first_name", "Nguyen Van")
-        form.setFieldValue("last_name", "Anh")
-        form.setFieldValue("email", "usas@gmail.com")
-        form.setFieldValue("phone", 12312938)
-        form.setFieldValue("address", "Anh")
-        form.setFieldValue("country", "jack")
-        form.setFieldValue("note", "usas@gmail.com")
-        form.setFieldValue("payment", "vnpay")
-        form.setFieldValue("shipping", "free")
-    }, [])
+        form.setFieldValue("firstNameReceiver", order?.state?.currentOrder?.firstNameReceiver)
+        form.setFieldValue("lastNameReceiver", order?.state?.currentOrder?.lastNameReceiver)
+        form.setFieldValue("emailReceiver", order?.state?.currentOrder?.emailReceiver)
+        form.setFieldValue("phoneReceiver", order?.state?.currentOrder?.phoneReceiver)
+        form.setFieldValue("addressReceiver", order?.state?.currentOrder?.addressReceiver)
+        form.setFieldValue("countryReceiver", order?.state?.currentOrder?.countryReceiver)
+        form.setFieldValue("note", order?.state?.currentOrder?.note)
+        form.setFieldValue("paymentMethod", order?.state?.currentOrder?.paymentMethod)
+        form.setFieldValue("shippingMethod", order?.state?.currentOrder?.shippingMethod)
+    }, [order, form])
     const navigate = useNavigate();
     const navigateCheckout = () => {
         navigate('/client/checkout')
     }
+
+    const { data, isError } = useQuery({
+        queryKey: ['countries'],
+        queryFn: () => axios.get('https://countriesnow.space/api/v0.1/countries/capital'),
+        refetchOnWindowFocus: false,
+        placeholderData: keepPreviousData
+    })
+
+    const isVnpay = useMutation({
+        mutationKey: ['create_bill', orderId],
+        mutationFn: (data) => createBill(data),
+        onSuccess: (res) => window.location.assign(res?.data?.url),
+        onError: () => Notification({ message: `Online banking is interupted due to system error!!`, type: "error" })
+    })
+    const notVnpay = useMutation({
+        mutationKey: ['create_order'],
+        mutationFn: (data) => addOrder(data),
+        onSuccess: (res) => setOrderId(res?.data?.order?._id),
+        onError: () => Notification({ message: `Create order not successfully`, type: "error" })
+
+    })
+
     const navigateEnd = async () => {
-        // navigate('/client/checkout/success')
-        const rs = await createBill({ amount: 100000, language: 'vn', bankCode: "VNBANK" });
-        window.location.assign(rs.data.url)
-
+        if (order?.state?.currentOrder?.paymentMethod === 'vnpay') {
+            notVnpay.mutate({
+                ...order?.state?.currentOrder,
+                products: cart?.state?.currentCart.map(item => ({ productId: item?.id, subPrice: item?.quantityBuy * item?.price, quantity: item?.quantityBuy })),
+                userId: user?.state?.currentUser?.user_id,
+                tax: (subTotal * 0.09).toFixed(2)
+            }, {
+                onSuccess: (res) => isVnpay.mutate({ amount: (subTotal * 1.09 * 25_410).toFixed(2), language: 'vn', bankCode: "VNBANK", orderId: res?.data?.order?._id, note: res?.data?.order?.note }),
+            })
+        }
+        else {
+            notVnpay.mutate({
+                ...order?.state?.currentOrder,
+                products: cart?.state?.currentCart.map(item => ({ productId: item?.id, subPrice: item?.quantityBuy * item?.price, quantity: item?.quantityBuy })),
+                userId: user?.state?.currentUser?.user_id,
+                tax: (subTotal * 0.09).toFixed(2)
+            }, {
+                onSuccess: () => {
+                    Notification({ message: `Create order successfully`, type: "success" })
+                    navigate('/client/checkout/success')
+                }
+            }
+            )
+        }
     }
-    // const subTotal = cart.reduce((total, item) => { return total + item.price * (1 - item.price_promotion) * item.quantity }, 0)
-    // const [data, setData] = useState({});
 
-    // const items = cart.map((product) => ({
-    //     product_id: product.product_id,
-    //     title: product.title,
-    //     thumbnail: product.thumbnail,
-    //     quantity: product.quantity,
-    //     price: product.price,
-    //     price_promotion: product.price_promotion,
-    // }))
-    // const items_tax = items.map(obj => ({ ...obj, tax: 0.01 }))
+    useEffect(() => {
+        setProducts(cart?.state?.currentCart?.map(item => ({
+            name: item?.name,
+            price: item?.price,
+            quantity: item?.quantityBuy
+        })))
 
+        return () => {
+            setProducts([])
+        }
+    }, [setProducts, cart])
+
+    useEffect(() => {
+        if (products) {
+            const total = products.reduce((acc, product) => acc + product?.price * product?.quantity, 0);
+            setSubtotal(total)
+        }
+
+        return () => {
+            setSubtotal(0)
+        }
+    }, [products])
+
+
+    useEffect(() => {
+        if (isError) return
+        const rawData = data?.data?.data
+        setOptions(rawData?.map(item => ({ value: item?.name, label: item?.name })))
+    }, [isError, data])
 
     const cartColumns = [
 
@@ -54,7 +129,7 @@ function CheckoutConfirm() {
         {
             title: 'Price',
             dataIndex: 'price',
-            key: 'adpricedress',
+            key: 'price',
             render: (text) => <p>{text}$</p>
 
         },
@@ -65,77 +140,38 @@ function CheckoutConfirm() {
         },
         {
             title: 'Subtotal',
-            dataIndex: '',
+            dataIndex: 'subtotal',
             key: 'subtotal',
             render: (text, row) => <p>{row.price * row.quantity}$</p>
         },
 
     ];
-    const cartData = [
-        {
-            key: 1,
-            name: 'John Brown',
-            price: 311,
-            quantity: 120,
-            subtotal: 1000,
-        },
-        {
-            key: 2,
-            name: 'Jinn Killer',
-            price: 311,
-            quantity: 120,
-            subtotal: 1000,
-        },
 
-    ];
     const items = [
         {
             key: '1',
             label: 'Subtotal',
-            children: <Typography.Text>1000$</Typography.Text>,
+            children: <Typography.Text>{subTotal}$</Typography.Text>,
             span: 3
         },
         {
             key: '2',
             label: 'Tax',
-            children: <Typography.Text>10$</Typography.Text>,
+            children: <Typography.Text>{(subTotal * 0.09).toFixed(2)}$</Typography.Text>,
             span: 3
 
         },
         {
             key: '3',
             label: 'Total',
-            children: <Typography.Text>1010$</Typography.Text>,
+            children: <Typography.Text>{(subTotal * 1.09).toFixed(2)}$</Typography.Text>,
             span: 3
 
         }
     ];
 
-    // const handleSubmit = (e) => {
-    //     const submitData = { ...data, order_id, payment_method, shipping_method, products: items_tax, shipping_cost: shippingCost[shipping_method] };
-    //     if (!data.first_name || !data.last_name || !data.email || !data.phone || !data.address || !data.country || !items) {
 
-    //     }
-    //     else {
-    //         order.push(submitData);
-    //         props.addToOrder(order);
-    //         Store.addNotification({
-    //             title: "Sucess!!",
-    //             message: "You add an order successfully!",
-    //             type: "success",
-    //             insert: "top",
-    //             container: "top-right",
-    //             animationIn: ["animate__animated", "animate__fadeIn"],
-    //             animationOut: ["animate__animated", "animate__fadeOut"],
-    //             dismiss: {
-    //                 duration: 1500,
-    //                 onScreen: true
-    //             }
-    //         });
-    //         navigate("/checkout_confirm");
-    //     }
 
-    // }
     const formItemLayout = {
         labelCol: {
             xs: {
@@ -154,8 +190,9 @@ function CheckoutConfirm() {
             },
         },
     };
-    const onFinish = (value) => {
-        console.log(value);
+    const onFinish = () => {
+        order?.dispatch({ type: ACTION_ORDER.REMOVE_ORDER })
+        cart?.dispatch({ type: ACTION_CART.REMOVE_CART })
     }
     return (
         <Flex className="checkout_confirm_page container" vertical>
@@ -180,7 +217,7 @@ function CheckoutConfirm() {
                         <Flex vertical style={{ width: "50%" }}>
                             <Form.Item
                                 label="First name"
-                                name="first_name"
+                                name="firstNameReceiver"
                                 rules={[
                                     {
                                         required: true,
@@ -195,7 +232,7 @@ function CheckoutConfirm() {
                             </Form.Item>
                             <Form.Item
                                 label="Last name"
-                                name="last_name"
+                                name="lastNameReceiver"
                                 rules={[
                                     {
                                         required: true,
@@ -210,7 +247,7 @@ function CheckoutConfirm() {
                             </Form.Item>
                             <Form.Item
                                 label="Email"
-                                name="email"
+                                name="emailReceiver"
                                 rules={[
                                     {
                                         required: true,
@@ -230,27 +267,36 @@ function CheckoutConfirm() {
                             </Form.Item>
                             <Form.Item
                                 label="Phone number"
-                                name="phone"
+                                name="phoneReceiver"
                                 rules={[
                                     {
                                         required: true,
                                         message: 'Please input!',
+                                    },
+                                    {
+                                        min: 10,
+                                        message: 'Please input at least 10 numbers!',
+
+                                    },
+                                    {
+                                        max: 13,
+                                        message: 'Please input no more 13 numbers!',
+
                                     }
                                 ]}
                             >
-                                <InputNumber
+                                <Input
                                     style={{
                                         width: '100%',
                                     }}
-                                    minLength={10}
-                                    maxLength={13}
+
                                     disabled
                                 />
                             </Form.Item>
 
                             <Form.Item
                                 label="Address"
-                                name="address"
+                                name="addressReceiver"
                                 rules={[
                                     {
                                         required: true,
@@ -265,7 +311,7 @@ function CheckoutConfirm() {
                             </Form.Item>
                             <Form.Item
                                 label="Country"
-                                name="country"
+                                name="countryReceiver"
                                 rules={[
                                     {
                                         required: true,
@@ -273,12 +319,7 @@ function CheckoutConfirm() {
                                     },
                                 ]}
                             >
-                                <Select options={[
-                                    { value: 'jack', label: 'Jack' },
-                                    { value: 'lucy', label: 'Lucy' },
-                                    { value: 'Yiminghe', label: 'yiminghe' },
-                                    { value: 'disabled', label: 'Disabled', disabled: true },
-                                ]} disabled />
+                                <Select options={options} disabled />
                             </Form.Item>
                             <Form.Item
                                 label="Note"
@@ -288,7 +329,7 @@ function CheckoutConfirm() {
                             </Form.Item>
                             <Form.Item
                                 label="Payment method"
-                                name="payment"
+                                name="paymentMethod"
                             >
                                 <Radio.Group disabled>
                                     <Space direction='horizontal' wrap={true}>
@@ -299,7 +340,7 @@ function CheckoutConfirm() {
                             </Form.Item>
                             <Form.Item
                                 label="Shipping method"
-                                name="shipping"
+                                name="shippingMethod"
                             >
                                 <Radio.Group disabled>
                                     <Space direction='horizontal' wrap={true}>
@@ -313,9 +354,9 @@ function CheckoutConfirm() {
                         <Space direction="vertical" style={{ width: "50%" }}>
                             <Table
                                 columns={cartColumns}
-                                dataSource={cartData}
+                                dataSource={products}
                                 pagination={{
-                                    hideOnSinglePage: true, pageSize: 3, total: 10, defaultCurrent: 1, showSizeChanger: false
+                                    hideOnSinglePage: true, pageSize: 3, total: cart?.state?.currentCart?.length, defaultCurrent: 1, showSizeChanger: false
                                 }}
                             />
                             <Descriptions bordered items={items} className="sumary" />
