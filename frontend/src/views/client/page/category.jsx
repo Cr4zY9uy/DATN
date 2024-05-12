@@ -1,4 +1,4 @@
-import { Breadcrumb, Flex, Pagination } from "antd";
+import { Breadcrumb, Empty, Flex, Pagination } from "antd";
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import Banner_Big from "../layout/banner_big";
@@ -6,6 +6,7 @@ import ProductGrid from "../layout/product_grid";
 import "./../style/category.css";
 import { useQuery } from "@tanstack/react-query";
 import { productByCategory } from "../../../services/product_service";
+import { detailCategory } from "../../../services/category_service";
 function Category() {
     const { category_id } = useParams();
     const [products, setProducts] = useState([]);
@@ -19,7 +20,10 @@ function Category() {
         queryFn: () => productByCategory(category_id, page),
         enabled: !!page || !!category_id
     })
-
+    const getNameCategory = useQuery({
+        queryKey: ['getName', category_id],
+        queryFn: () => detailCategory(category_id)
+    })
     useEffect(() => {
         if (!isSuccess) return
         const rawData = data?.data?.products
@@ -35,29 +39,37 @@ function Category() {
     }, [isSuccess, data])
 
     useEffect(() => {
-        document.title = categoryName.toUpperCase();
+        if (!getNameCategory?.isSuccess) return
+        const rawData = getNameCategory?.data?.data?.name
+        setCategoryName(rawData)
+        document.title = rawData?.toUpperCase();
         return () => {
             document.title = ""
         }
-    }, [categoryName])
+    }, [getNameCategory?.isSuccess, getNameCategory?.data])
     return (
         <>
-            <Banner_Big info={categoryName.toUpperCase()} />
+            <Banner_Big info={categoryName?.toUpperCase()} />
             <Flex className="category_page" vertical>
                 <Breadcrumb>
                     <Breadcrumb.Item>
                         <NavLink to={'/client'}>HOME</NavLink>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item active>
-                        <NavLink to={`/client/category/${category_id}`}>{categoryName.toUpperCase()}</NavLink>
+                        <NavLink to={`/client/category/${category_id}`}>{categoryName?.toUpperCase()}</NavLink>
                     </Breadcrumb.Item>
                 </Breadcrumb>
                 <Flex className="category_pagination" justify="center"><p className=" text-left">Showing <b>{total !== 0 ? 1 : 0}</b> - <b>{total < 6 ? total : 6}</b> results of <b>{total}</b> results</p></Flex>
                 <Flex className="category_items" wrap="wrap" gap="50px">
-                    {products.map((item) => {
-                        return <ProductGrid products={item} key={item.id} />
-                    })}
+                    {products.length !== 0 ? (
+                        products.map((item) => {
+                            return <ProductGrid products={item} key={item.id} />
+                        })
+                    ) : (
+                        <Flex style={{ width: "100%" }} justify="center"> <Empty description={"No product available"} /></Flex>
+                    )}
                 </Flex>
+
                 <Flex justify="center">
                     <Pagination
                         total={total}

@@ -22,3 +22,19 @@ export const logoutGoogle = () => api.post(URL.USER.LOGOUT_GOOGLE)
 export const updateUser = ({ id, ...data }) => api.put(URL.USER.CRUD + `/${id}`, data)
 
 export const resetPasswordCurrentUser = (data) => api.put(URL.USER.RESET_PASSWORD_CURRENT, data)
+
+export const listUser = (page, role, name, email, isActive) => api.get(URL.USER.CRUD, {
+    params: {
+        page, role, name, email, isActive
+    }
+})
+
+export const listCustomer = (page, name, email) => api.get(URL.USER.CUSTOMERS, {
+    params: {
+        page, name, email
+    }
+})
+
+export const detailUser = (id) => api.get(URL.USER.CRUD + `/${id}`)
+
+export const createUser = (data) => api.post(URL.USER.CRUD, data)

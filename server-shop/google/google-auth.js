@@ -26,13 +26,13 @@ export const connectToGoogle = () => {
             // passReqToCallback: true
         }, async (accessToken, refreshToken, profile, done) => {
             if (profile.id) {
-                const existingUser = await User.findOne({ $or: [{ googleID: profile?.id }, { email: profile?.emails[0]?.value }, { username: profile?.name?.familyName }] });
+                const existingUser = await User.findOne({ $or: [{ googleID: profile?.id }, { email: profile?.emails[0]?.value }] });
                 if (existingUser) {
                     if (existingUser.googleID !== profile?.id) {
                         const updatedUser = await User.findOneAndUpdate({ _id: existingUser._id }, { googleID: profile?.id })
-                        done(null, updatedUser);
+                        return done(null, updatedUser);
                     }
-                    done(null, existingUser);
+                    return done(null, existingUser);
                 } else {
                     const newUser = {
                         googleID: profile?.id,
@@ -58,14 +58,14 @@ export const connectToGoogle = () => {
                         user_id: user._id
                     };
                     const refreshToken = jwt.sign(dataForRefreshToken, refreshTokenSecret, { expiresIn: refreshTokenLife });
-                    done(null, { ...user, accessToken: accessToken, refreshToken: refreshToken });
+                    return done(null, { ...user, accessToken: accessToken, refreshToken: refreshToken });
                 }
             }
         })
     );
 
     passport.serializeUser((user, done) => {
-        done(null, user);
+        return done(null, user);
     })
 
 

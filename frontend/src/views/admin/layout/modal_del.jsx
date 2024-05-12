@@ -9,6 +9,7 @@ import Notification from '../../../utils/configToastify';
 import { TypeDeleteAdmin } from '../../../utils/enum';
 import '../style/modal_del.css';
 import { deleteBannerList, deleteBannerOne } from '../../../services/banner_service';
+import { deleteSale } from '../../../services/sale_service';
 function DeleteModal(props) {
     const id = props.id_del;
     const type = props.type_del;
@@ -62,7 +63,18 @@ function DeleteModal(props) {
             Notification({ message: `${error.response.data.message}`, type: "error" })
         }
     })
-    
+
+    const deleteSaleOne = useMutation({
+        mutationFn: (id) => deleteSale(id),
+        onSuccess: () => {
+            Notification({ message: "Delete sale successfully!", type: "success" })
+            queryClient.invalidateQueries({ queryKey: ['sales_admin_list'] })
+        },
+        onError: () => {
+            Notification({ message: "Delete sale unsuccessfully!", type: "error" })
+        }
+    })
+
     const handleDelete = () => {
         switch (type) {
             case TypeDeleteAdmin.CATEGORY_ONE:
@@ -76,6 +88,9 @@ function DeleteModal(props) {
                 break;
             case TypeDeleteAdmin.BANNER_LIST:
                 deleteListBanner.mutate(id)
+                break;
+            case TypeDeleteAdmin.SALE:
+                deleteSaleOne.mutate(id)
                 break;
             default:
                 break

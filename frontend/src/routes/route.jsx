@@ -36,6 +36,28 @@ import { LastViewProductProvider } from "../store/productLastView";
 import { CartProvider } from "../store/cart";
 import { OrderProvider } from "../store/order/provider";
 import { LogProvider } from "../store/typeLog/provider";
+import { FavouriteProvider } from "../store/favourite";
+import { ListOfUser } from "../views/admin/page/user/ListOfUser";
+import { CrudUser } from "../views/admin/page/user/CrudUser";
+import { ListOfCustomer } from "../views/admin/page/customer/ListOfCustomer";
+import { DetailCustomer } from "../views/admin/page/customer/DetailCustomer";
+import { ListOfOrder } from "../views/admin/page/order/ListOfOrder";
+import { DetailOrder } from "../views/admin/page/order/DetailOrder";
+import UpdateProduct from "../views/admin/page/product/detail-product/update-product/UpdateProduct";
+import { ListOfComment } from "../views/admin/page/product/detail-product/comment/ListOfComment";
+import { ListOfRating } from "../views/admin/page/product/detail-product/rating/ListOfRating";
+import { DetailRating } from "../views/admin/page/product/detail-product/rating/DetailRating";
+import { DetailComment } from "../views/admin/page/product/detail-product/comment/DetailComment";
+import { ListOfSale } from "../views/admin/page/sale/ListOfSale";
+import { DetailSale } from "../views/admin/page/sale/DetailSale";
+import { ListOfConsignment } from "../views/admin/page/consignment/ListOfConsignment";
+import { DetailConsignment } from "../views/admin/page/consignment/DetailConsignment";
+import { Infomation } from "../views/admin/page/customer/Information";
+import { ListOfOrderCustomer } from "../views/admin/page/customer/customer_order/ListOfOrderCustomer";
+import { DetailOrderCustomer } from "../views/admin/page/customer/customer_order/DetailOrderCustomer";
+import PageNotFound from "../views/admin/page/404notfound";
+import { ManageChat } from "../views/admin/page/chat/ManageChat";
+import { SupportChat } from "../views/admin/page/chat/SupportChat";
 
 export const router = createBrowserRouter([
   {
@@ -112,81 +134,110 @@ export const router = createBrowserRouter([
           { path: 'create', element: <CreateProduct /> },
           {
             path: ':product_id',
-            element: <DetailProduct />
+            element: <DetailProduct />,
+            children: [
+              { index: true, element: <UpdateProduct /> },
+              { path: 'comments', element: <ListOfComment /> },
+              {
+                path: 'ratings', element: <Outlet />, children: [
+                  { index: true, element: <ListOfRating /> },
+                  { path: ":rating_id", element: <DetailRating /> }
+                ]
+              },
+              {
+                path: 'comments', element: <Outlet />, children: [
+                  { index: true, element: <ListOfComment /> },
+                  { path: ":comment_id", element: <DetailComment /> }
+                ]
+              },
+            ]
           }
         ]
       },
+      {
+        path: 'users',
+        element: <Outlet />,
+        children: [
+          { index: true, element: <ListOfUser /> },
+          { path: 'create', element: <CrudUser /> },
+          {
+            path: ':user_id',
+            element: <CrudUser />
+          }
+        ]
+      },
+      {
+        path: 'customers',
+        element: <Outlet />,
+        children: [
+          { index: true, element: <ListOfCustomer /> },
+          {
+            path: ':user_id',
+            element: <Infomation />,
+            children: [
+              { index: true, element: <DetailCustomer /> },
+              {
+                path: 'orders', element: <Outlet />, children: [
+                  { index: true, element: <ListOfOrderCustomer /> },
+                  { index: ':order_id', element: <DetailOrderCustomer /> }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: 'orders',
+        element: <Outlet />,
+        children: [
+          { index: true, element: <ListOfOrder /> },
+          {
+            path: ':order_id',
+            element: <DetailOrder />
+          }
+        ]
+      },
+      {
+        path: 'sales',
+        element: <Outlet />,
+        children: [
+          { index: true, element: <ListOfSale /> },
+          {
+            path: ':sale_id',
+            element: <DetailSale />
+          },
+          {
+            path: 'create',
+            element: <DetailSale />
+          }
+        ]
+      },
+      {
+        path: 'consignment',
+        element: <Outlet />,
+        children: [
+          { index: true, element: <ListOfConsignment /> },
+          {
+            path: ':consignment_id',
+            element: <DetailConsignment />
+          },
 
-      // {
-      //   path: 'users',
+        ]
+      },
+      {
+        path: 'customer-support',
+        element: <Outlet />,
+        children: [
+          { index: true, element: <ManageChat /> },
+          {
+            path: ':chat_id',
+            element: <SupportChat />
+          },
 
-      //   element: <Outlet />,
-      //   children: [
-      //     { index: true, element: <ListUser /> },
-
-      //     {
-      //       path: ':user_id',
-      //       element: <DetailUser />
-      //     },
-      //     { path: 'create', element: <CreateUser /> }
-      //   ]
-      // },
-      // {
-      //   path: 'partners',
-      //   element: <Partners />,
-      //   children: [
-      //     { index: true, element: <ListOfPartners /> },
-      //     { path: 'add-new-partner', element: <AddNewPartner /> },
-      //     { path: ':partner_id', element: <PartnerDetail /> }
-      //   ]
-      // },
-
-      // {
-      //   path: 'address',
-      //   element: <Outlet />,
-      //   children: [
-      //     {
-      //       path: 'province-city',
-      //       element: <Outlet />,
-      //       children: [{ index: true, element: <ListOfProvinces /> }]
-      //     },
-      //     {
-      //       path: 'district-town',
-      //       element: <Outlet />,
-      //       children: [
-      //         { index: true, element: <ListOfDistrictTown /> },
-      //         { path: 'add-new-district', element: <AddNewPartner /> },
-      //         { path: ':district_id', element: <PartnerDetail /> }
-      //       ]
-      //     },
-      //     {
-      //       path: 'ward-commune',
-      //       element: <Outlet />,
-      //       children: [
-      //         { index: true, element: <ListOfWardCommune /> },
-      //         { path: 'add-new-ward', element: <AddNewPartner /> },
-      //         { path: ':ward_id', element: <PartnerDetail /> }
-      //       ]
-      //     }
-      //   ]
-      // }
+        ]
+      }
     ]
   },
-
-  // {
-  //   path: 'users',
-  //   element: <Outlet />,
-  //   children: [
-  //     { index: true, element: <ListUserAdmin /> },
-
-  //     {
-  //       path: ':user_id',
-  //       element: <DetailUserAdmin />
-  //     },
-  //     { path: 'create', element: <CreateUserAdmin /> }
-  //   ]
-  // },
-
   {
     path: '/client',
     element: (
@@ -195,7 +246,9 @@ export const router = createBrowserRouter([
           <ModalProvider>
             <CartProvider>
               <LogProvider>
-                <LayoutClient />
+                <FavouriteProvider>
+                  <LayoutClient />
+                </FavouriteProvider>
               </LogProvider>
             </CartProvider>
           </ModalProvider>
@@ -265,6 +318,9 @@ export const router = createBrowserRouter([
         ]
       }
     ]
+  },
+  {
+    path: '*', element: <PageNotFound />
   }
 
 ])

@@ -6,6 +6,7 @@ import {
     all_order,
     paginate_order,
     order_by_user,
+    paginate_order_user,
 
 } from "../controllers/order_controller.js";
 import { add_order_validator, edit_order_validator } from "../validator/order_validator.js";
@@ -22,5 +23,7 @@ router.get("/order/options", all_order);
 router.get("/order", paginate_order);
 router.get("/order/:id", detail_order);
 router.get("/order/user/:userId", order_by_user)
+
+router.get("/order/user/paginate/:user_id", paginate_order_user)
 
 export default router;

@@ -9,7 +9,7 @@ import {
     product_by_category,
     update_category
 } from "../controllers/category_controller.js";
-import { Role } from "../enums/enum.js";
+import { Role } from "../helper/enum.js";
 import { authRole, checkAuth } from "../middleware/check_auth.js";
 const router = Router();
 

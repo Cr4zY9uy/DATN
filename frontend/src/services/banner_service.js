@@ -5,9 +5,9 @@ export const addBanner = (banner) => api.post(URL.BANNER.CRUD, banner)
 
 export const updateBanner = ({ id, ...banner }) => api.put(URL.BANNER.CRUD + `/${id}`, banner)
 
-export const listBanner = (page, name, description, isActive, sortOrder, sortName) => api.get(URL.BANNER.CRUD, {
+export const listBanner = (page, title, description, isActive, sortOrder, sortName) => api.get(URL.BANNER.CRUD, {
     params: {
-        page, name, description, isActive, sortOrder, sortName
+        page, title, description, isActive, sortOrder, sortName
     }
 })
 export const detailBanner = (id) => api.get(URL.BANNER.CRUD + `/${id}`)

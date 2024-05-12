@@ -2,14 +2,27 @@ import chat_model from "../models/chat_model.js";
 
 const getChatroomDetail = async (req, res) => {
     try {
+
         const roomId = req.params.roomId;
-        const chatroom = await chat_model.findOne({ roomId: roomId }).select("-_id");
+        const chatroom = await chat_model.findOne({ roomId: roomId }).populate(
+            {
+                path: "roomId",
+                model: "User",
+                select: "firstName lastName role"
+            })
+            .populate(
+                {
+                    path: "message.userId",
+                    model: "User",
+                    select: "firstName lastName role"
+                }
+            )
         if (!chatroom)
             return res.status(404).json({ message: "Chat room not found" });
 
         const sortedMessages = chatroom.message.sort((a, b) => b.day - a.day);
 
-        return res.status(200).json(sortedMessages);
+        return res.status(200).json({ ...chatroom.toObject(), message: sortedMessages });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -19,7 +32,12 @@ const getChatroomDetail = async (req, res) => {
 
 const getChatrooms = async (req, res) => {
     try {
-        const rooms = await chat_model.find({})
+        const rooms = await chat_model.find({}).populate(
+            {
+                path: "roomId",
+                model: "User",
+                select: "firstName lastName role"
+            })
         if (rooms.length === 0)
             return res.status(404).json({ message: "Chatrooms not existed" });
 
@@ -34,15 +52,11 @@ const sendMessage = async (req, res) => {
         const { roomId, content } = req.body;
         const { _id, role } = req.user;
         const roomFind = role === 0 ? _id : roomId
-        console.log(roomFind);
         const room = await chat_model.findOne({ roomId: roomFind });
 
         if (room) {
             room.message.push({
-                sender: {
-                    id: _id,
-                    role: role,
-                },
+                userId: _id,
                 content: content,
             });
             await room.save();
@@ -58,22 +72,43 @@ const sendMessage = async (req, res) => {
                     content: content,
                 },
             });
-            // Handle creation success (optional)
+            const chatroom = await chat_model.findOne({ _id: createdRoom._id }).populate(
+                {
+                    path: "roomId",
+                    model: "User",
+                    select: "firstName lastName role"
+                }).populate(
+                    {
+                        path: "message.userId",
+                        model: "User",
+                        select: "firstName lastName role"
+                    }
+                )
+
+            return res.status(200).json(chatroom);
+
         }
 
-        const updatedRoom = await chat_model.findOne({ roomId: roomFind });
-        const projectedMessages = updatedRoom.message.map((msg) => ({
-            senderId: msg.sender.id,
-            senderRole: msg.sender.role,
-            content: msg.content,
-            isRead: msg.isRead,
-        }));
-        return res.status(200).json(projectedMessages);
+        const updatedRoom = await chat_model.findOne({ roomId: roomFind }).populate(
+            {
+                path: "roomId",
+                model: "User",
+                select: "firstName lastName role"
+            }).populate(
+                {
+                    path: "message.userId",
+                    model: "User",
+                    select: "firstName lastName role"
+                }
+            );
+        return res.status(200).json(updatedRoom);
     } catch (error) {
 
         return res.status(500).json({ message: error.message });
     }
 };
+
+
 
 
 export { getChatroomDetail, getChatrooms, sendMessage };

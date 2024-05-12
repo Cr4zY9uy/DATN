@@ -92,3 +92,16 @@ export const orderByUser = (userId, page, sortCreated) =>
             page, sortCreated
         }
     })
+
+
+export const listOrder = (page, name, orderStatus, paymentStatus, shippingStatus, sortCreated) => api.get(URL.ORDER.CRUD, {
+    params: {
+        page, name, orderStatus, paymentStatus, shippingStatus, sortCreated
+    }
+})
+
+export const orderByUserPaginate = (userId, page, orderStatus, paymentStatus, shippingStatus, sortCreated) => api.get(URL.ORDER.BY_USER_PAGINATE + `/${userId}`, {
+    params: {
+        page, orderStatus, paymentStatus, shippingStatus, sortCreated
+    }
+})

@@ -9,9 +9,13 @@ import { ACTION_USER, UserContext } from "../../../store/user";
 import Notification from "../../../utils/configToastify";
 import "./../style/header.css";
 import Modal_Search from "./modal_search";
-import { CartContext } from "../../../store/cart";
+import { ACTION_CART, CartContext } from "../../../store/cart";
 import { LogContext } from "../../../store/typeLog/provider";
 import { ACTION_LOG } from "../../../store/typeLog";
+import { getFavourite } from "../../../services/favourite_service";
+import { ACTION_FAVOURITE, FavouriteContext } from "../../../store/favourite";
+import { OrderContext } from "../../../store/order/provider";
+import { ACTION_ORDER } from "../../../store/order";
 
 function Headers() {
     const [searchView, setSearchView] = useState(false);
@@ -20,7 +24,28 @@ function Headers() {
     const logGoogle = useContext(LogContext)
     const user = useContext(UserContext)
     const cart = useContext(CartContext)
+    const order = useContext(OrderContext)
+    const favourite = useContext(FavouriteContext)
+
+    const [fetched, setFetched] = useState(true)
     const navigate = useNavigate()
+    console.log(1235689023);
+    const getFavouriteNow = useQuery({
+        queryKey: ['favourite'],
+        queryFn: () => getFavourite(),
+        refetchOnWindowFocus: false,
+        enabled: fetched || !!user?.state?.currentUser
+    })
+
+    useEffect(() => {
+        if (!getFavouriteNow?.isSuccess) return
+        else {
+            setFetched(false)
+            const rawData = getFavouriteNow?.data?.data?.products
+            favourite.dispatch({ type: ACTION_FAVOURITE.FETCH_FAVOURITE, payload: rawData })
+        }
+    }, [getFavouriteNow?.isSuccess, getFavouriteNow?.data])
+
 
     const handleCart = () => {
         if (!user?.state?.currentUser) Notification({ message: "You have to login first!", type: "error" })
@@ -55,7 +80,6 @@ function Headers() {
             Notification({ message: `${error.response.data.message}`, type: "error" })
         }
     })
-    console.log(1234);
     const handleLogout = () => {
         if (logGoogle?.state?.isLogByGoogle) {
             outGoogle.mutate()
@@ -63,6 +87,9 @@ function Headers() {
         else {
             mutate()
         }
+        order?.dispatch({ type: ACTION_ORDER.REMOVE_ORDER })
+        cart?.dispatch({ type: ACTION_CART.REMOVE_CART })
+        favourite?.dispatch({ type: ACTION_FAVOURITE.REMOVE_FAVOURITE })
     }
 
     const { data, isError } = useQuery({

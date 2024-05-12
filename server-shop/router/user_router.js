@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, register, logout, refresh_token, getAll, detailUser, deleteUser, resetPassword, updateUser, forgetPassword, getCurrentUser, loginByGoogle, resetPasswordCurrentUser } from "../controllers/user_controller.js";
+import { login, register, logout, refresh_token, getAll, detailUser, deleteUser, resetPassword, updateUser, forgetPassword, getCurrentUser, loginByGoogle, resetPasswordCurrentUser, paginate_user, paginate_customer, get_all_user_available, create_user } from "../controllers/user_controller.js";
 import { register_validator, login_validator } from "../validator/user_validator.js";
 import passport from "passport";
 import { authRole, checkAuth } from "../middleware/check_auth.js";
@@ -29,9 +29,12 @@ router.post('/logout/google', function (req, res, next) {
 
 });
 
-router.get('/users', getAll)
+router.get('/users/options/all', getAll)
 router.get('/users/:user_id', detailUser)
 router.get('/user', checkAuth, authRole([0, 1, 2, 3]), getCurrentUser)
+router.get('/users', checkAuth, authRole([2, 3]), paginate_user)
+router.get('/customers', checkAuth, paginate_customer)
+router.get('/users/available/all', checkAuth, get_all_user_available)
 
 router.put('/users/:user_id', updateUser)
 router.put('/reset-password', resetPassword)
@@ -43,6 +46,7 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/logout', logout);
 router.post('/forget-password', forgetPassword)
+router.post('/users', checkAuth, create_user)
 
 router.post('/refresh_token', refresh_token)
 

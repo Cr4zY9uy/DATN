@@ -17,6 +17,12 @@ import rateLimit from "express-rate-limit";
 import cors from "cors";
 import router_banner from './router/banner_router.js'
 import router_blog from './router/blog_router.js'
+import router_rating from './router/rating_router.js'
+import router_comment from './router/comment_router.js'
+import router_favourite from './router/favourite_router.js'
+import router_sale from './router/sale_router.js'
+import router_consignment from './router/consignment_router.js'
+import router_statitics from './router/statitics_router.js'
 import session from "express-session";
 import passport from "passport";
 import { connectToGoogle } from "./google/google-auth.js";
@@ -36,7 +42,7 @@ app.use(upload.array('images', 100))
 
 app.use(cors({
     origin: function (origin, callback) {
-        console.log(origin);
+        // console.log(origin);
         if (!origin) return callback(null, true)
         if (
             origin.includes(process.env.WHITE_URL_1) ||
@@ -58,7 +64,7 @@ app.use(Express.urlencoded({ extended: true, limit: "500MB" }));
 
 app.use(rateLimit({
     windowMs: 60 * 1000,
-    max: 100,
+    max: 1000,
     keyGenerator: (req, res) => {
         return req.clientIp
     }
@@ -79,6 +85,13 @@ app.use("/api/", router_upload)
 app.use("/api/", router_chat)
 app.use("/api/", router_banner)
 app.use("/api/", router_blog)
+app.use("/api/", router_favourite)
+app.use("/api/", router_rating)
+app.use("/api/", router_comment)
+app.use("/api/", router_sale)
+app.use("/api/", router_consignment)
+app.use("/api/", router_statitics)
+
 connectToGoogle()
 
 export default app

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import moongosePaginate from 'mongoose-paginate-v2'
 
 const rating_schema = new mongoose.Schema({
-    star: {
+    stars: {
         type: Number,
         min: 0,
         max: 5,

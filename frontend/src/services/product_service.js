@@ -27,6 +27,13 @@ export const productByCategory = (categoryId, page) => api.get(URL.PRODUCT.CRUD,
     }
 })
 
+export const productMayLike = (id) => api.get(URL.PRODUCT.MAY_LIKE, {
+    params: {
+        id
+    }
+})
+
+
 export const recommendProduct = (id) => api.get(URL.PRODUCT.RECOMMEND + `/${id}`)
 
 export const detail_product_name = async (name) => {
@@ -147,3 +154,5 @@ export const product_by_cate = async (name, page) => {
         return error.response;
     }
 }
+
+export const productAll = () => api.get(URL.PRODUCT.OPTIONS)

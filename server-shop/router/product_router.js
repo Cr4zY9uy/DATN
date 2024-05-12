@@ -13,7 +13,8 @@ import {
     paginate_product,
     add_product,
     edit_product,
-    recommend_product
+    recommend_product,
+    product_may_like
 } from "../controllers/product_controller.js";
 import { authRole, checkAuth } from "../middleware/check_auth.js";
 import { add_product_validator, edit_product_validator } from "../validator/product_validator.js";
@@ -28,9 +29,10 @@ router.put("/product/:id", checkAuth, edit_product);
 router.post("/product", checkAuth, authRole([2, 3]), add_product);
 
 
-router.get("/product/options", all_product);
+router.get("/product/options/all", all_product);
 router.get("/product/:id", detail_product);
 router.get('/product/recommend/:id', recommend_product)
+router.get('/product/may_like/test', product_may_like)
 
 router.get("/product/new", new_product);
 router.get("/product/category/:name", category_product);

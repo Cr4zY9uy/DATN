@@ -20,7 +20,7 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "Email not existed" });
         }
-        if (user.isLocked) {
+        if (!user.isActive) {
             return res.status(401).json({ message: "Account is locked" });
         }
         const verify = await bcrypt.compare(data.password, user.password);
@@ -258,19 +258,10 @@ export const getAll = async (req, res) => {
 }
 
 export const updateUser = async (req, res) => {
-    const { firstName, lastName, phone, image, role, password, address } = req.body
+    const { firstName, lastName, phone, image, role, address, isActive } = req.body
     const { user_id } = req.params
-    const updatedFields = {};
-    if (firstName) updatedFields.firstName = firstName;
-    if (lastName) updatedFields.lastName = lastName;
-    if (phone) updatedFields.phone = phone;
-    if (image) updatedFields.image = image;
-    if (role) updatedFields.role = role;
-    if (password) updatedFields.password = password
-    if (address) updatedFields.address = address
-
     try {
-        const updatedUser = await user_model.findOneAndUpdate({ _id: user_id }, updatedFields, { new: true })
+        const updatedUser = await user_model.findOneAndUpdate({ _id: user_id }, req.body, { new: true })
         if (updatedUser) return res.status(200).json({ ...updatedUser });
         return res.status(404).json({ message: "Not available" });
     } catch (error) {
@@ -306,7 +297,7 @@ export const forgetPassword = async (req, res) => {
     const from = process.env.NODEMAILER_EMAIL
     try {
         const data = await user_model.findOne({ email: email })
-        if (data.isLocked) {
+        if (data.isActive) {
             return res.status(401).json({ message: "Email is locked" });
         }
         if (data) {
@@ -365,7 +356,7 @@ export const resetPasswordCurrentUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "Not allowed" });
         }
-        if (user.isLocked) {
+        if (!user.isActive) {
             return res.status(401).json({ message: "Account is locked" });
         }
         const verify = await bcrypt.compare(data.current_password, user.password);
@@ -382,4 +373,94 @@ export const resetPasswordCurrentUser = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
+}
+
+export const paginate_user = async (req, res) => {
+    const { email, role, name, page, isActive } = req.query
+    const user_role = req.user.role
+    const user_id = req.user._id
+    const query = {}
+    if (email) query.email = email
+    if (isActive) query.isActive = isActive
+
+    if (role) {
+        if (user_role !== 3)
+            query.role = { $nin: ['0', '3'] };
+        query.role = { $in: role };
+    } else if (!role) {
+        if (user_role !== 3)
+            query.role = { $nin: ['0', '3'] };
+        query.role = { $ne: '0' };
+    }
+    const nameQuery = name ? {
+        $or: [
+            { firstName: { $regex: new RegExp(name, "iuy") } },
+            { lastName: { $regex: new RegExp(name, "iuy") } }
+        ]
+    } : {};
+    const limit = 6;
+    const skip = page ? (page - 1) * limit : 0;
+    try {
+        const results = await user_model.paginate({ ...query, ...nameQuery, _id: { $ne: user_id } }, {
+            offset: skip, page: page, limit: limit, select: '-password -refreshToken'
+        })
+        return res.status(200).json(results)
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+
+    }
+}
+
+export const paginate_customer = async (req, res) => {
+    const { email, isActive, name, page } = req.query
+    const query = {}
+    if (email) query.email = { $regex: new RegExp(email, "y") }
+    if (isActive) query.isActive = isActive
+
+    query.role = 0
+    const nameQuery = name ? {
+        $or: [
+            { firstName: { $regex: new RegExp(name, "iu") } },
+            { lastName: { $regex: new RegExp(name, "iu") } }
+        ]
+    } : {};
+    const limit = 6;
+    const skip = page ? (page - 1) * limit : 0;
+    try {
+        const results = await user_model.paginate({ ...query, ...nameQuery }, {
+            offset: skip, page: page, limit: limit, select: '-password -refreshToken'
+        })
+        return res.status(200).json(results)
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+
+    }
+}
+
+export const get_all_user_available = async (req, res) => {
+    const role = req.user.role
+    const query = {}
+    query.isActive = true
+    if (role) query.role = query.role = { $nin: ['0', '3'] };
+    try {
+        const results = await user_model.find(query).select('-password -refreshToken');
+        return res.status(200).json(results)
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+
+    }
+}
+
+export const create_user = async (req, res) => {
+    const user_role = req.user.role
+    const { role } = req.body
+    try {
+        if (user_role === 2 && role !== 1) return res.status(401).json({ message: "Not allowed" });
+        const createdUser = await user_model.create(req.body)
+        if (!createdUser) return res.status(404).json({ message: "Create user unsuccessfully" });
+        return res.status(201).json({ message: "Create user successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+
 }

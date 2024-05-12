@@ -2,40 +2,58 @@ import {
     CameraOutlined,
     PlusOutlined,
 } from "@ant-design/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import {
     Button,
     Flex,
     Form,
     Input,
     InputNumber,
+    Select,
     Switch,
     Typography,
     Upload
 } from 'antd';
 import Card from "antd/es/card/Card";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { queryClient } from "../../../../../../main";
+import { optionCategory } from "../../../../../../services/category_service";
+import { detailProduct, updateProduct } from "../../../../../../services/product_service";
+import { uploadImage } from "../../../../../../services/upload_service";
 import Notification from "../../../../../../utils/configToastify";
 import './UpdateProduct.css';
-import { queryClient } from "../../../../../../main";
-import { detailBanner, updateBanner } from "../../../../../../services/banner_service";
-import { uploadImage } from "../../../../../../services/upload_service";
-import { optionCategory } from "../../../../../../services/category_service";
 
 function UpdateProduct() {
     const navigate = useNavigate();
     const [avatar, setAvatar] = useState('');
+    const [options, setOptions] = useState([])
+
+    const [categories, setCategories] = useState([])
     const [fileList, setFileList] = useState([])
     const [form] = Form.useForm();
-    const { banner_id } = useParams()
     const [isLoading, setIsLoading] = useState(false)
-    const [options, setOptions] = useState([])
-    const categoryOptions = useQuery({
-        queryKey: ['category_admin_options'],
-        queryFn: () => optionCategory()
+
+    const { product_id } = useParams()
+
+
+    const queryCountry = useQuery({
+        queryKey: ['countries_product_create'],
+        queryFn: () => axios.get('https://countriesnow.space/api/v0.1/countries/capital'),
+        placeholderData: keepPreviousData,
+        refetchOnWindowFocus: false
     })
 
+    const optionsCategories = useQuery({
+        queryKey: ["categories_option"],
+        queryFn: () => optionCategory(),
+    })
+
+    const getProduct = useQuery({
+        queryKey: ['product_detail_admin', product_id],
+        queryFn: () => detailProduct(product_id),
+    })
     const handleChange = async (e) => {
 
         setFileList(e.fileList.map(file => ({
@@ -50,78 +68,91 @@ function UpdateProduct() {
         try {
             if (Array.from(formData.entries()).length === 0) return
             const rs = await uploadImage(formData);
-            setAvatar(rs?.data?.images[0]?.url)
+            setAvatar(avatar.concat(rs?.data?.images.map(item => (item.url))))
+            setFileList(fileList.concat(rs?.data?.images.map((item, index) => ({
+                uid: index, name: `image${index}.png`,
+                url: item?.url, status: 'done'
+            }))));
+            setIsLoading(false)
 
+        } catch (error) {
             setFileList(e.fileList.map(file => ({
                 ...file,
-                status: 'done'
+                status: 'error'
             })));
-            setIsLoading(false)
-        } catch (error) {
             console.log(error.message);
         }
     }
 
-    const { isSuccess, data } = useQuery({
-        queryKey: ['banner_detail', banner_id],
-        queryFn: () => detailBanner(banner_id)
-    })
-
-    useEffect(() => {
-        if (!isSuccess) return
-        form.setFieldValue("image", data?.data?.image);
-        form.setFieldValue("title", data?.data?.title);
-        form.setFieldValue("description", data?.data?.description);
-        form.setFieldValue("order", data?.data?.order);
-        form.setFieldValue("isActive", data?.data?.isActive);
-        setFileList([{
-            uid: '1',
-            name: 'image.png',
-            url: data?.data?.image,
-        },])
-        setAvatar(data?.data?.image)
-
-        return () => {
-            setFileList([])
-            setAvatar('')
-        }
-    }, [data, isSuccess, form, setFileList]);
-    useEffect(() => {
-        if (categoryOptions.isError) return
-        const rawData = categoryOptions?.data?.data?.docs
-        setOptions(rawData?.map((item) => ({ value: item._id, label: item.name })))
-    }, [categoryOptions.isError, categoryOptions.data, setOptions])
-    
     const { mutate } = useMutation({
-        mutationFn: (data) => updateBanner(data),
+        mutationFn: (data) => updateProduct(data),
         onSuccess: () => {
-            Notification({ message: "Update product sucessfully", type: 'success' });
+            Notification({ message: "Update product successfully!", type: "success" })
             queryClient.invalidateQueries({ queryKey: ['product_admin'] })
+            navigate('/admin/product', { replace: true })
         },
-        onError: (error) => {
-            Notification({ message: `${error.response.data.message}`, type: "error" })
+        onError: () => {
+            Notification({ message: "Update product unsuccessfully!", type: "error" })
         }
     })
+    const handleSubmit = (value) => {
+        if (!isLoading) {
+            mutate({ ...value, images: avatar, id: product_id });
+        }
+    }
+
+
+    useEffect(() => {
+        if (!queryCountry?.isSuccess) return
+        const rawData = queryCountry?.data?.data?.data
+        setOptions(rawData?.map(item => ({ value: item?.name, text: item?.name })))
+
+    }, [queryCountry?.isSuccess, queryCountry?.data, setOptions])
+
+    useEffect(() => {
+        if (!optionsCategories?.isSuccess) return
+        const rawData = optionsCategories?.data?.data?.data
+        setCategories(rawData?.map(item => ({ value: item?._id, label: item?.name })))
+
+    }, [optionsCategories?.isSuccess, optionsCategories?.data, setCategories])
+
+    useEffect(() => {
+        if (!getProduct?.isSuccess) return
+        const rawData = getProduct?.data?.data
+        form.setFieldValue('images', rawData?.images)
+        form.setFieldValue('name', rawData?.name)
+        form.setFieldValue('categoryId', rawData?.categoryId?._id)
+        form.setFieldValue('origin', rawData?.origin)
+        form.setFieldValue('description', rawData?.description)
+        form.setFieldValue('isActive', rawData?.isActive)
+        form.setFieldValue('unit', rawData?.unit)
+        form.setFieldValue('price', rawData?.price)
+        setFileList(
+            rawData?.images.map((item, index) => ({
+                uid: `${index}`,
+                name: `image${index}.png`,
+                url: item,
+            })))
+        setAvatar(rawData?.images)
+        return () => {
+            setAvatar([])
+            setFileList([])
+        }
+    }, [getProduct?.isSuccess, getProduct?.data, form])
 
     useEffect(() => {
         if (fileList.length === 0) {
-            form.resetFields(['images'])
+            form.resetFields(['image'])
             setAvatar('')
         }
 
     }, [fileList.length, form])
 
-    const handleSubmit = (e) => {
-        if (!isLoading) {
-            mutate({ ...e, image: avatar, id: banner_id });
-            navigate('/admin/banner')
-        }
-        return
-    }
-
     return (
         <Flex className="add_product_panel container" vertical>
+            <h2 className='caption'><PlusOutlined />Update product</h2>
             <Card
+                title="Update product"
                 bordered={false}
                 className="form"
             >
@@ -201,7 +232,31 @@ function UpdateProduct() {
                                         }
                                     ]}
                                 >
-                                    <Select placeholder="Category" size="small" style={{ height: "31px" }} options={options} allowClear />
+                                    <Select placeholder="Category" size="small" style={{ height: "31px" }} options={categories} allowClear />
+                                </Form.Item>
+                            </Flex>
+                            <Flex vertical style={{ width: "100%" }}>
+                                <Typography.Title level={5}>Origin</Typography.Title>
+                                <Form.Item
+                                    name="origin"
+                                    hasFeedback
+                                    validateDebounce={1500}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Origin must be not empty"
+
+                                        }
+                                    ]}
+                                >
+                                    <Select placeholder="Origin" size="small" style={{ height: "31px" }} options={options} allowClear
+                                        showSearch
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) => (option?.text ?? '').includes(input)}
+                                        filterSort={(optionA, optionB) =>
+                                            (optionA?.text ?? '').toLowerCase().localeCompare((optionB?.text ?? '').toLowerCase())
+                                        }
+                                    />
                                 </Form.Item>
                             </Flex>
                             <Flex vertical style={{ width: "100%" }}>
@@ -230,6 +285,29 @@ function UpdateProduct() {
                                 </Form.Item>
                             </Flex>
                             <Flex vertical style={{ width: "100%" }}>
+                                <Typography.Title level={5}>Unit</Typography.Title>
+                                <Form.Item
+                                    name="unit"
+                                    validateDebounce={1500}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Unit must be not empty"
+                                        },
+                                        {
+                                            min: 5,
+                                            message: "Minimum 5 character"
+                                        },
+                                        {
+                                            max: 20,
+                                            message: "Maximum 20 character"
+                                        }
+                                    ]}
+                                    hasFeedback >
+                                    <Input placeholder="Unit" />
+                                </Form.Item>
+                            </Flex>
+                            <Flex vertical style={{ width: "100%" }}>
 
                                 <Typography.Title level={5}>Price</Typography.Title>
                                 <Form.Item
@@ -249,31 +327,12 @@ function UpdateProduct() {
                                 </Form.Item>
                             </Flex>
                             <Flex vertical style={{ width: "100%" }}>
-
-                                <Typography.Title level={5}>Quantity</Typography.Title>
-                                <Flex style={{ width: "100%" }} gap={50}>
-                                    <Form.Item
-                                        hasFeedback
-                                        validateDebounce={1500}
-                                        name="inTrade"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: "Quantity must be not empty or negative number",
-                                                pattern: new RegExp(/^[0-9]+$/)
-
-                                            }
-                                        ]}
-                                    >
-                                        <InputNumber placeholder="Quantity" />
+                                <Flex gap={10}>
+                                    <Form.Item name='isActive'>
+                                        <Switch checkedChildren='Active' unCheckedChildren="Deactive" />
                                     </Form.Item>
-                                    <Flex gap={10}>
-                                        <Form.Item name='isActive'>
-                                            <Switch checkedChildren='Active' unCheckedChildren="Deactive" />
-                                        </Form.Item>
-                                        <Typography.Title level={5}>Status</Typography.Title>
+                                    <Typography.Title level={5}>Status</Typography.Title>
 
-                                    </Flex>
                                 </Flex>
                             </Flex>
                             <Form.Item>
@@ -281,7 +340,6 @@ function UpdateProduct() {
                                     <Button type="primary" htmlType="submit" disabled={isLoading} >
                                         Add new
                                     </Button>
-                                    <Button htmlType="reset">Reset</Button>
                                 </Flex>
                             </Form.Item>
                         </Flex>
