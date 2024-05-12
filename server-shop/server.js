@@ -52,18 +52,17 @@ socketIO.on('connection', (socket) => {
 
     socket.on("join chat", (room) => socket.join(room)
     );
-    socket.on("typing", (room) => socket.in(room).emit("typing"));
-    socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+
+    socket.on("send message", (data) => {
+        const { senderId, receiverId, content } = data;
+        socket.to(receiverId).emit("receive message", { senderId, content });
+    });
 
     socket.on("new message", (newMessageRecieved) => {
-        var chat = newMessageRecieved.chat;
-
-        if (!chat.users) return console.log("chat.users not defined");
-
-        chat.users.forEach((user) => {
-            if (user._id == newMessageRecieved.sender._id) return;
-
-            socket.in(user._id).emit("message recieved", newMessageRecieved);
+        if (!newMessageRecieved.roomId) return console.log("Not defined");
+        newMessageRecieved.message.forEach((user) => {
+            console.log(user.userId._id);
+            socket.in(user.userId._id).emit("message recieved", newMessageRecieved);
         });
     });
 

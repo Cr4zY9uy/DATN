@@ -1,0 +1,4 @@
+
+const favourite = []
+
+export { favourite }

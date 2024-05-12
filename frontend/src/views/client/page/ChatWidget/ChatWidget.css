@@ -1,0 +1,49 @@
+.chatbox {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    height: 25rem;
+    width: 20rem;
+    background-color: #777;
+    border-radius: 8px;
+    z-index: 10000;
+    overflow: hidden;
+}
+
+.chatbox_header {
+    height: 2.5rem;
+    width: 100%;
+    background-color: black;
+    padding-right: 10px;
+}
+
+.chatbox_header--text {
+    line-height: 0 !important;
+    margin: 0 !important;
+    color: white !important;
+    padding: 1rem !important;
+    font-size: 1.5rem !important;
+}
+
+.chatbox_header--btn {
+    border: none;
+    background-color: transparent;
+    color: white;
+}
+
+.chatbox_body {
+    height: 18rem;
+    background-color: white;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.chatbox_footer {
+    height: 3.5rem;
+    background-color: #777;
+}
+
+.ant-float-btn-group-wrap {
+    margin: 0 !important;
+    margin-bottom: -10px;
+}

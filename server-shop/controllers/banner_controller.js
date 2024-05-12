@@ -119,8 +119,8 @@ export const paginate_banner = async (req, res) => {
     const limit = 6;
     const skip = (page - 1) * limit;
     const query = {};
-    if (title) query.title = title;
-    if (description) query.description = description;
+    if (title) query.title = { $regex: new RegExp(title, "y") };
+    if (description) query.description = { $regex: new RegExp(description, "y") };
     if (isActive) query.isActive = isActive;
     let sortKind = {};
     if (sortOrder) {

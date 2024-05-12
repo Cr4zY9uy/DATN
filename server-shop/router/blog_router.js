@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { Role } from "../enums/enum.js";
+import { Role } from "../helper/enum.js";
 import { authRole, checkAuth } from "../middleware/check_auth.js";
 import { add_blog, all_blog, delete_blog_list, delete_blog_one, detail_blog, paginate_blog, update_blog } from "../controllers/blog_controller.js";
 const router = Router();

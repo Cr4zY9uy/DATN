@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { Role } from "../enums/enum.js";
+import { Role } from "../helper/enum.js";
 import { authRole, checkAuth } from "../middleware/check_auth.js";
 import { add_banner, all_banner, delete_banner_list, delete_banner_one, detail_banner, paginate_banner, update_banner } from "../controllers/banner_controller.js";
 const router = Router();

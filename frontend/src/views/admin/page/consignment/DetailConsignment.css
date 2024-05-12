@@ -1,0 +1,18 @@
+.crud_user input::-webkit-outer-spin-button,
+.crud_user input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.crud_user input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.detail_rating form label {
+    font-weight: 600 !important;
+    font-size: 18px !important;
+}
+
+.detail_rating form .ant-typography {
+    font-size: 16px;
+}

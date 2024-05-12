@@ -12,30 +12,36 @@ import Hot from "../layout/hot";
 import LastView from "../layout/last_view";
 import Product_LSView from "../layout/product_LSView";
 import "./../style/product_detail.css";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { detailProduct, recommendProduct } from "../../../services/product_service";
 import clsx from "clsx";
 import { ACTION_PRODUCT_LASTVIEW, LastViewProductContext } from "../../../store/productLastView";
 import { ACTION_CART, CartContext } from "../../../store/cart";
 import Notification from "../../../utils/configToastify";
 import { UserContext } from "../../../store/user";
+import { addFavourite } from "../../../services/favourite_service";
+import { ACTION_FAVOURITE, FavouriteContext } from "../../../store/favourite";
+import { addRating } from "../../../services/rating_service";
+import { queryClient } from "../../../main";
+import { addComment, commentOfProduct, commentOfProductAll } from "../../../services/comment_service";
 
 function ProductDetail() {
     const lastView = useContext(LastViewProductContext)
     const cart = useContext(CartContext)
+
     const [recommendProducts, setRecommendProducts] = useState([])
     const { id } = useParams();
     const [form] = Form.useForm()
-    const handleSubmit = (e) => {
-        console.log(e);
-    }
 
+    const favourite = useContext(FavouriteContext)
     const user = useContext(UserContext)
     const info = user?.state?.currentUser
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+
     const [product, setProduct] = useState({})
     const [mainImage, setMainImage] = useState('')
     const [productCategory, setProductCategory] = useState([]);
+    const [comments, setComments] = useState([])
 
     const detailProductClient = useQuery({
         queryKey: ['detail_product_client', id],
@@ -45,6 +51,17 @@ function ProductDetail() {
     const getRecommendProduct = useQuery({
         queryKey: ['recommend_product', id],
         queryFn: () => recommendProduct(id)
+    })
+
+    const { mutate } = useMutation({
+        mutationFn: (id) => addFavourite(id),
+        onSuccess: () => {
+            Notification({ message: "Add to wishlist successfully!", type: "success" })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "info" })
+
+        }
     })
 
     useEffect(() => {
@@ -81,33 +98,7 @@ function ProductDetail() {
     }, [getRecommendProduct?.isSuccess, getRecommendProduct?.data])
 
 
-    const items = [
-        {
-            key: '1',
-            label: 'Description',
-            children: product?.description,
-        },
-        {
-            key: '2',
-            label: 'Comments',
-            children:
-                <Flex gap={25} vertical className="comments">
-                    <Flex align='center' gap={50}>
-                        <Avatar size={50} src="http://res.cloudinary.com/dv7ni8uod/image/upload/v1713456414/shop/spbuqhgkocky3aef2rtk.webp" icon={<UserOutlined />} />
-                        <Typography.Text style={{ fontSize: "16px" }}>Very good. nice service</Typography.Text>
-                    </Flex>
-                    <Flex align='center' gap={50}>
-                        <Avatar size={50} src="http://res.cloudinary.com/dv7ni8uod/image/upload/v1713456414/shop/spbuqhgkocky3aef2rtk.webp" icon={<UserOutlined />} />
-                        <Typography.Text style={{ fontSize: "16px" }}>Very good. nice service</Typography.Text>
-                    </Flex>
-                    <Flex align='center' gap={50}>
-                        <Avatar size={50} src="" icon={<UserOutlined />} />
-                        <Typography.Text style={{ fontSize: "16px" }}>Very good. nice service</Typography.Text>
-                    </Flex>
 
-                </Flex>,
-        }
-    ];
 
     const handleImageClick = (index) => {
         setActiveImageIndex(index);
@@ -134,7 +125,19 @@ function ProductDetail() {
         if (product && mainImage !== '')
             lastView?.dispatch({ type: ACTION_PRODUCT_LASTVIEW.ADD_PRODUCT, payload: { ...product, mainImage: mainImage } })
     }, [product, mainImage])
-    console.log(123);
+
+
+
+    const addToFavourite = () => {
+
+        if (info) {
+            mutate(id)
+            favourite.dispatch({ type: ACTION_FAVOURITE.ADD_FAVOURITE, payload: product })
+        }
+        else
+            Notification({ message: "You have to login first!", type: "error" })
+
+    }
 
     const addToCart = () => {
         if (info) {
@@ -147,6 +150,74 @@ function ProductDetail() {
         }
     };
 
+    const queryComment = useQuery({
+        queryKey: ['comment_product_client', product?.id],
+        queryFn: () => commentOfProductAll(product?.id),
+        enabled: !!product?.id
+    })
+
+    const rateProduct = useMutation({
+        mutationFn: (data) => addRating(data),
+        onSuccess: () => {
+            Notification({ message: "Rate product successfully", type: "success" }),
+                queryClient.invalidateQueries({ queryKey: ['detail_product_client'] })
+        },
+        onError: (error) => Notification({ message: `${error.response.data.message}`, type: "info" })
+    })
+
+    const feedback = useMutation({
+        mutationFn: (data) => addComment(data),
+        onSuccess: () => {
+            Notification({ message: "Leave feedback successfully", type: "success" }),
+                queryClient.invalidateQueries({ queryKey: ['detail_product_client'] })
+        },
+        onError: (error) => Notification({ message: `${error.response.data.message}`, type: "info" })
+    })
+    const handleSubmit = (e) => {
+        feedback.mutate({ productId: product?.id, ...e })
+    }
+    useEffect(() => {
+        if (!queryComment.isSuccess) return
+        const rawData = queryComment?.data?.data?.data
+        setComments(rawData.map(item => ({
+            id: item?._id,
+            image: item?.userId?.image,
+            userId: item?.userId?._id,
+            content: item?.content,
+            firstName: item?.userId?.firstName,
+            lastName: item?.userId?.lastName
+        })))
+        return () => {
+            setComments([])
+        }
+    }, [queryComment.isSuccess, queryComment?.data])
+
+
+    const items = [
+        {
+            key: '1',
+            label: 'Description',
+            children: product?.description,
+        },
+        {
+            key: '2',
+            label: 'Comments',
+            children:
+                <Flex gap={25} vertical className="comments">
+                    {comments.length !== 0
+                        ? (comments.map(item => (
+                            <Flex align='center' gap={50} key={item?.id}>
+                                <Avatar size={50} src={item?.image} icon={<UserOutlined />} />
+                                <Flex vertical>
+                                    <Typography.Title level={5} style={{ marginBottom: 0, fontSize: "19px" }} >{item?.firstName + " " + item?.lastName}</Typography.Title>
+                                    <Typography.Text style={{ fontSize: "16px" }}>{item?.content}</Typography.Text>
+                                </Flex>
+                            </Flex>
+                        ))
+                        ) : <Empty description={'No comments available'} />}
+                </Flex>,
+        }
+    ];
 
     return (
         <Flex vertical>
@@ -212,13 +283,13 @@ function ProductDetail() {
                                                     {product?.price * (1 - parseFloat(0.1))}$
                                                     {product?.price === 0 ? "" : <span className="discount">{`${1000}$`}</span>}
                                                 </Typography.Title>
-                                                <Button shape="circle" className="fav"><HeartOutlined /></Button>
+                                                <Button shape="circle" className="fav" onClick={() => addToFavourite()}><HeartOutlined /></Button>
                                             </Flex>
                                             <hr />
                                             <p>Stock status: <span className="stock_status">{product?.quantity === 0 ? `Out of stock` : `In stock`}</span></p>
                                             <p>Category: <span className="category">{product?.category}</span></p>
                                             <p>Unit: <span className="category">{product?.unit}</span></p>
-                                            <Rate allowHalf defaultValue={2.5} />
+                                            <Rate allowHalf defaultValue={2.5} onChange={(e) => rateProduct.mutate({ stars: e, productId: product?.id })} />
                                             <hr />
                                         </div>
                                         <Flex vertical gap={8} style={{ height: "30vh" }}>
@@ -245,41 +316,43 @@ function ProductDetail() {
                             </Flex>
                         </Flex>
                         <Tabs defaultActiveKey="1" items={items} />
-                        <Flex gap={30} style={{ width: "100%" }} vertical className="submit_comment">
-
-                            <Typography.Title level={2}>Submit your comment</Typography.Title>
-                            <Flex style={{ width: "100%" }} align="center" gap={50}>
-                                <Avatar size={50} src={info?.image ? info?.image : ""} icon={<UserOutlined />} />
-                                <Form
-                                    form={form}
-                                    layout="horizontal"
-                                    onFinish={handleSubmit}
-                                    style={{ width: "60%" }}
-                                >
-                                    <Form.Item
-                                        name="comment"
-                                        hasFeedback
-                                        style={{ marginBottom: 0 }}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input!',
-                                            },
-                                            {
-                                                min: 3,
-                                                message: "At least 3 characters"
-                                            },
-                                            {
-                                                max: 150,
-                                                message: "At max 50 characters"
-                                            }
-                                        ]}
-                                    >
-                                        <Input type="text" placeholder="Type your comment here" size="large" style={{ marginBottom: "0px" }} />
-                                    </Form.Item>
-                                </Form>
-                            </Flex>
-                        </Flex>
+                        {info ?
+                            comments?.some(item => item.userId === info?.user_id) ? <></> : (
+                                <Flex gap={30} style={{ width: "100%" }} vertical className="submit_comment">
+                                    <Typography.Title level={2}>Submit your comment</Typography.Title>
+                                    <Flex style={{ width: "100%" }} align="center" gap={50}>
+                                        <Avatar size={50} src={info?.image ? info?.image : ""} icon={<UserOutlined />} />
+                                        <Form
+                                            form={form}
+                                            layout="horizontal"
+                                            onFinish={handleSubmit}
+                                            style={{ width: "60%" }}
+                                        >
+                                            <Form.Item
+                                                name="content"
+                                                hasFeedback
+                                                style={{ marginBottom: 0 }}
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input!',
+                                                    },
+                                                    {
+                                                        min: 3,
+                                                        message: "At least 3 characters"
+                                                    },
+                                                    {
+                                                        max: 150,
+                                                        message: "At max 150 characters"
+                                                    }
+                                                ]}
+                                            >
+                                                <Input type="text" placeholder="Type your comment here" size="large" style={{ marginBottom: "0px" }} />
+                                            </Form.Item>
+                                        </Form>
+                                    </Flex>
+                                </Flex>
+                            ) : <></>}
                         <Flex className="product_relate-list" vertical>
                             <Typography.Title level={2}>You may like</Typography.Title>
                             <Flex className="relate_list" gap="large">

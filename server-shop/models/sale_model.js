@@ -17,7 +17,6 @@ const sale_schema = new mongoose.Schema({
             }
         }
     ],
-
     applyDate: {
         type: Date,
         require: true

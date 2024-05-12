@@ -23,8 +23,7 @@ export const add_product = async (req, res) => {
 
 export const edit_product = async (req, res) => {
     const product_id = req.params.id;
-    console.log(product_id);
-    const { name, images, categoryId, quantity, origin, description, isActive } = req.body;
+    const { name, images, categoryId, quantity, origin, description, isActive, unit, price } = req.body;
     const data = {};
     if (name) data.name = name;
     if (description) data.description = description;
@@ -33,14 +32,16 @@ export const edit_product = async (req, res) => {
     if (categoryId) data.categoryId = categoryId
     if (quantity) data.quantity = quantity
     if (origin) data.origin = origin
+    if (unit) data.unit = unit
+    if (price) data.price = price
+
     try {
-        console.log(data);
         const product = await product_model.findOne({ _id: product_id });
         if (!product) {
             return res.status(404).json({ message: "Product does not exist" });
         }
-        if (data.name) {
-            const checkExistName = await product_model.findOne({ name: { $regex: new RegExp(data.name, 'i') } });
+        if (data.name !== product.name) {
+            const checkExistName = await product_model.findOne({ name: { $regex: new RegExp(data.name, 'iyu') } });
             if (checkExistName) {
                 return res.status(400).json({ message: "Product name is existed" });
             }
@@ -64,14 +65,14 @@ export const detail_product = async (req, res) => {
     console.log(product_id);
     try {
         const product = await product_model.findOne({ _id: product_id })
-            // .populate({
-            //     path: 'ratingId',
-            //     model: "Rating"
-            // })
-            // .populate({
-            //     path: 'saleId',
-            //     model: "Sale"
-            // })
+            .populate({
+                path: 'ratingId',
+                model: "Rating"
+            })
+            .populate({
+                path: 'saleId',
+                model: "Sale"
+            })
             .populate('categoryId')
         if (!product) {
             return res.status(404).json({ message: "Product no exists" });
@@ -176,10 +177,16 @@ export const paginate_product = async (req, res) => {
 export const all_product = async (req, res) => {
 
     try {
-        const data = await product_model.find({})
-            .populate('Rating')
-            .populate('Sale')
-            .populate('Category')
+        const data = await product_model.find()
+            .populate({
+                path: 'ratingId',
+                model: "Rating"
+            })
+            .populate({
+                path: 'saleId',
+                model: "Sale"
+            })
+            .populate('categoryId')
         if (data.length === 0) {
             return res.status(404).json({ message: "No product" });
         }
@@ -273,5 +280,36 @@ export const product_by_category = async (req, res) => {
         return res.status(200).json({ ...data });
     } catch (error) {
         return res.status(500).json({ message: error.message });
+    }
+}
+
+export const product_may_like = async (req, res) => {
+    const productId = req?.query?.id
+    try {
+        if (productId) {
+            const toCategory = await product_model.findById(productId)
+
+            const dataToCategory = await product_model.find({
+                categoryId: toCategory.categoryId
+            })
+            const data = await product_model.find({
+                'quantity.sold': { $gt: 0 }
+            }).sort({
+                'quantity.sold': - 1
+            })
+            return res.status(200).json({ ...data, ...dataToCategory })
+        }
+        else {
+            const data = await product_model.find({
+                'quantity.sold': { $gt: 0 }
+            }).sort({
+                'quantity.sold': - 1
+            })
+            return res.status(200).json({ data })
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+
     }
 }

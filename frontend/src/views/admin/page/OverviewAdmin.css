@@ -1,0 +1,64 @@
+.overview {
+    width: 100%;
+    background-color: #ecedeb;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.overview .card {
+    width: 240px;
+    height: 80px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .125),
+        0 1px 3px rgba(0, 0, 0, .2);
+    gap: 40px;
+    align-items: center;
+    padding: 10px;
+}
+
+.overview .card .card_item {
+    width: 70px;
+    height: 65px;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.overview .card .card_item.red {
+    background-color: rgb(221, 64, 64);
+}
+
+.overview .card .card_item.blue {
+    background-color: rgb(64, 140, 221);
+}
+
+.overview .card .card_item.green {
+    background-color: rgb(64, 221, 109);
+}
+
+.overview .card .card_item.yellow {
+    background-color: rgb(221, 221, 64);
+}
+
+.overview .card .card_item.red span,
+.overview .card .card_item.yellow span,
+.overview .card .card_item.blue span,
+.overview .card .card_item.green span {
+    color: white;
+    font-size: 25px;
+}
+
+.overview .card .ant-typography {
+    font-weight: 700;
+}
+
+.overview .card button {
+    padding-left: 0;
+}
+
+.overview .ant-card {
+    border-radius: 8px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .125),
+        0 1px 3px rgba(0, 0, 0, .2);
+}

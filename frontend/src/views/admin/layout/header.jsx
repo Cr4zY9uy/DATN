@@ -13,7 +13,7 @@ import { LogContext } from '../../../store/typeLog/provider';
 function HeaderClient() {
 
     const { Header } = Layout
-    const { dispatch } = useContext(UserContext)
+    const { dispatch, state } = useContext(UserContext)
     const logGoogle = useContext(LogContext)
 
     const outGoogle = useMutation({
@@ -49,8 +49,7 @@ function HeaderClient() {
     }
     const content = (
         <Flex vertical gap={5} style={{ textDecoration: 'none' }}>
-            <NavLink style={{ color: "#000" }}>Infomation</NavLink>
-            <NavLink style={{ color: "#000" }}>Change password</NavLink>
+            <NavLink style={{ color: "#000" }} to={`/admin/users/${state?.currentUser?.user_id}`}>Infomation</NavLink>
             <NavLink style={{ color: "#000" }} onClick={handleLogout}>Logout</NavLink>
         </Flex>
     );

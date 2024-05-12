@@ -1,17 +1,22 @@
 import { Flex } from 'antd';
-import { Outlet, useNavigation } from 'react-router';
+import clsx from 'clsx';
+import { useEffect, useState } from 'react';
+import { Outlet, useLocation } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import './DetailProduct.css';
-import clsx from 'clsx';
-import { useState } from 'react';
 
 export const DetailProduct = () => {
-    const navigate = useNavigation();
 
-    // State to keep track of the active link
     const [activeLink, setActiveLink] = useState('information');
+    const location = useLocation()
+    useEffect(() => {
+        if (location.pathname.split('/').includes("product")) {
+            if (location.pathname.split('/').length === 4) setActiveLink("information")
+            else
+                setActiveLink(location.pathname.split('/')[4])
+        }
+    }, [location])
 
-    // Handler function to set the active link
     const setActive = (link) => {
         setActiveLink(link);
     };

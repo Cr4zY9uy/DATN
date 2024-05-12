@@ -250,7 +250,7 @@ function Shop() {
                                 <Flex gap={"16px"} wrap="wrap">
                                     {products.map(item => (
                                         <Flex className="shop_item col-4" vertical align="center" key={item?.id}>
-                                            <img src={item?.image} alt={item?.name} width={60} height={150} onClick={() => navigate(`/client/product/${item?.id}`)} />
+                                            <img src={item?.image} alt={item?.name} width={60} style={{ cursor: "pointer" }} height={150} onClick={() => navigate(`/client/product/${item?.id}`)} />
                                             <Typography.Title level={5} ellipsis={true}>{item?.name}</Typography.Title>
                                             <Typography.Text className="discount">10$<span className="price">{item?.price}$</span></Typography.Text>
                                             <Rate allowHalf disabled defaultValue={2.5} />

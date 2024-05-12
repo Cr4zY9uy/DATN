@@ -9,7 +9,6 @@ export const logTypeReducer = (state = initialLogState, action) => {
     let newState;
     switch (action.type) {
         case ACTION_LOG.IN: {
-            console.log(1234);
             newState = { ...state, isLogByGoogle: true };
             UpdateLocalStorage(newState, "isLogGoogle")
             return newState;

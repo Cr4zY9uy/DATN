@@ -35,14 +35,17 @@ function Home() {
             price: item?.price,
             image: item?.images[0],
             id: item?._id,
-            origin: item?.origin
+            origin: item?.origin,
+            sale: item?.saleId
+
         })))
         setProductNew(rawData?.map(item => ({
             name: item?.name,
             price: item?.price,
             image: item?.images[0],
             id: item?._id,
-            origin: item?.origin
+            origin: item?.origin,
+            sale: item?.saleId
         })))
         SetIsLoadingNew(false)
         SetIsLoadingSale(false)

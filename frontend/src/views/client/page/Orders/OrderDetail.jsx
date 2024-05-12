@@ -61,7 +61,6 @@ export const OrderDetail = () => {
         }
 
     }, [isSuccess, data, setProducts])
-    console.log(products);
 
     const options =
         [

@@ -1,0 +1,20 @@
+.message {
+    padding: 0.5rem 1rem;
+}
+
+.message_user .ant-typography {
+    background-color: rgb(200, 196, 196);
+    padding: .5rem;
+    border-top-left-radius: .8rem;
+    border-bottom-left-radius: .8rem;
+    border-top-right-radius: .8rem;
+}
+
+.message_admin .ant-typography {
+    background-color: rgb(145, 143, 143);
+    padding: .5rem;
+    color: white;
+    border-top-left-radius: .8rem;
+    border-bottom-right-radius: .8rem;
+    border-top-right-radius: .8rem;
+}

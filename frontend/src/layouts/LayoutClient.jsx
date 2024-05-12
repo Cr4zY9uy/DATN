@@ -4,10 +4,14 @@ import Copyright from '../views/client/layout/copyright';
 import Footers from '../views/client/layout/footer';
 import Headers from '../views/client/layout/header';
 import { avoidDoubleClick } from '../utils/avoidDoubleClick';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
+import { ChatWidget } from '../views/client/page/ChatWidget/ChatWidget';
+import { UserContext } from '../store/user';
 
 export const LayoutClient = () => {
     const { Header, Content, Footer } = Layout;
+
+    const { state } = useContext(UserContext)
 
     useEffect(() => {
         avoidDoubleClick();
@@ -22,7 +26,9 @@ export const LayoutClient = () => {
                 <Outlet />
             </Content>
 
+            {state?.currentUser && <ChatWidget />}
             <Footer>
+
                 <Footers />
                 <Copyright />
 

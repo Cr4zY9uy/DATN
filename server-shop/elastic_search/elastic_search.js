@@ -12,16 +12,16 @@ const client = new Client({
     }
 })
 
-router.get('/test', async (req, res) => {
+router.get('/search', async (req, res) => {
     const { searchParam } = req.query;
     try {
         const result = await client.search({
-            index: 'categories',
+            index: 'products',
             size: 10,
             _source: [],
             query: {
                 match: {
-                    category_id: searchParam
+                    name: searchParam
                 }
             }
         })

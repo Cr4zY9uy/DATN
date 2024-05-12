@@ -23,9 +23,8 @@ const chat_schema = new mongoose.Schema({
             trim: true,
             min: 3
         },
-        daySent: {
+        day: {
             type: Date,
-            default: Date.now(),
         }
     }]
 }, { timestamps: true })
