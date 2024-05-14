@@ -4,18 +4,18 @@ import moongosePaginate from 'mongoose-paginate-v2'
 const category_schema = new mongoose.Schema({
     name: {
         type: String,
-        require: true,
+        required: true,
         min: 6,
         max: 50,
         trim: true,
     },
     image: {
         type: String,
-        require: true
+        required: true
     },
     description: {
         type: String,
-        require: true,
+        required: true,
         min: 6,
         max: 300,
         trim: true,
@@ -26,7 +26,7 @@ const category_schema = new mongoose.Schema({
     },
     order: {
         type: Number,
-        require: true
+        required: true
     }
 },
     {

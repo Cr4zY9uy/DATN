@@ -66,7 +66,11 @@ function CheckoutConfirm() {
         if (order?.state?.currentOrder?.paymentMethod === 'vnpay') {
             notVnpay.mutate({
                 ...order?.state?.currentOrder,
-                products: cart?.state?.currentCart.map(item => ({ productId: item?.id, subPrice: item?.quantityBuy * item?.price, quantity: item?.quantityBuy })),
+                products: cart?.state?.currentCart.map(item => ({
+                    productId: item?.id,
+                    subPrice: item?.quantityBuy * (item?.pricePromotion ? item?.price * (1 - parseFloat(item?.pricePromotion)) : item?.price),
+                    quantity: item?.quantityBuy
+                })),
                 userId: user?.state?.currentUser?.user_id,
                 tax: (subTotal * 0.09).toFixed(2)
             }, {
@@ -76,7 +80,11 @@ function CheckoutConfirm() {
         else {
             notVnpay.mutate({
                 ...order?.state?.currentOrder,
-                products: cart?.state?.currentCart.map(item => ({ productId: item?.id, subPrice: item?.quantityBuy * item?.price, quantity: item?.quantityBuy })),
+                products: cart?.state?.currentCart.map(item => ({
+                    productId: item?.id,
+                    subPrice: item?.quantityBuy * (item?.pricePromotion ? item?.price * (1 - parseFloat(item?.pricePromotion)) : item?.price),
+                    quantity: item?.quantityBuy
+                })),
                 userId: user?.state?.currentUser?.user_id,
                 tax: (subTotal * 0.09).toFixed(2)
             }, {
@@ -92,7 +100,7 @@ function CheckoutConfirm() {
     useEffect(() => {
         setProducts(cart?.state?.currentCart?.map(item => ({
             name: item?.name,
-            price: item?.price,
+            price: item?.pricePromotion ? item?.price * (1 - parseFloat(item?.pricePromotion)) : item?.price,
             quantity: item?.quantityBuy
         })))
 

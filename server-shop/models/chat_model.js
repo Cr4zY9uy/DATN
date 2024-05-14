@@ -5,13 +5,13 @@ const chat_schema = new mongoose.Schema({
     roomId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        require: true,
+        required: true,
     },
     message: [{
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
-            require: true,
+            required: true,
         },
         isRead: {
             type: Boolean,
@@ -19,7 +19,7 @@ const chat_schema = new mongoose.Schema({
         },
         content: {
             type: String,
-            required: true,
+            requiredd: true,
             trim: true,
             min: 3
         },

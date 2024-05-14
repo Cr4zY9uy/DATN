@@ -10,6 +10,7 @@ import "../style/shop.css";
 import { ACTION_CART, CartContext } from "../../../store/cart";
 import Notification from "../../../utils/configToastify";
 import { UserContext } from "../../../store/user";
+import dayjs from "dayjs";
 
 const getCategoryLabels = (categoryFilter, optionsCategory) => {
     return categoryFilter.map(filterId => {
@@ -135,7 +136,13 @@ function Shop() {
             name: item?.name,
             image: item?.images[0],
             price: item?.price,
-            quantity: item?.quantity?.inTrade
+            quantity: item?.quantity?.inTrade,
+            stars: item?.ratingId?.reduce((acc, curr) => acc + curr.stars, 0) / item?.ratingId?.length,
+            pricePromotion: item?.saleId.length !== 0 ?
+                new Date(dayjs(item?.saleId[item?.saleId.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
+                    0 :
+                    (item?.saleId[item?.saleId.length - 1]?.products || []).find(product => product.productId === item?._id)?.pricePromotion || 0
+                : 0
         })))
         setTotal(rawData?.totalDocs)
         setIsEmpty(false)
@@ -252,8 +259,20 @@ function Shop() {
                                         <Flex className="shop_item col-4" vertical align="center" key={item?.id}>
                                             <img src={item?.image} alt={item?.name} width={60} style={{ cursor: "pointer" }} height={150} onClick={() => navigate(`/client/product/${item?.id}`)} />
                                             <Typography.Title level={5} ellipsis={true}>{item?.name}</Typography.Title>
-                                            <Typography.Text className="discount">10$<span className="price">{item?.price}$</span></Typography.Text>
-                                            <Rate allowHalf disabled defaultValue={2.5} />
+                                            <Typography.Text className="discount">
+                                                {item?.pricePromotion ? (
+                                                    <>
+                                                        {parseFloat(item?.price * (1 - parseFloat(item?.pricePromotion))).toLocaleString('en-US', {
+                                                            style: 'currency',
+                                                            currency: 'USD', // Adjust currency code as needed
+                                                            minimumFractionDigits: 0, // Set minimum decimal places to 0
+                                                            maximumFractionDigits: 0,  // Adjust currency code as needed
+                                                        })}<span className="price">{item?.price}$</span>
+                                                    </>
+                                                ) : (
+                                                    `$${item?.price}`
+                                                )}
+                                            </Typography.Text>                                            <Rate allowHalf disabled defaultValue={item?.stars} />
                                             <Button icon={<ShoppingOutlined />} onClick={() => addToCart(item)}>add to cart</Button>
                                         </Flex>
                                     ))}

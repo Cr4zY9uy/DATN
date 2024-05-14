@@ -7,19 +7,19 @@ const sale_schema = new mongoose.Schema({
             productId: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Product',
-                require: true
+                required: true
             },
             pricePromotion: {
                 type: Number,
                 min: 0,
                 max: 1,
-                require: true
+                required: true
             }
         }
     ],
     applyDate: {
         type: Date,
-        require: true
+        required: true
     },
     dueDate: {
         type: Date,

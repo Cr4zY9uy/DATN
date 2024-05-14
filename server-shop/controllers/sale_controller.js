@@ -168,3 +168,21 @@ export const detail_sale = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
+
+
+export const lastest_sale = async (req, res) => {
+    try {
+        const currentDate = new Date();
+        const latestSale = await sale_model.findOne({
+            dueDate: { $gt: currentDate }
+        }).sort({ createdAt: -1 }).populate({ path: "products.productId", model: "Product" });
+
+        if (!latestSale) {
+            return res.status(404).json({ message: "No sale found!" });
+        }
+
+        return res.status(200).json(latestSale);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};

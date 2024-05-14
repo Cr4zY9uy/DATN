@@ -7,6 +7,7 @@ import "./../style/category.css";
 import { useQuery } from "@tanstack/react-query";
 import { productByCategory } from "../../../services/product_service";
 import { detailCategory } from "../../../services/category_service";
+import dayjs from "dayjs";
 function Category() {
     const { category_id } = useParams();
     const [products, setProducts] = useState([]);
@@ -32,7 +33,12 @@ function Category() {
             name: item?.name,
             price: item?.price,
             origin: item?.origin,
-            image: item?.images[0]
+            image: item?.images[0],
+            pricePromotion: item?.saleId.length !== 0 ?
+                new Date(dayjs(item?.saleId[item?.saleId.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
+                    0 :
+                    (item?.saleId[item?.saleId.length - 1]?.products || []).find(product => product.productId === item?._id)?.pricePromotion || 0
+                : 0
         })))
         setCategoryName(rawData?.docs[0]?.categoryId?.name)
         setTotal(rawData?.totalDocs)
@@ -47,6 +53,11 @@ function Category() {
             document.title = ""
         }
     }, [getNameCategory?.isSuccess, getNameCategory?.data])
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [category_id]);
+
     return (
         <>
             <Banner_Big info={categoryName?.toUpperCase()} />

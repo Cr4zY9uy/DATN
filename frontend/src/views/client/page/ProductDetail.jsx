@@ -4,28 +4,29 @@ import {
     PlusOutlined,
     UserOutlined
 } from "@ant-design/icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Avatar, Breadcrumb, Button, Empty, Flex, Form, Image, Input, Rate, Tabs, Typography } from "antd";
+import clsx from "clsx";
+import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
+import { queryClient } from "../../../main";
+import { addComment, commentOfProductAll } from "../../../services/comment_service";
+import { addFavourite } from "../../../services/favourite_service";
+import { detailProduct, productMayLike, recommendProduct } from "../../../services/product_service";
+import { addRating } from "../../../services/rating_service";
+import { ACTION_CART, CartContext } from "../../../store/cart";
+import { ACTION_FAVOURITE, FavouriteContext } from "../../../store/favourite";
+import { ACTION_PRODUCT_LASTVIEW, LastViewProductContext } from "../../../store/productLastView";
+import { UserContext } from "../../../store/user";
+import Notification from "../../../utils/configToastify";
 import Banner_Big from "../layout/banner_big";
-import Hot from "../layout/hot";
 import LastView from "../layout/last_view";
 import Product_LSView from "../layout/product_LSView";
 import "./../style/product_detail.css";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { detailProduct, recommendProduct } from "../../../services/product_service";
-import clsx from "clsx";
-import { ACTION_PRODUCT_LASTVIEW, LastViewProductContext } from "../../../store/productLastView";
-import { ACTION_CART, CartContext } from "../../../store/cart";
-import Notification from "../../../utils/configToastify";
-import { UserContext } from "../../../store/user";
-import { addFavourite } from "../../../services/favourite_service";
-import { ACTION_FAVOURITE, FavouriteContext } from "../../../store/favourite";
-import { addRating } from "../../../services/rating_service";
-import { queryClient } from "../../../main";
-import { addComment, commentOfProduct, commentOfProductAll } from "../../../services/comment_service";
 
 function ProductDetail() {
+
     const lastView = useContext(LastViewProductContext)
     const cart = useContext(CartContext)
 
@@ -40,7 +41,7 @@ function ProductDetail() {
 
     const [product, setProduct] = useState({})
     const [mainImage, setMainImage] = useState('')
-    const [productCategory, setProductCategory] = useState([]);
+    const [products, setProducts] = useState([]);
     const [comments, setComments] = useState([])
 
     const detailProductClient = useQuery({
@@ -51,6 +52,11 @@ function ProductDetail() {
     const getRecommendProduct = useQuery({
         queryKey: ['recommend_product', id],
         queryFn: () => recommendProduct(id)
+    })
+
+    const productsMayLike = useQuery({
+        queryKey: ['product_may_like', id],
+        queryFn: () => productMayLike(id)
     })
 
     const { mutate } = useMutation({
@@ -64,6 +70,8 @@ function ProductDetail() {
         }
     })
 
+
+
     useEffect(() => {
         if (!detailProductClient?.isSuccess) return
         const rawData = detailProductClient?.data?.data
@@ -76,13 +84,42 @@ function ProductDetail() {
             origin: rawData?.origin,
             category: rawData?.categoryId?.name,
             price: rawData?.price,
-            description: rawData?.description
+            description: rawData?.description,
+            stars: rawData?.ratingId?.reduce((acc, curr) => acc + curr.stars, 0) / rawData?.ratingId?.length,
+            pricePromotion: rawData?.saleId?.length !== 0 ?
+                new Date(dayjs(rawData?.saleId[rawData?.saleId.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
+                    0 :
+                    (rawData?.saleId[rawData?.saleId.length - 1]?.products || []).find(product => product.productId === rawData?._id)?.pricePromotion || 0
+                : 0
         })
         setMainImage(rawData?.images[0])
         return () => {
             setProduct({})
         }
     }, [detailProductClient?.isSuccess, detailProductClient?.data])
+    console.log(product);
+
+    useEffect(() => {
+        if (!productsMayLike?.isSuccess) return
+        const rawData = productsMayLike?.data?.data
+        setProducts(Object.values(rawData)?.map(item => ({
+            name: item?.name,
+            price: item?.price,
+            image: item?.images[0],
+            id: item?._id,
+            origin: item?.origin,
+            pricePromotion: item?.saleId.length !== 0 ?
+                new Date(dayjs(item?.saleId[item?.saleId.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
+                    0 :
+                    (item?.saleId[item?.saleId.length - 1]?.products || []).find(product => product.productId === item?._id)?.pricePromotion || 0
+                : 0
+
+        })))
+        return () => {
+            setProducts([])
+        }
+
+    }, [productsMayLike?.isSuccess, productsMayLike?.data])
 
     useEffect(() => {
         if (!getRecommendProduct?.isSuccess) return
@@ -185,7 +222,8 @@ function ProductDetail() {
             userId: item?.userId?._id,
             content: item?.content,
             firstName: item?.userId?.firstName,
-            lastName: item?.userId?.lastName
+            lastName: item?.userId?.lastName,
+
         })))
         return () => {
             setComments([])
@@ -218,6 +256,11 @@ function ProductDetail() {
                 </Flex>,
         }
     ];
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [id]);
+
 
     return (
         <Flex vertical>
@@ -280,8 +323,8 @@ function ProductDetail() {
                                             <Typography.Title level={1} className="title">{product?.name}</Typography.Title>
                                             <Flex gap={30}>
                                                 <Typography.Title level={3}>
-                                                    {product?.price * (1 - parseFloat(0.1))}$
-                                                    {product?.price === 0 ? "" : <span className="discount">{`${1000}$`}</span>}
+                                                    {product?.pricePromotion && <>{product?.price * (1 - parseFloat(product?.pricePromotion))}$</>}
+                                                    {product?.price === 0 ? "" : <span className="discount" style={(!product?.pricePromotion ? { color: "red", fontWeight: 600, fontSize: "24px", textDecoration: "none" } : {})}>{`${product?.price}$`}</span>}
                                                 </Typography.Title>
                                                 <Button shape="circle" className="fav" onClick={() => addToFavourite()}><HeartOutlined /></Button>
                                             </Flex>
@@ -289,7 +332,7 @@ function ProductDetail() {
                                             <p>Stock status: <span className="stock_status">{product?.quantity === 0 ? `Out of stock` : `In stock`}</span></p>
                                             <p>Category: <span className="category">{product?.category}</span></p>
                                             <p>Unit: <span className="category">{product?.unit}</span></p>
-                                            <Rate allowHalf defaultValue={2.5} onChange={(e) => rateProduct.mutate({ stars: e, productId: product?.id })} />
+                                            <Rate allowHalf value={product?.stars} onChange={(e) => rateProduct.mutate({ stars: e, productId: product?.id })} />
                                             <hr />
                                         </div>
                                         <Flex vertical gap={8} style={{ height: "30vh" }}>
@@ -357,8 +400,8 @@ function ProductDetail() {
                             <Typography.Title level={2}>You may like</Typography.Title>
                             <Flex className="relate_list" gap="large">
                                 {
-                                    [...Array(10)].slice(-3).map((item, index) => (
-                                        <Product_LSView product={{ product_id: '8ahsd', title: 'keo keo thom ngon luon he ban oi', price: 129, price_promotion: 0.1 }} key={index} />
+                                    products.slice(-3).map((item, index) => (
+                                        <Product_LSView products={item} key={index} />
                                     ))
                                 }
                             </Flex>

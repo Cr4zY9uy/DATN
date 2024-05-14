@@ -13,19 +13,45 @@ const client = new Client({
 })
 
 router.get('/search', async (req, res) => {
-    const { searchParam } = req.query;
+    const { searchParam, page } = req.query;
+    const limit = 6;
+    const skip = page ? limit * (page - 1) : 0
     try {
         const result = await client.search({
             index: 'products',
-            size: 10,
-            _source: [],
-            query: {
-                match: {
-                    name: searchParam
+            from: skip,
+            size: limit,
+            body: {
+                query: {
+                    match: {
+                        name: searchParam
+                    }
+                },
+                aggregations: {
+                    sales: {
+                        terms: {
+                            field: '_id',
+                            size: limit
+                        },
+                        aggs: {
+                            product_sales_nested: {
+                                nested: {
+                                    path: 'products'
+                                },
+                                aggs: {
+                                    product_sales_filter: {
+                                        filter: {
+                                            term: { 'products.productId': '$_key' }
+                                        },
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
-        })
-        return res.json(result)
+        });
+        return res.status(200).json(result)
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }

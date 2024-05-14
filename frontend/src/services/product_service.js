@@ -156,3 +156,9 @@ export const product_by_cate = async (name, page) => {
 }
 
 export const productAll = () => api.get(URL.PRODUCT.OPTIONS)
+
+export const searchProduct = (searchParam, page) => api.get(URL.PRODUCT.SEARCH, {
+    params: {
+        searchParam, page
+    }
+})

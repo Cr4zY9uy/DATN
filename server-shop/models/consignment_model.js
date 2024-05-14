@@ -6,7 +6,7 @@ const consignment_schema = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
-            require: true,
+            required: true,
         },
         products: [
             {
@@ -17,26 +17,26 @@ const consignment_schema = new mongoose.Schema(
                 quantity: {
                     type: Number,
                     min: 1,
-                    require: true
+                    required: true
                 },
                 importMoney: {
                     type: Number,
                     min: 1,
-                    require: true
+                    required: true
                 },
                 expireDate: {
                     type: Date,
-                    require: true
+                    required: true
                 }
             }],
         money: {
             type: Number,
-            required: true,
+            requiredd: true,
             min: 1
         },
         importDate: {
             type: Date,
-            require: true,
+            required: true,
             trim: true
         }
     },

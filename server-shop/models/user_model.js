@@ -4,14 +4,14 @@ import moongosePaginate from 'mongoose-paginate-v2'
 const user_schema = new mongoose.Schema({
     username: {
         type: String,
-        require: true,
+        required: true,
         min: 3,
         max: 50,
         trim: true
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         min: 6,
         max: 50,
         trim: true
@@ -24,14 +24,14 @@ const user_schema = new mongoose.Schema({
     },
     password: {
         type: String,
-        require: true,
+        required: true,
         min: 6,
         max: 50,
         trim: true
     },
     gender: {
         type: String,
-        require: true,
+        required: true,
         enum: ["female", "male", "other"],
         default: "other",
         trim: true
@@ -43,14 +43,14 @@ const user_schema = new mongoose.Schema({
     },
     firstName: {
         type: String,
-        require: true,
+        required: true,
         min: 3,
         max: 50,
         trim: true
     },
     lastName: {
         type: String,
-        require: true,
+        required: true,
         min: 3,
         max: 50,
         trim: true
@@ -66,7 +66,7 @@ const user_schema = new mongoose.Schema({
     },
     refreshToken: {
         type: String,
-        require: true
+        required: true
     },
     image: {
         type: String

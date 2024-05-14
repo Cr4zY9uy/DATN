@@ -2,7 +2,7 @@ import {
     MinusCircleOutlined,
     PlusOutlined
 } from "@ant-design/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import {
     Button,
     ConfigProvider,
@@ -23,7 +23,7 @@ import locale from 'antd/es/date-picker/locale/vi_VN';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import { queryClient } from "../../../../main";
-import { detailConsignment, updateConsignment } from "../../../../services/cosignment_service";
+import { addConsignment, detailConsignment, updateConsignment } from "../../../../services/cosignment_service";
 import { productAll } from "../../../../services/product_service";
 import Notification from "../../../../utils/configToastify";
 dayjs.locale('vi')
@@ -44,26 +44,27 @@ export function DetailConsignment() {
     const [form] = Form.useForm();
 
     const [products, setProducts] = useState([])
-
-
+    const [condition, setCondition] = useState(false)
 
     const { consignment_id } = useParams()
 
     const { mutate } = useMutation({
-        mutationFn: (data) => updateConsignment(data),
+        mutationFn: (data) => condition ? updateConsignment(data) : addConsignment(data),
         onSuccess: () => {
-            Notification({ message: ` "Update" consignment successfully!`, type: "success" })
+            Notification({ message: condition ? `Update consignment successfully!` : "Create consignment successfully!", type: "success" })
             queryClient.invalidateQueries({ queryKey: ['ratings_admin_list'] })
             navigate(`/admin/consignment`, { replace: true })
         },
         onError: () => {
-            Notification({ message: `Update consignment unsuccessfully!`, type: "error" })
+            Notification({ message: condition ? `Update consignment successfully!` : "Create consignment successfully!", type: "error" })
         }
     })
 
     const queryAllProduct = useQuery({
         queryKey: ['product_all'],
-        queryFn: () => productAll()
+        queryFn: () => productAll(),
+        placeholderData: keepPreviousData,
+        refetchOnWindowFocus: false
     })
 
 
@@ -91,7 +92,7 @@ export function DetailConsignment() {
 
     const onFinish = (value) => {
         mutate({
-            ...value, id: consignment_id
+            ...value, ...(condition ? { id: consignment_id } : {})
         })
     }
 
@@ -104,13 +105,23 @@ export function DetailConsignment() {
             value: item?._id,
             label: item?.name
         })))
+        return () => {
+            setProducts([])
+        }
     }, [queryAllProduct.data, queryAllProduct.isSuccess])
 
+    useEffect(() => {
+        if (consignment_id) setCondition(true)
+        return () => {
+            setCondition(false)
+        }
+    }, [consignment_id])
+
     return (
-        <Flex className="crud_user detail_rating container" vertical>
-            <h2 className='caption'><PlusOutlined />{"Update consignment"}</h2>
+        <Flex className="crud_user  container" vertical>
+            <h2 className='caption'><PlusOutlined />{condition ? "Update consignment" : "Create consignment"}</h2>
             <Card
-                title={"Update consignment"}
+                title={condition ? "Update consignment" : "Create consignment"}
                 bordered={false}
                 className="form"
             >
@@ -119,9 +130,9 @@ export function DetailConsignment() {
                         form={form}
                         onFinish={onFinish}
                     >
-                        <Flex vertical>
-                            <Flex gap={"90px"} style={{ marginLeft: "96px" }}>
-                                <ConfigProvider locale={locale} width={"70%"}>
+                        <Flex vertical style={{ width: "100%" }}>
+                            <Flex gap={"0px"} style={{ width: "100%" }}>
+                                <ConfigProvider locale={locale} width={"40%"}>
                                     <Form.Item
                                         label={"Import date"}
                                         name="importDate"
@@ -131,10 +142,10 @@ export function DetailConsignment() {
                                                 message: "Please input import date"
                                             }
                                         ]}
-                                        style={{ width: "100%" }} required
+                                        style={{ width: "90%" }} required
                                     >
                                         <DatePicker placeholder='Import date'
-                                            style={{ width: "100%" }}
+                                            style={{ width: "80%" }}
                                         />
                                     </Form.Item>
                                 </ConfigProvider>
@@ -149,7 +160,7 @@ export function DetailConsignment() {
                                     ]}
                                     style={{ width: "100%" }} required
                                 >
-                                    <InputNumber min={0} placeholder="Import money" suffix="$" />
+                                    <InputNumber min={0} placeholder="Import money" suffix="$" style={{ width: "50%" }} />
 
                                 </Form.Item>
                             </Flex>
@@ -164,12 +175,12 @@ export function DetailConsignment() {
                                 }
                             ]}>
                                 {(fields, { add, remove }) =>
-                                (<Flex vertical gap={'20px'} style={{ width: "100%" }}>
+                                (<Flex vertical gap={'40px'} style={{ width: "100%" }}>
                                     {fields.map((field, index) => (
                                         <Flex key={field.key} align="center" gap={'20px'}  >
-                                            <Typography.Title style={{ marginBottom: 0, fontWeight: 600, fontSize: '18px' }}>{`Product ${index + 1}`}</Typography.Title>
+                                            <Typography.Title level={5} style={{ marginBottom: 0, fontWeight: 600, fontSize: '18px' }}>{`Product ${index + 1}`}</Typography.Title>
                                             <Flex vertical style={{ width: "70%" }} gap={"20px"}>
-                                                <Flex style={{ width: "100%" }} gap={"80px"}>
+                                                <Flex style={{ width: "100%" }} gap={"16px"} vertical>
                                                     <Form.Item
                                                         name={[field.name, "productId"]}
                                                         fieldId={[field.key, "productId"]}
@@ -180,16 +191,9 @@ export function DetailConsignment() {
                                                                 message: "Please input product name"
                                                             }
                                                         ]}
-                                                        style={{ marginBottom: 0, width: "60%" }}
-                                                    >
+                                                        style={{ marginBottom: 0, width: "100%" }}                                                    >
                                                         <Select
                                                             options={products}
-                                                            showSearch
-                                                            optionFilterProp="children"
-                                                            filterOption={(input, option) => (option?.text ?? '').includes(input)}
-                                                            filterSort={(optionA, optionB) =>
-                                                                (optionA?.text ?? '').toLowerCase().localeCompare((optionB?.text ?? '').toLowerCase())
-                                                            }
                                                             placeholder={'Product name'}
                                                         />
                                                     </Form.Item>
@@ -206,10 +210,9 @@ export function DetailConsignment() {
                                                         style={{ marginBottom: 0 }}
 
                                                     >
-                                                        <InputNumber min={0} max={100} placeholder="Quantity" step={1} />
+                                                        <InputNumber min={0} max={100} placeholder="Quantity" step={1} style={{ marginBottom: 0, width: "100%" }} />
                                                     </Form.Item>
-                                                </Flex>
-                                                <Flex >
+
                                                     <ConfigProvider locale={locale}>
                                                         <Form.Item
                                                             label={"Expire date"}
@@ -221,11 +224,10 @@ export function DetailConsignment() {
                                                                     message: "Please input expire date"
                                                                 }
                                                             ]}
-                                                            style={{ width: "100%" }} required
+                                                            style={{ width: "100%", margin: 0 }} required
                                                         >
                                                             <DatePicker placeholder='Expire date'
-                                                                style={{ width: "79%" }}
-                                                            />
+                                                                style={{ marginBottom: 0, width: "100%" }} />
                                                         </Form.Item>
                                                     </ConfigProvider>
                                                     <Form.Item
@@ -238,10 +240,11 @@ export function DetailConsignment() {
                                                                 message: "Please input import money"
                                                             },
                                                         ]}
-                                                        style={{ marginBottom: 0, width: "40%" }}
+                                                        style={{ marginBottom: 0, width: "100%" }}
 
                                                     >
-                                                        <InputNumber min={0} placeholder="Import money" suffix="$" />
+                                                        <InputNumber min={0} placeholder="Import money" suffix="$" style={{ marginBottom: 0, width: "100%" }}
+                                                        />
                                                     </Form.Item>
 
                                                 </Flex>
@@ -263,7 +266,7 @@ export function DetailConsignment() {
                         <Form.Item>
                             <Flex justify="center" gap={20} className="group_btn">
                                 <Button type="primary" htmlType="submit" >
-                                    {"Update"}
+                                    {condition ? "Update" : "Submit"}
                                 </Button>
                             </Flex>
                         </Form.Item>

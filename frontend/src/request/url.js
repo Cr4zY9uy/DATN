@@ -3,7 +3,8 @@ const URL = {
         CRUD: 'product',
         OPTIONS: 'product/options/all',
         RECOMMEND: 'product/recommend',
-        MAY_LIKE: 'product/may_like/test'
+        MAY_LIKE: 'product/may_like/test',
+        SEARCH: '/search'
     },
     CATEGORY: {
         CRUD: 'category',
@@ -59,7 +60,8 @@ const URL = {
         PRODUCT_PAGINATE: "comment/product/paginate"
     },
     SALE: {
-        CRUD: 'sale'
+        CRUD: 'sale',
+        LASTEST: 'sale/lastest/products'
     },
     CONSIGNMENT: {
         CRUD: 'consignment'
@@ -69,8 +71,8 @@ const URL = {
         ORDER: 'count_order',
         TOTAL: "count_statitics",
         ORDER_PER_MONTH: 'order_per_month',
-        ORDER_PER_DAY: 'order_per_day'
-
+        ORDER_PER_DAY: 'order_per_day',
+        UNSOLD: "unsold"
     }
 }
 export default URL;

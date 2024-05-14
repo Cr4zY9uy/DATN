@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { PieChart, Pie, Tooltip, Sector, YAxis, Line, Bar, Legend, ResponsiveContainer, ComposedChart, CartesianGrid, XAxis } from 'recharts'
-import { count_order, count_product_category, count_statitics, order_per_day, order_per_month } from '../../../services/statitics_service';
+import { PieChart, Pie, Tooltip, Sector, YAxis, Line, Bar, Legend, ResponsiveContainer, ComposedChart, CartesianGrid, XAxis, BarChart } from 'recharts'
+import { count_order, count_product_category, count_statitics, order_per_day, order_per_month, unsold } from '../../../services/statitics_service';
 import { getLabelByValue } from '../../../utils/getLabelByValue';
 import { orderStatusOptions, paymentStatusOptions, shippingStatusOptions } from '../../../utils/options';
 import { Button, Card, Flex, Image, Typography } from 'antd';
@@ -101,7 +101,7 @@ export const Overview = () => {
     const [orderByShippingStatus, setOrderByShippingStatus] = useState([])
     const [orderByPaymentStatus, setOrderByPaymentStatus] = useState([])
     const [orderByOrderStatus, setOrderByOrderStatus] = useState([])
-
+    const [unsoldProduct, setUnsoldProduct] = useState([])
     const navigate = useNavigate()
 
     const queryProductCategory = useQuery({
@@ -138,6 +138,11 @@ export const Overview = () => {
         queryFn: () => order_per_day()
     })
 
+    const unSold = useQuery({
+        queryKey: ['unsold'],
+        queryFn: () => unsold()
+    })
+
     const detailCategoryOverview = useQuery({
         queryKey: ['detail_category', currentCategoryId],
         queryFn: () => detailCategory(currentCategoryId),
@@ -155,6 +160,21 @@ export const Overview = () => {
 
 
     useEffect(() => {
+        if (!unSold?.isSuccess) return
+        const rawData = unSold?.data?.data
+        setUnsoldProduct(rawData?.map(item => ({
+            name: item?.name,
+            quantity: item?.quantity?.unSold,
+            fill: randomHexColorCode()
+
+        })))
+        return () => {
+            setUnsoldProduct({})
+        }
+    }, [unSold?.isSuccess, unSold?.data])
+
+
+    useEffect(() => {
         if (!orderPerDay?.isSuccess) return
         const rawData = orderPerDay?.data?.data
         setPerDay(rawData?.map((item) => ({
@@ -166,7 +186,7 @@ export const Overview = () => {
         }
     }, [orderPerDay?.isSuccess, orderPerDay?.data])
 
-
+    console.log(unsoldProduct);
     useEffect(() => {
         if (!orderPerMonth?.isSuccess) return
         const rawData = orderPerMonth?.data?.data
@@ -372,6 +392,16 @@ export const Overview = () => {
                         <Typography.Title level={5}>Order by order status</Typography.Title>
                     </Flex>
                 </Flex>
+            </Card>
+            <Card title="Unsold quantity of products">
+                <BarChart width={730} height={250} data={unsoldProduct}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis domain={[5, "dataMax + 5"]} />
+                    <Bar dataKey="quantity" fill="#8884d8" />
+                    <Tooltip />
+                    <Legend />
+                </BarChart>
             </Card>
             <Card title="Order in month" className='inMonth'>
                 <ResponsiveContainer width={'99%'} height={300}>

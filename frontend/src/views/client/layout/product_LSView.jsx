@@ -2,9 +2,50 @@ import { HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Button, Flex, Typography } from "antd";
 import { Link } from "react-router-dom";
 import "./../style/product_LSView.css";
+import { useContext } from "react";
+import { ACTION_CART, CartContext } from "../../../store/cart";
+import { UserContext } from "../../../store/user";
+import Notification from "../../../utils/configToastify";
+import { useMutation } from "@tanstack/react-query";
+import { addFavourite } from "../../../services/favourite_service";
+import { ACTION_FAVOURITE, FavouriteContext } from "../../../store/favourite";
 function Product_LSView(props) {
-    const product = props.product;
+    const product = props.products;
+    const cart = useContext(CartContext)
+    const user = useContext(UserContext)
+    const favourite = useContext(FavouriteContext)
 
+    const info = user?.state?.currentUser
+    const addToCart = () => {
+        if (info) {
+            cart?.dispatch({ type: ACTION_CART.ADD_CART, payload: { ...product, quantityBuy: 1 } })
+            Notification({ message: "Add to cart successully!", type: "success" })
+        }
+        else {
+            Notification({ message: "You have to login first!", type: "error" })
+
+        }
+    };
+    const { mutate } = useMutation({
+        mutationFn: (id) => addFavourite(id),
+        onSuccess: () => {
+            Notification({ message: "Add to wishlist successfully!", type: "success" })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "info" })
+
+        }
+    })
+    const addToFavourite = () => {
+
+        if (info) {
+            mutate(product.id)
+            favourite.dispatch({ type: ACTION_FAVOURITE.ADD_FAVOURITE, payload: product })
+        }
+        else
+            Notification({ message: "You have to login first!", type: "error" })
+
+    }
     // const addToCart = () => {
     //     const cart = props.state.cart;
     //     console.log(1);
@@ -20,18 +61,18 @@ function Product_LSView(props) {
     return (
         <Flex className='item_related' vertical gap={30}>
             <Flex vertical align="center">
-                <Link to={`/product/${product.product_id}`}>
-                    <img src="/data/banner/banner-home-1.png" loading="lazy" />
+                <Link to={`/client/product/${product?.id}`}>
+                    <img src={product?.image} loading="lazy" />
                 </Link>
-                <Typography.Title className="title" level={4} ellipsis={true} style={{ maxWidth: "70%" }}>{product.title}</Typography.Title>
+                <Typography.Title className="title" level={4} ellipsis={true} style={{ maxWidth: "70%" }}>{product.name}</Typography.Title>
                 <p>
-                    {Math.ceil(product.price * (1 - parseFloat(product.price_promotion)))}$
-                    {product.price_promotion === 0 ? "" : <span className="discount">{`${product.price}$`}</span>}
+                    {product?.pricePromotion !== 0 && <>{product?.price * (1 - parseFloat(product?.pricePromotion))}$</>}
+                    {product.pricePromotion !== 0 ? "" : <span className="discount" style={(!product?.pricePromotion ? { color: "red", fontWeight: 600, fontSize: "20px", textDecoration: "none", paddingLeft: 0 } : {})}>{`${product.price}$`}</span>}
                 </p>
             </Flex>
             <Flex className="button_group" justify="space-evenly">
-                <Button shape="circle"><ShoppingCartOutlined /></Button>
-                <Button shape="circle"><HeartOutlined /></Button>
+                <Button shape="circle" onClick={addToCart}><ShoppingCartOutlined /></Button>
+                <Button shape="circle" onClick={addToFavourite}><HeartOutlined /></Button>
             </Flex>
         </Flex>
 
