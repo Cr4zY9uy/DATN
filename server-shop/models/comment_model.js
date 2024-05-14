@@ -4,7 +4,7 @@ import moongosePaginate from 'mongoose-paginate-v2'
 const comment_schema = new mongoose.Schema({
     content: {
         type: String,
-        require: true,
+        required: true,
         min: 3,
         max: 50,
         trim: true,
@@ -12,12 +12,12 @@ const comment_schema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        require: true
+        required: true
     },
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
-        require: true
+        required: true
     },
     isActive: {
         type: Boolean,

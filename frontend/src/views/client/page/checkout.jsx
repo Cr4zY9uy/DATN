@@ -62,7 +62,7 @@ function Checkout() {
     useEffect(() => {
         setProducts(cart?.state?.currentCart?.map(item => ({
             name: item?.name,
-            price: item?.price,
+            price: item?.pricePromotion ? item?.price * (1 - parseFloat(item?.pricePromotion)) : item?.price,
             quantity: item?.quantityBuy
         })))
 

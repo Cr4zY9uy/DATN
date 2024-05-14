@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 import { Server } from 'socket.io';
 import app from "./app.js";
 import Express from "express";
-
 dotenv.config();
 const serverSocket = http.createServer(app)
 
@@ -71,3 +70,4 @@ socketIO.on('connection', (socket) => {
         socket.leave(userData);
     });
 });
+

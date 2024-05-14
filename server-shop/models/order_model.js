@@ -5,46 +5,46 @@ const order_schema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        require: true
+        required: true
     },
     firstNameReceiver: {
         type: String,
-        require: true,
+        required: true,
         min: 3,
         max: 50,
         trim: true
     },
     lastNameReceiver: {
         type: String,
-        require: true,
+        required: true,
         min: 3,
         max: 50,
         trim: true
     },
     phoneReceiver: {
         type: String,
-        require: true,
+        required: true,
         min: 10,
         max: 13,
         trim: true
     },
     emailReceiver: {
         type: String,
-        require: true,
+        required: true,
         min: 5,
         max: 50,
         trim: true
     },
     addressReceiver: {
         type: String,
-        require: true,
+        required: true,
         min: 5,
         max: 50,
         trim: true
     },
     countryReceiver: {
         type: String,
-        require: true,
+        required: true,
         min: 5,
         max: 50,
         trim: true
@@ -52,12 +52,12 @@ const order_schema = new mongoose.Schema({
     paymentMethod: {
         type: String,
         enum: ['vnpay', 'cod'],
-        require: true
+        required: true
     },
     shippingMethod: {
         type: String,
         enum: ['express', 'free', 'standard'],
-        require: true
+        required: true
     },
     paymentStatus: {
         type: String,
@@ -79,17 +79,17 @@ const order_schema = new mongoose.Schema({
             productId: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Product',
-                require: true
+                required: true
             },
             subPrice: {
                 type: Number,
                 min: 1,
-                require: true
+                required: true
             },
             quantity: {
                 type: Number,
                 min: 1,
-                require: true
+                required: true
             },
         }
     ],

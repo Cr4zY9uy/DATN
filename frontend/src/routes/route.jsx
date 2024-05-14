@@ -221,7 +221,10 @@ export const router = createBrowserRouter([
             path: ':consignment_id',
             element: <DetailConsignment />
           },
-
+          {
+            path: 'create',
+            element: <DetailConsignment />
+          },
         ]
       },
       {

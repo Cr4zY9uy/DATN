@@ -5,15 +5,39 @@ import Product_Grid from "../layout/product_grid";
 import "./../style/search.css";
 import Banner_Big from "../layout/banner_big";
 import { useEffect, useState } from "react";
-import { product_by_code, product_by_name } from "../../../services/product_service";
+import { product_by_code, product_by_name, searchProduct } from "../../../services/product_service";
 import ProductGrid from "../layout/product_grid";
+import { useQuery } from "@tanstack/react-query";
 function Search() {
     const [searchInput] = useSearchParams();
     const keyword = searchInput.get('keyword')
     const [totalProducts, setTotalProducts] = useState(0);
     const [page, setPage] = useState(1);
     const [product, setProduct] = useState([]);
-    console.log(keyword);
+
+    const { data, isSuccess } = useQuery({
+        queryKey: ['search_product', keyword],
+        queryFn: () => searchProduct(searchInput, page)
+    })
+
+
+    useEffect(() => {
+        if (!isSuccess) return
+        const rawData = data?.hits
+        setProduct(rawData?.hits?.map(item => ({
+            id: item?._id,
+            name: item?._source?.name,
+            price: item?._source?.price,
+            quantity: item?._source?.quantity?.inTrade,
+
+        })))
+        setTotalProducts(rawData?.total?.value)
+
+    }, [isSuccess, data])
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [searchInput]);
 
     useEffect(() => {
         document.title = "Search for " + keyword;

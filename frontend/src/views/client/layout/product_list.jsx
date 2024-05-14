@@ -35,15 +35,16 @@ function Product_List(props) {
         <Typography.Title level={5} className="country">{product?.origin}</Typography.Title>
         <Typography.Title level={4} className="title">{product?.name}</Typography.Title >
         <Typography.Text className="price_promo">
-          <Typography.Text className="promotion">
-            {parseFloat(product?.price * (1 - parseFloat(product?.price_promotion))).toLocaleString('en-US', {
+          {product?.pricePromotion !== 0 && <Typography.Text className="promotion">
+            {parseFloat(product?.price * (1 - parseFloat(product?.pricePromotion))).toLocaleString('en-US', {
               style: 'currency',
               currency: 'USD', // Adjust currency code as needed
               minimumFractionDigits: 0, // Set minimum decimal places to 0
               maximumFractionDigits: 0,  // Adjust currency code as needed
             })}
-          </Typography.Text>
-          <Typography.Text className="price">
+          </Typography.Text>}
+
+          <Typography.Text className="price" style={(!product?.pricePromotion ? { textDecoration: "none", color: "black", fontSize: "16px", fontWeight: 500, color: "red" } : {})}>
             {product?.price.toLocaleString('en-US', {
               style: 'currency',
               currency: 'USD', // Adjust currency code as needed
@@ -54,7 +55,7 @@ function Product_List(props) {
         </Typography.Text>
       </Flex>
       <Button icon={<ShoppingOutlined />} onClick={addToCart}>add to cart</Button>
-    </Flex>
+    </Flex >
 
   );
 }

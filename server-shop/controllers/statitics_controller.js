@@ -139,6 +139,7 @@ export const countMonthlyOrders = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
+
 export const countDailyOrders = async (req, res) => {
     try {
         const today = new Date();
@@ -178,6 +179,18 @@ export const countDailyOrders = async (req, res) => {
         }
 
         return res.status(200).json(dailyStats);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+
+export const unsold = async (req, res) => {
+    try {
+        const products = await product_model.find({}).select("name quantity.unSold")
+        if (products?.length === 0) return res.status(400).json({ message: "No products" });
+
+        return res.status(200).json(products);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react"
 import '../style/CountDown.css'
 import { Flex, Typography } from "antd"
+import dayjs, { utc } from "dayjs"
 
-export const Countdown = () => {
+export const Countdown = (props) => {
     const [days, setDays] = useState(10)
     const [hours, setHours] = useState(10)
     const [minutes, setMinutes] = useState(10)
     const [seconds, setSeconds] = useState(10)
-
+    console.log(new Date().getTime());
     useEffect(() => {
         const countdown = () => {
-            const endDate = new Date("December 25, 2024 00:00:00").getTime()
+            const endDate = new Date(dayjs(props.expires).$d).getTime()
             const today = new Date().getTime()
 
             const timeDiff = endDate - today
@@ -35,8 +36,11 @@ export const Countdown = () => {
             setSeconds(timeSeconds)
         }
 
-        setInterval(countdown, 1000)
-    }, [])
+        const interval = setInterval(countdown, 1000)
+
+        // Xóa bộ đếm khi component unmounted
+        return () => clearInterval(interval)
+    }, [props.expires])
 
     return (
         <>

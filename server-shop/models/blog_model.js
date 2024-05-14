@@ -4,7 +4,7 @@ import moongosePaginate from 'mongoose-paginate-v2'
 const blog_schema = new mongoose.Schema({
     title: {
         type: String,
-        require: true,
+        required: true,
         min: 6,
         trim: true,
         unique: true
@@ -13,18 +13,18 @@ const blog_schema = new mongoose.Schema({
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
-            require: true
+            required: true
         },
         firstName: {
             type: String,
-            require: true,
+            required: true,
             min: 6,
             max: 50,
             trim: true
         },
         lastName: {
             type: String,
-            require: true,
+            required: true,
             min: 6,
             max: 50,
             trim: true
@@ -32,13 +32,13 @@ const blog_schema = new mongoose.Schema({
     },
     content: {
         type: String,
-        required: true,
+        requiredd: true,
         trim: true,
         min: 20,
     },
     order: {
         type: Number,
-        require: true
+        required: true
     },
     isActive: {
         type: Boolean,

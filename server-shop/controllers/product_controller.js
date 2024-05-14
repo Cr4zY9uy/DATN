@@ -162,7 +162,7 @@ export const paginate_product = async (req, res) => {
     try {
         const products = await product_model.paginate(finalQuery, {
             offset: skip, page: page, limit: limit, sort: sortKind,
-            populate: "categoryId"
+            populate: ["categoryId", "saleId", "ratingId"]
         })
 
 
@@ -294,7 +294,7 @@ export const product_may_like = async (req, res) => {
             })
             const data = await product_model.find({
                 'quantity.sold': { $gt: 0 }
-            }).sort({
+            }).populate('saleId').sort({
                 'quantity.sold': - 1
             })
             return res.status(200).json({ ...data, ...dataToCategory })
@@ -302,7 +302,7 @@ export const product_may_like = async (req, res) => {
         else {
             const data = await product_model.find({
                 'quantity.sold': { $gt: 0 }
-            }).sort({
+            }).populate('saleId').sort({
                 'quantity.sold': - 1
             })
             return res.status(200).json({ data })

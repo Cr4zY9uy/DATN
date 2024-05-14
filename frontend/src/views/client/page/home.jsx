@@ -11,6 +11,8 @@ import RecommendedProduct from "../layout/RecommendedProduct";
 import { ACTION_USER, UserContext } from "../../../store/user";
 import Notification from "../../../utils/configToastify";
 import { LogContext } from "../../../store/typeLog/provider";
+import { lastestlSale, listSale } from "../../../services/sale_service";
+import dayjs from "dayjs";
 
 function Home() {
     document.title = "Home";
@@ -20,32 +22,46 @@ function Home() {
     const [productNew, setProductNew] = useState([]);
     const [isLoadingSale, SetIsLoadingSale] = useState(true)
     const [isLoadingNew, SetIsLoadingNew] = useState(true)
-
+    const [expires, setExpires] = useState('')
     const { data, isSuccess } = useQuery({
         queryKey: ['home'],
         queryFn: () => listProduct(1, '', '', '', '', '', 'descend')
     })
 
+    const querySale = useQuery({
+        queryKey: ['sale_products_lastest'],
+        queryFn: () => lastestlSale()
+    })
 
+
+    useEffect(() => {
+        if (!querySale?.isSuccess) return
+        const rawData = querySale?.data?.data
+        setProductHot(rawData?.products?.map(item => ({
+            name: item?.productId?.name,
+            price: item?.productId?.price,
+            image: item?.productId?.images[0],
+            id: item?.productId?._id,
+            origin: item?.productId?.origin,
+            sale: item?.pricePromotion
+        })))
+        setExpires(rawData?.dueDate)
+    }, [querySale?.isSuccess, querySale?.data])
     useEffect(() => {
         if (!isSuccess) return
         const rawData = data?.data?.products?.docs
-        setProductHot(rawData?.map(item => ({
-            name: item?.name,
-            price: item?.price,
-            image: item?.images[0],
-            id: item?._id,
-            origin: item?.origin,
-            sale: item?.saleId
-
-        })))
         setProductNew(rawData?.map(item => ({
             name: item?.name,
             price: item?.price,
             image: item?.images[0],
             id: item?._id,
             origin: item?.origin,
-            sale: item?.saleId
+            pricePromotion: item?.saleId.length !== 0 ?
+                new Date(dayjs(item?.saleId[item?.saleId.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
+                    0 :
+                    (item?.saleId[item?.saleId.length - 1]?.products || []).find(product => product.productId === item?._id)?.pricePromotion || 0
+                : 0
+
         })))
         SetIsLoadingNew(false)
         SetIsLoadingSale(false)
@@ -64,7 +80,6 @@ function Home() {
         retry: false,
         enabled: !!logGoogle?.state?.isLogByGoogle
     })
-
     useEffect(() => {
         if (logGoogle?.state?.isLogByGoogle) {
             if (!getUser?.isSuccess) return
@@ -78,7 +93,7 @@ function Home() {
         <Flex vertical>
             <Banner />
             <RecommendedProduct />
-            <Countdown />
+            <Countdown expires={expires} />
             <Flex className="product_hot container text-center" vertical >
                 <Flex gap='large'>
                     {productHot.slice(1, 2).map((item, index) => {

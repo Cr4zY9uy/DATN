@@ -4,7 +4,7 @@ import moongosePaginate from 'mongoose-paginate-v2'
 const banner_schema = new mongoose.Schema({
     title: {
         type: String,
-        require: true,
+        required: true,
         min: 6,
         max: 50,
         trim: true,
@@ -12,14 +12,14 @@ const banner_schema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true,
+        requiredd: true,
         trim: true,
         min: 20,
         max: 50
     },
     image: {
         type: String,
-        require: true
+        required: true
     },
     isActive: {
         type: Boolean,
@@ -27,7 +27,7 @@ const banner_schema = new mongoose.Schema({
     },
     order: {
         type: Number,
-        require: true
+        required: true
     }
 },
     {

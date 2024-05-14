@@ -82,15 +82,22 @@ function ProductGrid(props) {
                 {!type &&
                     (<>
                         <Typography.Text className="price_promo">
-                            <Typography.Text className="promotion">
-                                {parseFloat(product.price * (1 - parseFloat(product.price_promotion))).toLocaleString('en-US', {
-                                    style: 'currency',
-                                    currency: 'USD', // Adjust currency code as needed
-                                    minimumFractionDigits: 0, // Set minimum decimal places to 0
-                                    maximumFractionDigits: 0,  // Adjust currency code as needed
-                                })}
-                            </Typography.Text>
-                            <Typography.Text className="price">
+                            {product?.pricePromotion !== 0 &&
+                                <Typography.Text className="promotion">
+                                    {parseFloat(product.price * (1 - parseFloat(product.pricePromotion))).toLocaleString('en-US', {
+                                        style: 'currency',
+                                        currency: 'USD', // Adjust currency code as needed
+                                        minimumFractionDigits: 0, // Set minimum decimal places to 0
+                                        maximumFractionDigits: 0,  // Adjust currency code as needed
+                                    })}
+                                </Typography.Text>}
+                            <Typography.Text className="price" style={(!product?.pricePromotion ? {
+                                color: ' #ff2c26',
+                                fontWeight: 600,
+                                fontSize: '15px',
+                                marginBottom: '5px',
+                                textDecoration: "none"
+                            } : {})}>
                                 {product.price.toLocaleString('en-US', {
                                     style: 'currency',
                                     currency: 'USD', // Adjust currency code as needed
@@ -102,7 +109,7 @@ function ProductGrid(props) {
             </Flex>
             {!type && <Button icon={<ShoppingOutlined />} className="buy" onClick={addToCart}>add to cart</Button>}
 
-        </Flex>
+        </Flex >
     );
 }
 export default ProductGrid;

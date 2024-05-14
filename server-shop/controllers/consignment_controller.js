@@ -2,7 +2,7 @@ import product_model from "../models/product_model.js";
 import consignment_model from "../models/consignment_model.js";
 
 export const add_consignment = async (req, res) => {
-    const { products, importDate } = req.body;
+    const { products, importDate, money } = req.body;
     const userId = req.user._id
     try {
         const productPromises = products.map(async item => {
@@ -13,8 +13,12 @@ export const add_consignment = async (req, res) => {
         if (nonExistentProducts) {
             return res.status(404).json({ message: "One or more products not existed." });
         }
-        const money = products.reduce((pre, cur) => pre + cur.importMoney, 0)
         const createdResult = await consignment_model.create({ products, importDate: new Date(importDate), money, userId })
+        products.forEach(async item => {
+            await product_model.findByIdAndUpdate(item.productId, {
+                $inc: { 'quantity.inTrade': item.quantity }
+            });
+        });
         return res.status(201).json(createdResult)
     } catch (error) {
         return res.status(500).json({ message: error.message })
@@ -22,11 +26,12 @@ export const add_consignment = async (req, res) => {
 }
 
 export const update_consignment = async (req, res) => {
-    const { products, importDate } = req.body;
+    const { products, importDate, money } = req.body;
 
     const data = {}
     if (products) data.products = products
     if (importDate) data.importDate = new Date(importDate)
+    if (money) data.importDate = money
 
     const consignmentId = req.params.id
     try {
@@ -35,18 +40,25 @@ export const update_consignment = async (req, res) => {
             return res.status(404).json({ message: "Consignment not existed." });
         }
         if (products) {
-            const productPromises = products.map(async item => {
-                return await product_model.findById(item?.productId);
-            });
-            const productResults = await Promise.all(productPromises);
-            const nonExistentProducts = productResults.some(result => !result);
-            if (nonExistentProducts) {
-                return res.status(404).json({ message: "One or more products not existed." });
-            }
-            const money = products.reduce((pre, cur) => pre + cur.importMoney, 0)
-            const updateConsignment = await consignment_model.findByIdAndUpdate(consignmentId, { ...data, money }, { new: true })
-            if (!updateConsignment) return res.status(404).json({ message: "Update consignment unsuccessfully." });
-            return res.status(200).json(updateConsignment)
+            const newProductIds = products.map(item => item.productId);
+
+            const existingProductIds = findConsignment.products.map(item => item.productId);
+
+            const productsToDelete = existingProductIds.filter(productId => !newProductIds.includes(productId));
+
+
+            await Promise.all(products.map(async item => {
+                await product_model.findByIdAndUpdate(item.productId, { $inc: { 'quantity.inTrade': item.quantity } });
+            }));
+
+            await Promise.all(productsToDelete.map(async productId => {
+                const productToDelete = findConsignment.products.find(item => item.productId === productId);
+                await product_model.findByIdAndUpdate(productId, { $inc: { 'quantity.inTrade': -productToDelete.quantity } });
+            }));
+
+            const updatedConsignment = await consignment_model.findByIdAndUpdate(consignmentId, data, { new: true });
+
+            return res.status(200).json(updatedConsignment);
         }
         const updateConsignmentImportDate = await consignment_model.findByIdAndUpdate(consignmentId, data, { new: true })
         if (!updateConsignmentImportDate) return res.status(404).json({ message: "Update consignment unsuccessfully." });

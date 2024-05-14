@@ -211,6 +211,9 @@ export const ListOfConsignment = () => {
                                     placeholder='Due date' minDate={applyDateValue ? dayjs(applyDateValue).add(1, 'day') : ''} />
                             </Form.Item>
                         </ConfigProvider>
+                        <Flex>
+                            <Button type='primary' onClick={() => navigate('/admin/consignment/create')}>Add a consignment</Button>
+                        </Flex>
                     </Flex>
 
                 </Form>

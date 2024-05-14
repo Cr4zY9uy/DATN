@@ -6,17 +6,17 @@ const rating_schema = new mongoose.Schema({
         type: Number,
         min: 0,
         max: 5,
-        require: true
+        required: true
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        require: true
+        required: true
     },
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
-        require: true
+        required: true
     },
     isActive: {
         type: Boolean,

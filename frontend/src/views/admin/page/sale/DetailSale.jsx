@@ -111,7 +111,7 @@ export function DetailSale() {
     }, [queryAllProduct.data, queryAllProduct.isSuccess])
 
     return (
-        <Flex className="crud_user detail_rating container" vertical>
+        <Flex className="crud_user  container" vertical>
             <h2 className='caption'><PlusOutlined />{condition ? "Update sale" : "Create sale"}</h2>
             <Card
                 title={condition ? "Update sale" : "Create sale"}

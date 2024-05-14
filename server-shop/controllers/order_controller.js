@@ -31,6 +31,23 @@ export const add_order = async (req, res) => {
                     }
                 }))
             };
+
+            for (const product of products) {
+                const updatedProduct = await product_model.findByIdAndUpdate(product.productId, {
+                    $inc: {
+                        'quantity.inTrade': -product.quantity,
+                        'quantity.sold': product.quantity
+
+                    }
+                }, { new: true }); // Lấy giá trị sau khi cập nhật
+                const newInTradeQuantity = updatedProduct.quantity.inTrade < 0 ? 0 : updatedProduct.quantity.inTrade;
+                // Cập nhật lại số lượng inTrade để không bao giờ nhỏ hơn 0
+                await product_model.findByIdAndUpdate(product.productId, {
+                    $set: {
+                        'quantity.inTrade': newInTradeQuantity
+                    }
+                });
+            }
             await sendEmail(from, modifiedData.emailReceiver, order_subject, order_text, order_form(modifiedData))
             return res.status(201).json({ order });
         }
