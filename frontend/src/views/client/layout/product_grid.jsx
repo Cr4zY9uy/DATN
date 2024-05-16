@@ -69,7 +69,11 @@ function ProductGrid(props) {
                 <Button danger type="primary" shape="circle" className="delete_favourite" icon={<CloseOutlined />} onClick={() => handleDelete(product.id)} />}
             {!type && <Button className="favourite" onClick={() => addToFavourite()} icon={<HeartOutlined />} />}
             <Link to={`/client/product/${product.id}`} style={{ backgroundColor: "white" }}>
-                {!type && <Badge.Ribbon text={'-10%'} color="red" placement="start" />}
+                {!type && (product.pricePromotion !== 0 ?
+                    <Badge.Ribbon text={`-${product.pricePromotion * 100}%`} color="red" placement="start" />
+                    :
+                    <></>
+                )}
                 <img src={product.image} loading="lazy" />
 
             </Link>

@@ -202,6 +202,11 @@ function CheckoutConfirm() {
         order?.dispatch({ type: ACTION_ORDER.REMOVE_ORDER })
         cart?.dispatch({ type: ACTION_CART.REMOVE_CART })
     }
+
+
+    useEffect(() => {
+        document.title = "Checkout confirm"
+    }, [])
     return (
         <Flex className="checkout_confirm_page container" vertical>
             <Breadcrumb>

@@ -10,20 +10,20 @@ import {
 
 } from "../controllers/order_controller.js";
 import { add_order_validator, edit_order_validator } from "../validator/order_validator.js";
-import { checkAuth } from "../middleware/check_auth.js";
+import { authRole, checkAuth } from "../middleware/check_auth.js";
 
 const router = Router();
 
 
-router.post("/order", add_order);
+router.post("/order", checkAuth, authRole([0]), add_order);
 
-router.put("/order/:id", edit_order);
+router.put("/order/:id", checkAuth, authRole([0, 1]), edit_order);
 
 router.get("/order/options", all_order);
-router.get("/order", paginate_order);
-router.get("/order/:id", detail_order);
-router.get("/order/user/:userId", order_by_user)
+router.get("/order", checkAuth, authRole([1]), paginate_order);
+router.get("/order/:id", checkAuth, authRole([0, 1]), detail_order);
+router.get("/order/user/:userId", checkAuth, authRole([0, 1]), order_by_user)
 
-router.get("/order/user/paginate/:user_id", paginate_order_user)
+router.get("/order/user/paginate/:user_id", checkAuth, authRole([0, 1]), paginate_order_user)
 
 export default router;

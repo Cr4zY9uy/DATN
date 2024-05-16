@@ -159,6 +159,10 @@ function Checkout() {
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
+
+    useEffect(() => {
+        document.title = "Checkout"
+    }, [])
     return (
         <Flex className="checkout_page container" vertical>
             <Breadcrumb>

@@ -6,15 +6,15 @@ import { add_sale, all_sale, delete_sale, detail_sale, lastest_sale, paginate_sa
 
 const router = Router();
 
-router.post('/sale', checkAuth, add_sale)
+router.post('/sale', checkAuth, authRole([2]), checkAuth, add_sale)
 
-router.put('/sale/:id', updateSale)
+router.put('/sale/:id', checkAuth, authRole([2]), updateSale)
 
-router.get('/sale', paginate_sale)
-router.get('/sale/:id', detail_sale)
+router.get('/sale', checkAuth, authRole([2]), paginate_sale)
+router.get('/sale/:id', checkAuth, authRole([2]), detail_sale)
 router.get('/sale/options/all', all_sale)
 router.get('/sale/lastest/products', lastest_sale)
 
-router.delete('/sale/:id', delete_sale)
+router.delete('/sale/:id', checkAuth, authRole([2]), delete_sale)
 
 export default router;

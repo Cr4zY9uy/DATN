@@ -156,6 +156,9 @@ export const OrderDetail = () => {
             render: (text) => <p>{text}$</p>
         },
     ];
+    useEffect(() => {
+        document.title = "Order detail"
+    }, [])
 
     return (
         <Flex className="detail_order" vertical align="center">

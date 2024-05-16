@@ -106,7 +106,6 @@ export const router = createBrowserRouter([
         </AuthProvider>
       </ProtectRoute>),
     children: [
-      { index: true, element: <Overview /> },
       { path: 'overview', element: <Overview /> },
       {
         path: 'category',

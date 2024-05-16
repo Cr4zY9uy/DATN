@@ -17,7 +17,7 @@ router.get('/search', async (req, res) => {
     const limit = 6;
     const skip = page ? limit * (page - 1) : 0
     try {
-        const result = await client.search({
+        const productResult = await client.search({
             index: 'products',
             from: skip,
             size: limit,
@@ -26,32 +26,66 @@ router.get('/search', async (req, res) => {
                     match: {
                         name: searchParam
                     }
-                },
-                aggregations: {
-                    sales: {
-                        terms: {
-                            field: '_id',
-                            size: limit
-                        },
-                        aggs: {
-                            product_sales_nested: {
-                                nested: {
-                                    path: 'products'
-                                },
-                                aggs: {
-                                    product_sales_filter: {
-                                        filter: {
-                                            term: { 'products.productId': '$_key' }
-                                        },
-                                    }
+                }
+            }
+        });
+
+        const totalItem = productResult.hits.total.value;
+        const products = productResult.hits.hits;
+
+        // Lấy danh sách các productIds từ kết quả tìm kiếm sản phẩm
+        const productIds = products.map(product => product._id);
+
+        // Tìm tất cả các sales liên quan đến các productIds
+        const saleResult = await client.search({
+            index: 'sales',
+            body: {
+                query: {
+                    bool: {
+                        should: [
+                            {
+                                terms: {
+                                    'products.productId': productIds
                                 }
                             }
-                        }
+                        ]
                     }
                 }
             }
         });
-        return res.status(200).json(result)
+
+        const sales = saleResult.hits.hits;
+
+        // Map productIds đến sales
+        const salesMap = sales.reduce((map, sale) => {
+            sale._source.products.forEach(product => {
+                if (productIds.includes(product.productId)) {
+                    if (!map[product.productId]) {
+                        map[product.productId] = [];
+                    }
+                    map[product.productId].push({
+                        saleId: sale._id,
+                        pricePromotion: product.pricePromotion,
+                        applyDate: sale._source.applyDate,
+                        dueDate: sale._source.dueDate,
+                        isActive: sale._source.isActive
+                    });
+                }
+            });
+            return map;
+        }, {});
+
+        // Gán thông tin sale vào sản phẩm
+        const results = products.map(product => {
+            const productId = product._id;
+            return {
+                ...product._source,
+                _id: productId,
+                sales: salesMap[productId] || []
+            };
+        });
+
+        return res.status(200).json({ item: results, total: totalItem });
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }

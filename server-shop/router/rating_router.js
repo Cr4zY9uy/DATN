@@ -6,12 +6,12 @@ import { add_rating, all_rating, detail_rating, paginate_rating, rating_product,
 
 const router = Router();
 
-router.post('/rating', checkAuth, add_rating)
+router.post('/rating', checkAuth, authRole([0]), checkAuth, add_rating)
 
-router.put('/rating/:id', update_rating)
+router.put('/rating/:id', checkAuth, authRole([2]), update_rating)
 
-router.get('/rating', paginate_rating)
-router.get('/rating/:id', detail_rating)
+router.get('/rating', checkAuth, authRole([2]), paginate_rating)
+router.get('/rating/:id', checkAuth, authRole([2]), detail_rating)
 router.get('/rating/options/all', all_rating)
 router.get('/rating/product/:product_id', rating_product)
 

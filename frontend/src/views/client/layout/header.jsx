@@ -122,7 +122,7 @@ function Headers() {
                         </Flex>
                         <div className="header-link">
                             <Link to={"home"}>home</Link>
-                            <Link className="main_menu">
+                            <Link className="main_menu" to={"#"}>
                                 <div>categories</div>
                                 <div className="sub_menu">
                                     {category?.map((item) => (

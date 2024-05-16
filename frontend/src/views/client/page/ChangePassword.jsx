@@ -4,6 +4,7 @@ import '../style/ChangePassword.css'
 import Notification from '../../../utils/configToastify'
 import { useMutation } from '@tanstack/react-query'
 import { resetPasswordCurrentUser } from '../../../services/user_service'
+import { useEffect } from 'react'
 
 export const ChangePassword = () => {
     const [form] = Form.useForm()
@@ -21,6 +22,9 @@ export const ChangePassword = () => {
     }
 
 
+    useEffect(() => {
+        document.title = "Change password"
+    }, [])
     return (
         <Flex vertical className='security' align='center'>
             <Breadcrumb>

@@ -6,15 +6,15 @@ import { add_banner, all_banner, delete_banner_list, delete_banner_one, detail_b
 const router = Router();
 
 
-router.post("/banner", add_banner);
+router.post("/banner", checkAuth, authRole([2]), add_banner);
 
-router.put("/banner/:id", update_banner);
+router.put("/banner/:id", checkAuth, authRole([2]), update_banner);
 
 router.get("/banner/options", all_banner);
 router.get("/banner", paginate_banner);
 router.get("/banner/:id", detail_banner);
 
-router.delete("/banner/:id", delete_banner_one);
-router.delete("/banner", delete_banner_list);
+router.delete("/banner/:id", checkAuth, authRole([2]), delete_banner_one);
+router.delete("/banner", checkAuth, authRole([2]), delete_banner_list);
 
 export default router;

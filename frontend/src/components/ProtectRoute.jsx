@@ -8,6 +8,7 @@ export const ProtectRoute = ({ children }) => {
     const navigate = useNavigate()
     const location = useLocation()
     const { state } = useContext(UserContext)
+    const userRole = state?.currentUser?.role
     useEffect(() => {
         if (!state.currentUser) {
             if (location.pathname.includes("/client/cart")
@@ -54,6 +55,39 @@ export const ProtectRoute = ({ children }) => {
 
             }
             navigate(redirectPath, { replace: true })
+        }
+        if (state?.currentUser?.role === ROLE.STAFF && (
+            location.pathname.startsWith('/admin/product') ||
+            location.pathname.startsWith('/admin/consignment') ||
+            location.pathname.startsWith('/admin/users') ||
+            location.pathname.startsWith('/admin/sales') ||
+            location.pathname.startsWith('/admin/category') ||
+            location.pathname.startsWith('/admin/banner') ||
+            location.pathname.startsWith('/admin/overview')
+        )) {
+            navigate('/admin', { replace: true });
+        }
+
+        if (state?.currentUser?.role === ROLE.ADMIN && (
+            location.pathname.startsWith('/admin/product') ||
+            location.pathname.startsWith('/admin/consignment') ||
+            location.pathname.startsWith('/admin/sales') ||
+            location.pathname.startsWith('/admin/category') ||
+            location.pathname.startsWith('/admin/banner') ||
+            location.pathname.startsWith('/admin/overview') ||
+            location.pathname.startsWith('/admin/orders') ||
+            location.pathname.startsWith('/admin/customer-support') ||
+            location.pathname.startsWith('/admin/customers')
+        )) {
+            navigate('/admin', { replace: true });
+        }
+        if (state?.currentUser?.role === ROLE.MANAGER && (
+            location.pathname.startsWith('/admin/customer-support') ||
+            location.pathname.startsWith('/admin/users') ||
+            location.pathname.startsWith('/admin/orders') ||
+            location.pathname.startsWith('/admin/customers')
+        )) {
+            navigate('/admin', { replace: true });
         }
     }, [state?.currentUser, navigate, location.pathname])
 

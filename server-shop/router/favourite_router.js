@@ -5,11 +5,11 @@ import { addFavourite, deleteFavourite, getFavourite } from "../controllers/favo
 
 const router = Router();
 
-router.post("/favourite", checkAuth, addFavourite)
+router.post("/favourite", checkAuth, authRole([0]), addFavourite)
 
-router.delete("/favourite", checkAuth, deleteFavourite)
+router.delete("/favourite", checkAuth, authRole([0]), deleteFavourite)
 
-router.get("/favourite", checkAuth, getFavourite)
+router.get("/favourite", checkAuth, authRole([0]), getFavourite)
 
 
 

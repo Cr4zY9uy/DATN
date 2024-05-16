@@ -1,4 +1,4 @@
-import { Flex, Pagination } from "antd";
+import { Empty, Flex, Pagination } from "antd";
 import { Breadcrumb } from "antd";
 import { NavLink, useSearchParams } from "react-router-dom";
 import Product_Grid from "../layout/product_grid";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { product_by_code, product_by_name, searchProduct } from "../../../services/product_service";
 import ProductGrid from "../layout/product_grid";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 function Search() {
     const [searchInput] = useSearchParams();
     const keyword = searchInput.get('keyword')
@@ -16,22 +17,28 @@ function Search() {
     const [product, setProduct] = useState([]);
 
     const { data, isSuccess } = useQuery({
-        queryKey: ['search_product', keyword],
+        queryKey: ['search_product', keyword, page],
         queryFn: () => searchProduct(searchInput, page)
     })
 
 
     useEffect(() => {
         if (!isSuccess) return
-        const rawData = data?.hits
-        setProduct(rawData?.hits?.map(item => ({
-            id: item?._id,
-            name: item?._source?.name,
-            price: item?._source?.price,
-            quantity: item?._source?.quantity?.inTrade,
+        setProduct(data?.data?.item?.map(is => ({
+            id: is?._id,
+            name: is?.name,
+            origin: is?.origin,
+            price: is?.price,
+            image: is?.images[0],
+            quantity: is?.quantity?.inTrade,
+            pricePromotion: is?.sales?.length !== 0 ?
+                new Date(dayjs(is?.sales[is?.sales.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
+                    0 :
+                    is?.sales[is?.sales.length - 1]?.pricePromotion || 0
+                : 0
 
         })))
-        setTotalProducts(rawData?.total?.value)
+        setTotalProducts(data?.data?.total)
 
     }, [isSuccess, data])
 
@@ -44,6 +51,10 @@ function Search() {
     }, [keyword])
 
 
+    useEffect(() => {
+        setPage(1)
+    }, [keyword])
+    console.log(data?.data);
     return (
         <Flex className="search" vertical align='center'>
             <Banner_Big info={keyword} />
@@ -56,23 +67,26 @@ function Search() {
                         <NavLink to={'/search'}>SEARCH</NavLink>
                     </Breadcrumb.Item>
                 </Breadcrumb>
-                <div className="results_pagination">
-                    <p className=" text-left">Showing <b>1</b> - <b>{product.length}</b> results of <b>{totalProducts}</b> results</p>
-                </div>
-                <Flex className="category_items" wrap="wrap" gap="50px">
-                    {[...Array(10)].slice(1, 7).map((item, index) => {
-                        return <ProductGrid products={{ product_id: 1, title: "Keo bong gon cuc ngon", price: 1024133, price_promotion: 0.1, qty: 10 }} key={index} />
-                    })}
-                </Flex>
-                <Flex justify="center">
-                    <Pagination
-                        showSizeChanger={false}
-                        total={100}
-                        pageSize={8}
-                        current={page}
-                        hideOnSinglePage
-                        onChange={(page) => setPage(page)} />
-                </Flex>
+                {product.length === 0 ? <Empty description={"No product found"} /> :
+                    <Flex vertical gap={"20px"}>
+                        <Flex className="results_pagination" style={{ width: "100%" }} justify="center">
+                            <p className=" text-left">Showing <b>1</b> - <b>{product.length}</b> results of <b>{totalProducts}</b> results</p>
+                        </Flex>
+                        <Flex className="category_items" wrap="wrap" gap="50px">
+                            {product.map((item, index) => {
+                                return <ProductGrid products={item} key={index} />
+                            })}
+                        </Flex>
+                        <Flex justify="center">
+                            <Pagination
+                                showSizeChanger={false}
+                                total={totalProducts}
+                                pageSize={6}
+                                current={page}
+                                hideOnSinglePage
+                                onChange={setPage} />
+                        </Flex>
+                    </Flex>}
             </div>
         </Flex>
     );
