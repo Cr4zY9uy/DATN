@@ -10,11 +10,13 @@ import { ACTION_USER, UserContext } from '../../../store/user';
 import Notification from '../../../utils/configToastify';
 import "./../style/header.css";
 import { LogContext } from '../../../store/typeLog/provider';
+import { ROLE } from '../../../enum/roleUser';
 function HeaderClient() {
 
     const { Header } = Layout
     const { dispatch, state } = useContext(UserContext)
     const logGoogle = useContext(LogContext)
+    const userRole = state?.currentUser?.role
 
     const outGoogle = useMutation({
         mutationKey: ['logout_google'],
@@ -49,9 +51,9 @@ function HeaderClient() {
     }
     const content = (
         <Flex vertical gap={5} style={{ textDecoration: 'none' }}>
-            <NavLink style={{ color: "#000" }} to={`/admin/users/${state?.currentUser?.user_id}`}>Infomation</NavLink>
+            {userRole === ROLE.ADMIN && < NavLink style={{ color: "#000" }} to={`/admin/users/${state?.currentUser?.user_id}`}>Infomation</NavLink>}
             <NavLink style={{ color: "#000" }} onClick={handleLogout}>Logout</NavLink>
-        </Flex>
+        </Flex >
     );
     return (
         <Header className="header">

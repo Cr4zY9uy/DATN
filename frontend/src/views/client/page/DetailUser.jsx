@@ -63,7 +63,9 @@ export const DetailUser = () => {
         }
     }, [info?.firstName, info?.lastName, info?.address, info?.gender, info?.image, form, info?.phone])
 
-
+    useEffect(() => {
+        document.title = "Detail user"
+    }, [])
 
 
     return (

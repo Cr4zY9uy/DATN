@@ -135,6 +135,9 @@ export const OrderList = () => {
             align: "center"
         },
     ];
+    useEffect(() => {
+        document.title = "List order"
+    }, [])
 
     return (
         <Flex className="order_list" vertical align="center">

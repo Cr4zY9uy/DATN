@@ -54,7 +54,7 @@ export const ListOfOrderCustomer = () => {
             searchPaymentStatus !== undefined ? searchPaymentStatus : '',
             searchShippingStatus !== undefined ? searchShippingStatus : '',
             searchSortDate !== undefined ? searchSortDate : ''),
-        enabled: !!searchShippingStatus || !!page || !!searchOrderStatus || !!searchPaymentStatus || !!searchSortDate
+        enabled: !!searchShippingStatus || !!page || !!searchOrderStatus || !!searchPaymentStatus || !!searchSortDate || !!user_id
     })
 
 

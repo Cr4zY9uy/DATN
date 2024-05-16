@@ -11,6 +11,9 @@ export const Wishlist = () => {
     const [page, setPage] = useState(1);
     const { dispatch, state } = useContext(FavouriteContext)
 
+    useEffect(() => {
+        document.title = "Wishlist"
+    }, [])
     return (
         <Flex className='wishlist' vertical justify='center'>
             <Breadcrumb>

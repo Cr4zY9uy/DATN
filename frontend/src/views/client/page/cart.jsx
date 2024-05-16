@@ -138,6 +138,10 @@ function Cart() {
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
+
+    useEffect(() => {
+        document.title = "Cart"
+    }, [])
     return (
         <Flex className='container cart_page' vertical>
             <Breadcrumb>
