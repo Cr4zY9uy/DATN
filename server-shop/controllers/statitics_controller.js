@@ -195,3 +195,68 @@ export const unsold = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
+
+export const countAddedPerDay = async (req, res) => {
+    try {
+        const productNewPerDay = await product_model.aggregate([
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]);
+
+        const categoryNewPerDay = await category_model.aggregate([
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]);
+
+        const orderNewPerDay = await order_model.aggregate([
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]);
+
+        const userNewPerDay = await user_model.aggregate([
+            {
+                $match: { role: 0 }
+            },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]);
+
+        return res.status(200).json({
+            productNewPerDay: productNewPerDay,
+            categoryNewPerDay: categoryNewPerDay,
+            orderNewPerDay: orderNewPerDay,
+            userNewPerDay: userNewPerDay
+        });
+    } catch (error) {
+        console.error("Error counting products added per day:", error);
+        return res.status(500).json({ message: error.message });
+    }
+};

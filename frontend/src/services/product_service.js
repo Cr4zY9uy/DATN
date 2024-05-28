@@ -162,3 +162,7 @@ export const searchProduct = (searchParam, page) => api.get(URL.PRODUCT.SEARCH, 
         searchParam, page
     }
 })
+
+export const deleteProductOne = (id) => api.delete(URL.PRODUCT.CRUD + `/${id}`)
+
+export const deleteProductList = (id) => api.delete(URL.PRODUCT.CRUD, { data: { product_id: id } })

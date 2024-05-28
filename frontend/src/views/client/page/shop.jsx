@@ -142,7 +142,8 @@ function Shop() {
                 new Date(dayjs(item?.saleId[item?.saleId.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
                     0 :
                     (item?.saleId[item?.saleId.length - 1]?.products || []).find(product => product.productId === item?._id)?.pricePromotion || 0
-                : 0
+                : 0,
+            status: item?.isActive
         })))
         setTotal(rawData?.totalDocs)
         setIsEmpty(false)
@@ -272,8 +273,15 @@ function Shop() {
                                                 ) : (
                                                     `$${item?.price}`
                                                 )}
-                                            </Typography.Text>                                            <Rate allowHalf disabled defaultValue={item?.stars} />
-                                            <Button icon={<ShoppingOutlined />} onClick={() => addToCart(item)}>add to cart</Button>
+                                            </Typography.Text>
+                                            <Rate allowHalf disabled defaultValue={item?.stars} />
+                                            {!item?.status ? <Button
+                                                onClick={() => navigate(`/client/product/${item?.id}`)}
+                                            >view detail</Button> :
+
+                                                <Button icon={<ShoppingOutlined />} onClick={() => addToCart(item)}>add to cart</Button>
+
+                                            }
                                         </Flex>
                                     ))}
                                 </Flex>

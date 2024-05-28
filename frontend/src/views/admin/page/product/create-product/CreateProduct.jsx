@@ -201,7 +201,8 @@ function CreateProduct() {
                                         }
                                     ]}
                                 >
-                                    <Select placeholder="Category" size="small" style={{ height: "31px" }} options={categories} allowClear />
+                                    <Select virtual={false}
+                                        placeholder="Category" size="small" style={{ height: "31px" }} options={categories} allowClear />
                                 </Form.Item>
                             </Flex>
                             <Flex vertical style={{ width: "100%" }}>
@@ -220,6 +221,7 @@ function CreateProduct() {
                                 >
                                     <Select placeholder="Origin" size="small" style={{ height: "31px" }} options={options} allowClear
                                         showSearch
+                                        virtual={false}
                                         optionFilterProp="children"
                                         filterOption={(input, option) => (option?.text ?? '').includes(input)}
                                         filterSort={(optionA, optionB) =>

@@ -38,7 +38,7 @@ const order_schema = new mongoose.Schema({
     addressReceiver: {
         type: String,
         required: true,
-        min: 5,
+        min: 3,
         max: 50,
         trim: true
     },
@@ -109,7 +109,9 @@ const order_schema = new mongoose.Schema({
     },
     note: {
         type: String,
-        trim: true
+        trim: true,
+        min: 3,
+        max: 300
     }
 },
     {

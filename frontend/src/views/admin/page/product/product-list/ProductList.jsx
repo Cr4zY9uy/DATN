@@ -1,5 +1,5 @@
 import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { Button, Flex, Form, Image, Input, Select, Switch, Table, Typography } from 'antd';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
@@ -28,6 +28,7 @@ export const ProductList = () => {
   const [origin, setOrigin] = useState("");
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('')
+  const [sortPrice, setSortPrice] = useState('')
 
 
 
@@ -35,6 +36,7 @@ export const ProductList = () => {
   const searchTitle = useDebounce(title, 500)
   const searchCategory = useDebounce(category, 500)
   const searchSortTitle = useDebounce(sortTitle, 500)
+  const searchSortPrice = useDebounce(sortPrice, 500)
 
   const [total, setTotal] = useState(0);
   const [items, setItems] = useState([])
@@ -69,30 +71,18 @@ export const ProductList = () => {
   }, [queryCountry?.isSuccess, queryCountry?.data])
 
   const { data, isSuccess } = useQuery({
-    queryKey: ['product_admin', page, searchCategory, searchTitle, searchSortTitle, searchOrigin],
+    queryKey: ['products_admin', page, searchCategory, searchTitle, searchSortTitle, searchOrigin, searchSortPrice],
     queryFn: () => listProduct(page,
       searchTitle !== undefined ? searchTitle : '',
       searchOrigin !== undefined ? searchOrigin : '',
       searchCategory !== undefined ? searchCategory : '',
-      searchSortTitle),
-    enabled: !!searchOrigin || !!searchTitle || !!page || !!searchSortTitle || !!searchCategory
+      searchSortTitle !== undefined ? searchSortTitle : '',
+      searchSortPrice !== undefined ? searchSortPrice : '',
+    ),
+    placeholderData: keepPreviousData,
+    enabled: !!searchOrigin || !!searchTitle || !!page || !!searchSortTitle || !!searchCategory || !!searchSortPrice
   })
 
-  useEffect(() => {
-    setPage(1)
-
-    return () => {
-      setPage(1)
-    }
-  }, [])
-
-  useEffect(() => {
-    setPage(1)
-
-    return () => {
-      setPage(1)
-    }
-  }, [searchOrigin, searchTitle, searchSortTitle, searchCategory])
 
 
   useEffect(() => {
@@ -212,8 +202,18 @@ export const ProductList = () => {
   };
 
   const onChange = (_pagination, _filters, sorter, _extra) => {
-    const { _field, order } = sorter;
-    setSortTitle(order);
+    const { field, order } = sorter;
+    let newSortName = '';
+    let newSortPrice = '';
+    if (order !== undefined) {
+      if (field === 'name') {
+        newSortName = order;
+      } else if (field === 'price') {
+        newSortPrice = order;
+      }
+    }
+    setSortPrice(newSortPrice)
+    setSortTitle(newSortName);
   };
 
   useEffect(() => {
@@ -222,6 +222,13 @@ export const ProductList = () => {
     setCategories(rawData?.map(item => ({ value: item?._id, label: item?.name })))
 
   }, [optionsCategories?.isSuccess, optionsCategories?.data])
+
+  useEffect(() => {
+    setPage(1)
+    return () => {
+      setPage(1)
+    }
+  }, [searchOrigin, searchTitle, searchSortTitle, searchCategory, searchSortPrice])
 
   return (
     <Flex vertical gap={"middle"} className='banner_list'>
@@ -232,13 +239,13 @@ export const ProductList = () => {
               name="title"
               style={{ width: "33%" }}
             >
-              <Input type="text" placeholder="Title" size="large" />
+              <Input type="text" placeholder="Title" />
             </Form.Item>
             <Form.Item
               style={{ width: "51%" }}
               name="origin"
             >
-              <Select placeholder="Country" size="large" options={options} allowClear
+              <Select placeholder="Country" options={options} allowClear
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) => (option?.text ?? '').includes(input)}
@@ -250,7 +257,7 @@ export const ProductList = () => {
               style={{ width: "51%" }}
               name="category"
             >
-              <Select placeholder="Category" size="large" options={categories} allowClear />
+              <Select placeholder="Category" options={categories} allowClear />
             </Form.Item>
           </Flex>
 
@@ -266,7 +273,7 @@ export const ProductList = () => {
         dataSource={items}
         rowHoverable
         rowSelection={rowSelection}
-        pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, showSizeChanger: false, onChange: setPage }}
+        pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, current: page, howSizeChanger: false, onChange: setPage }}
         onChange={onChange}
       />
       <DeleteModal type_del={typeDelete} id_del={delID} />

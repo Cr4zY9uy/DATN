@@ -12,3 +12,5 @@ export const order_per_month = () => api.get(URL.STATITICS.ORDER_PER_MONTH)
 export const order_per_day = () => api.get(URL.STATITICS.ORDER_PER_DAY)
 
 export const unsold = () => api.get(URL.STATITICS.UNSOLD)
+
+export const statiticsPerday = () => api.get(URL.STATITICS.STATITICS_PER_DAY)

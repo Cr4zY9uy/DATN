@@ -191,6 +191,8 @@ export function DetailSale() {
                                                 style={{ marginBottom: 0, width: "40%" }}
                                             >
                                                 <Select
+                                                    virtual={false}
+
                                                     options={products}
                                                     showSearch
                                                     optionFilterProp="children"

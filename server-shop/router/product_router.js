@@ -24,9 +24,9 @@ const router = Router();
 
 // router.post("/product/add", checkAuth, add_product_validator, add_product);
 
-router.put("/product/:id", checkAuth, authRole([2]), edit_product);
+router.put("/product/:id", checkAuth, authRole([2]), edit_product_validator, edit_product);
 
-router.post("/product", checkAuth, authRole([2]), add_product);
+router.post("/product", checkAuth, authRole([2]), add_product_validator, add_product);
 
 
 router.get("/product/options/all", all_product);
@@ -39,9 +39,9 @@ router.get("/product/category/:name", category_product);
 router.get('/product', paginate_product)
 router.get("/product/category_detail/:id", product_by_category)
 
-router.delete("/product/delete/:id", checkAuth, authRole([2]), delete_product_one);
-router.delete("/product/delete_list", checkAuth, authRole([2]), delete_product_list);
-router.delete("/product/delete_all", checkAuth, authRole([2]), delete_product_all);
+router.delete("/product/:id", checkAuth, authRole([2]), delete_product_one);
+router.delete("/product", checkAuth, authRole([2]), delete_product_list);
+router.delete("/product", checkAuth, authRole([2]), delete_product_all);
 
 
 export default router;

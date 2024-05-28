@@ -11,7 +11,7 @@ export const Countdown = (props) => {
     console.log(new Date().getTime());
     useEffect(() => {
         const countdown = () => {
-            const endDate = new Date(dayjs(props.expires).$d).getTime()
+            const endDate = new Date(dayjs(props.expires).$d).getTime() ?? new Date("December 25, 2024 00:00:00").getTime()
             const today = new Date().getTime()
 
             const timeDiff = endDate - today

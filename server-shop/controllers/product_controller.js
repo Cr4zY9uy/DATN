@@ -40,7 +40,7 @@ export const edit_product = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: "Product does not exist" });
         }
-        if (data.name !== product.name) {
+        if (data.name !== product.name && data.name) {
             const checkExistName = await product_model.findOne({ name: { $regex: new RegExp(data.name, 'iyu') } });
             if (checkExistName) {
                 return res.status(400).json({ message: "Product name is existed" });
@@ -89,7 +89,8 @@ export const detail_product = async (req, res) => {
 export const delete_product_one = async (req, res) => {
     const id = req.params.id;
     try {
-        const data = await product_model.findOneAndDelete({ product_id: id });
+        console.log(id);
+        const data = await product_model.findOneAndDelete({ _id: id });
         if (data) {
             return res.status(200).json({ message: "Product deleted successfully" });
         } else {
@@ -120,12 +121,12 @@ export const delete_product_list = async (req, res) => {
         if (!product_id || product_id.length === 0) {
             return res.status(400).json({ message: "Please provide list of product_id" });
         }
-        const data = await product_model.deleteMany({ product_id: { $in: product_id } });
+        const data = await product_model.deleteMany({ _id: { $in: product_id } });
 
         if (data) {
-            return res.status(200).json({ message: "Categories deleted successfully" });
+            return res.status(200).json({ message: "Products deleted successfully" });
         } else {
-            return res.status(404).json({ message: "Categories not found" });
+            return res.status(404).json({ message: "Products not found" });
         }
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -137,8 +138,8 @@ export const paginate_product = async (req, res) => {
     const limit = 6;
     const skip = (page - 1) * limit;
     const query = {};
-    if (name) query.name = new RegExp(name, 'i');
-    if (origin) query.origin = new RegExp(origin, 'i');
+    if (name) query.name = new RegExp(name, 'iuy');
+    if (origin) query.origin = new RegExp(origin, 'iuy');
     if (categoryId) {
         const parsedCategoryIds = categoryId.split(",").map(id => id.trim());
         query.categoryId = { $in: parsedCategoryIds };
@@ -313,3 +314,4 @@ export const product_may_like = async (req, res) => {
 
     }
 }
+

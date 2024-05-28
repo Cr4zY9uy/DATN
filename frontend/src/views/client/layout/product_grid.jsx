@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Badge, Button, Flex, Typography } from "antd";
 import "./../style/product_grid.css";
 import { CloseOutlined, HeartOutlined, ShoppingOutlined } from "@ant-design/icons";
@@ -27,6 +27,8 @@ function ProductGrid(props) {
             Notification({ message: "You have to login first!", type: "error" })
         }
     };
+    const navigate = useNavigate()
+
     const addToUserFavourite = useMutation({
         mutationFn: (id) => addFavourite(id),
         onSuccess: () => {
@@ -111,7 +113,7 @@ function ProductGrid(props) {
                             </Typography.Text>
                         </Typography.Text> </>)}
             </Flex>
-            {!type && <Button icon={<ShoppingOutlined />} className="buy" onClick={addToCart}>add to cart</Button>}
+            {!type && (!product?.status ? <Button className="buy" onClick={() => navigate(`/client/product/${product?.id}`)}>view detail</Button> : <Button icon={<ShoppingOutlined />} className="buy" onClick={addToCart}>add to cart</Button>)}
 
         </Flex >
     );

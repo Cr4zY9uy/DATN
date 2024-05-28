@@ -297,7 +297,7 @@ export const forgetPassword = async (req, res) => {
     const from = process.env.NODEMAILER_EMAIL
     try {
         const data = await user_model.findOne({ email: email })
-        if (data.isActive) {
+        if (!data.isActive) {
             return res.status(401).json({ message: "Email is locked" });
         }
         if (data) {
@@ -415,13 +415,14 @@ export const paginate_customer = async (req, res) => {
     const { email, isActive, name, page } = req.query
     const query = {}
     if (email) query.email = { $regex: new RegExp(email, "y") }
-    if (isActive) query.isActive = isActive
+    if (isActive !== '') query.isActive = isActive
 
     query.role = 0
     const nameQuery = name ? {
         $or: [
-            { firstName: { $regex: new RegExp(name, "iu") } },
-            { lastName: { $regex: new RegExp(name, "iu") } }
+            { firstName: { $regex: new RegExp(name, "iuy") } },
+            { lastName: { $regex: new RegExp(name, "iuy") } },
+            { name: { $regex: new RegExp(name, "iuy") } }
         ]
     } : {};
     const limit = 6;

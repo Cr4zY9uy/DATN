@@ -1,6 +1,7 @@
 // import { upload_image } from "./upload_controller.js";
 import category_model from "../models/category_model.js"
 import { options } from "../paginate/options.js";
+import product_model from "../models/product_model.js";
 
 export const add_category = async (req, res) => {
 
@@ -42,7 +43,8 @@ export const update_category = async (req, res) => {
         if (!category) {
             return res.status(404).json({ message: "Category does not exist" });
         }
-        if (category.name.toLowerCase() === 'default') return
+        if (category.name.toLowerCase() === 'default') return res.status(400).json({ message: "Can't update default category" });
+
         if (order && order !== category.order) {
             const checkExistOrder = await category_model.findOne({ order: order });
             if (checkExistOrder) {
@@ -81,11 +83,16 @@ export const detail_category = async (req, res) => {
 export const delete_category_one = async (req, res) => {
     try {
         const id = req.params.id;
-        console.log(id);
         const checkDefault = await category_model.findOne({ _id: id })
         if (checkDefault.name.toLowerCase() === 'default')
             return res.status(400).json({ message: "Can't delete default category" });
+        const defaultCategory = await category_model.findOne({ name: 'Default' });
+        if (!defaultCategory) {
+            return res.status(400).json({ message: "Default category not found" });
+        }
+        await product_model.updateMany({ categoryId: id }, { categoryId: defaultCategory._id });
         const data = await category_model.findOneAndDelete({ _id: id });
+
         if (data !== null) {
             return res.status(200).json({ message: "Category deleted successfully" });
         } else {
@@ -109,6 +116,12 @@ export const delete_category_list = async (req, res) => {
         if (existingCategories.length !== category_id.length) {
             return res.status(404).json({ message: "One or more categories not found" });
         }
+        const defaultCategory = await category_model.findOne({ name: 'Default' });
+        if (!defaultCategory) {
+            return res.status(400).json({ message: "Default category not found" });
+        }
+
+        await product_model.updateMany({ categoryId: { $in: category_id } }, { categoryId: defaultCategory._id });
         const data = await category_model.deleteMany({ _id: { $in: category_id } });
         if (data) {
             return res.status(200).json({ message: "Categories deleted successfully" });

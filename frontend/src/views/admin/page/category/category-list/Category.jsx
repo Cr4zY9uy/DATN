@@ -56,13 +56,6 @@ export const CategoryList = () => {
       searchSortOrder, searchSortName),
     enabled: !!searchDescription || !!searchName || !!page || !!searchSortName || !!searchSortOrder || !!searchType
   })
-  useEffect(() => {
-    setPage(1)
-
-    return () => {
-      setPage(1)
-    }
-  }, [])
 
   useEffect(() => {
     setPage(1)
@@ -71,7 +64,6 @@ export const CategoryList = () => {
       setPage(1)
     }
   }, [searchDescription, searchName, searchSortName, searchSortOrder, searchType])
-
 
   useEffect(() => {
 
@@ -176,6 +168,7 @@ export const CategoryList = () => {
     const { field, order } = sorter;
     let newSortName = '';
     let newSortOrder = '';
+    console.log(field, order);
 
     if (order !== undefined) {
       if (field === 'name') {
@@ -196,19 +189,19 @@ export const CategoryList = () => {
               name="name"
               style={{ width: "33%" }}
             >
-              <Input type="text" placeholder="Name" size="large" />
+              <Input type="text" placeholder="Name" />
             </Form.Item>
             <Form.Item
               style={{ width: "51%" }}
               name="description"
             >
-              <Input type="text" placeholder="Description" size="large" />
+              <Input type="text" placeholder="Description" />
             </Form.Item>
             <Form.Item
               name="type"
               style={{ width: "15%" }}
             >
-              <Select placeholder="Type" size="large" allowClear>
+              <Select placeholder="Type" allowClear>
                 <Select.Option value={0} >Deactivate</Select.Option>
                 <Select.Option value={1}>Activate</Select.Option>
               </Select>
@@ -227,7 +220,7 @@ export const CategoryList = () => {
         dataSource={items}
         rowHoverable
         rowSelection={rowSelection}
-        pagination={{ hideOnSinglePage: true, pageSize: 6, total: totalProducts, defaultCurrent: 1, showSizeChanger: false, onChange: setPage }}
+        pagination={{ hideOnSinglePage: true, pageSize: 6, total: totalProducts, defaultCurrent: 1, current: page, showSizeChanger: false, onChange: setPage }}
         onChange={onChange}
       />
       <DeleteModal type_del={typeDelete} id_del={delID} />

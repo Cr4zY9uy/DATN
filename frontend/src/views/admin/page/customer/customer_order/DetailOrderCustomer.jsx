@@ -283,8 +283,8 @@ export function DetailOrderCustomer() {
                                         rules={[
 
                                             {
-                                                min: 5,
-                                                message: "Minimum 5 character"
+                                                min: 3,
+                                                message: "Minimum 3 character"
                                             },
                                             {
                                                 max: 50,
@@ -315,6 +315,7 @@ export function DetailOrderCustomer() {
                                     >
                                         <Select placeholder="Country" size="small" style={{ height: "31.33px" }} options={options}
                                             showSearch
+                                            virtual={false}
                                             optionFilterProp="children"
                                             filterOption={(input, option) => (option?.text ?? '').includes(input)}
                                             filterSort={(optionA, optionB) =>

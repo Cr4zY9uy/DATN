@@ -29,9 +29,9 @@ export const listUser = (page, role, name, email, isActive) => api.get(URL.USER.
     }
 })
 
-export const listCustomer = (page, name, email) => api.get(URL.USER.CUSTOMERS, {
+export const listCustomer = (page, name, email, isActive) => api.get(URL.USER.CUSTOMERS, {
     params: {
-        page, name, email
+        page, name, email, isActive
     }
 })
 

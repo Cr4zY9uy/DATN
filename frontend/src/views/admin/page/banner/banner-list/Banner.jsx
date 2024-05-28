@@ -195,19 +195,19 @@ export const BannerList = () => {
               name="title"
               style={{ width: "33%" }}
             >
-              <Input type="text" placeholder="Title" size="large" />
+              <Input type="text" placeholder="Title" />
             </Form.Item>
             <Form.Item
               style={{ width: "51%" }}
               name="description"
             >
-              <Input type="text" placeholder="Description" size="large" />
+              <Input type="text" placeholder="Description" />
             </Form.Item>
             <Form.Item
               name="type"
               style={{ width: "15%" }}
             >
-              <Select placeholder="Type" size="large" allowClear>
+              <Select placeholder="Type" allowClear>
                 <Select.Option value={0} >Deactivate</Select.Option>
                 <Select.Option value={1}>Activate</Select.Option>
               </Select>
@@ -226,7 +226,7 @@ export const BannerList = () => {
         dataSource={items}
         rowHoverable
         rowSelection={rowSelection}
-        pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, showSizeChanger: false, onChange: setPage }}
+        pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, current: page, showSizeChanger: false, onChange: setPage }}
         onChange={onChange}
       />
       <DeleteModal type_del={typeDelete} id_del={delID} />

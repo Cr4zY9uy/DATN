@@ -81,80 +81,60 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-cron.schedule("*/5 * * * *", async () => {
-    try {
-        const consignments = await consignment_model.find();
+// cron.schedule("*/5 * * * *", async () => {
+//     try {
+//         const consignments = await consignment_model.find();
 
-        for (let consignment of consignments) {
-            for (let product of consignment.products) {
-                if (isToday(product.expireDate)) {
-                    const originalProduct = await product_model.findById(product.productId);
-                    if (originalProduct) {
-                        const updatedUnSold = originalProduct.quantity.unSold + originalProduct.quantity.inTrade;
-                        await product_model.findByIdAndUpdate(product.productId, {
-                            $set: {
-                                'quantity.inTrade': 0,
-                                'quantity.unSold': updatedUnSold
-                            }
-                        });
+//         for (let consignment of consignments) {
+//             for (let product of consignment.products) {
+//                 if (isToday(product.expireDate)) {
+//                     const originalProduct = await product_model.findById(product.productId);
+//                     if (originalProduct) {
+//                         const updatedUnSold = originalProduct.quantity.unSold + originalProduct.quantity.inTrade;
+//                         await product_model.findByIdAndUpdate(product.productId, {
+//                             $set: {
+//                                 'quantity.inTrade': 0,
+//                                 'quantity.unSold': updatedUnSold
+//                             }
+//                         });
 
-                    }
-                }
-            }
-        }
-    } catch (error) {
-        console.error(error.message);
-    }
-});
+//                     }
+//                 }
+//             }
+//         }
+//     } catch (error) {
+//         console.error(error.message);
+//     }
+// });
 
-cron.schedule("1-59 * * * *", async () => {
-    try {
-        const twentyMinutesInMilliseconds = 14 * 60 * 1000;
-        const orders = await order_model.find({
-            paymentMethod: "vnpay",
-            paymentStatus: "unpaid",
-            orderStatus: "new",
-            createdAt: { $lte: new Date(Date.now() - twentyMinutesInMilliseconds) },
-        });
+// cron.schedule("1-59 * * * *", async () => {
+//     try {
+//         const twentyMinutesInMilliseconds = 14 * 60 * 1000;
+//         const orders = await order_model.find({
+//             paymentMethod: "vnpay",
+//             paymentStatus: "unpaid",
+//             orderStatus: "new",
+//             createdAt: { $lte: new Date(Date.now() - twentyMinutesInMilliseconds) },
+//         });
 
-        for (const order of orders) {
-            await order_model.findByIdAndUpdate(order._id, { orderStatus: "canceled" });
-            for (const product of order.products) {
-                const originalProduct = await product_model.findById(product.productId);
-                if (originalProduct) {
-                    const newInTrade = originalProduct.quantity.inTrade + product.quantity;
-                    await product_model.findByIdAndUpdate(product.productId, {
-                        $set: { 'quantity.inTrade': newInTrade }
-                    });
-                }
-            }
-        }
-    } catch (error) {
-        console.error(error.message);
-    }
-});
+//         for (const order of orders) {
+//             await order_model.findByIdAndUpdate(order._id, { orderStatus: "canceled" });
+//             for (const product of order.products) {
+//                 const originalProduct = await product_model.findById(product.productId);
+//                 if (originalProduct) {
+//                     const newInTrade = originalProduct.quantity.inTrade + product.quantity;
+//                     await product_model.findByIdAndUpdate(product.productId, {
+//                         $set: { 'quantity.inTrade': newInTrade }
+//                     });
+//                 }
+//             }
+//         }
+//     } catch (error) {
+//         console.error(error.message);
+//     }
+// });
 
-cron.schedule("1-59 * * * *", async () => {
-    try {
-        const orders = await order_model.find({
-            orderStatus: "canceled"
-        });
 
-        for (const order of orders) {
-            for (const product of order.products) {
-                const originalProduct = await product_model.findById(product.productId);
-                if (originalProduct) {
-                    const newInTrade = originalProduct.quantity.inTrade + product.quantity;
-                    await product_model.findByIdAndUpdate(product.productId, {
-                        $set: { 'quantity.inTrade': newInTrade }
-                    });
-                }
-            }
-        }
-    } catch (error) {
-        console.error(error.message);
-    }
-});
 
 
 

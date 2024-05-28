@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Flex, Skeleton, Typography } from "antd";
+import { Empty, Flex, Skeleton, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { listProduct } from "../../../services/product_service";
 import { loginByGoogle } from "../../../services/user_service";
@@ -43,7 +43,8 @@ function Home() {
             image: item?.productId?.images[0],
             id: item?.productId?._id,
             origin: item?.productId?.origin,
-            sale: item?.pricePromotion
+            sale: item?.pricePromotion,
+            status: item?.productId?.isActive
         })))
         setExpires(rawData?.dueDate)
     }, [querySale?.isSuccess, querySale?.data])
@@ -60,7 +61,8 @@ function Home() {
                 new Date(dayjs(item?.saleId[item?.saleId.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
                     0 :
                     (item?.saleId[item?.saleId.length - 1]?.products || []).find(product => product.productId === item?._id)?.pricePromotion || 0
-                : 0
+                : 0,
+            status: item?.isActive
 
         })))
         SetIsLoadingNew(false)
@@ -84,11 +86,10 @@ function Home() {
         if (logGoogle?.state?.isLogByGoogle) {
             if (!getUser?.isSuccess) return
             else {
-                Notification({ message: "Login successfully!", type: "success" })
                 dispatch({ type: ACTION_USER.LOGIN, payload: getUser?.data?.data })
             }
         }
-    }, [getUser?.isSuccess, getUser?.data, getUser?.error, dispatch])
+    }, [getUser?.isSuccess, getUser?.data, getUser?.error, dispatch, logGoogle?.state])
     return (
         <Flex vertical>
             <Banner />
@@ -96,7 +97,8 @@ function Home() {
             <Countdown expires={expires} />
             <Flex className="product_hot container text-center" vertical >
                 <Flex gap='large'>
-                    {productHot.slice(1, 2).map((item, index) => {
+
+                    {!productHot ? <Empty description={"No products available"} /> : productHot.slice(0, 4).map((item, index) => {
                         return <Skeleton key={index} loading={isLoadingSale} active>
                             <Product_Hot products={item} key={item.id} />
                         </Skeleton>
@@ -106,7 +108,7 @@ function Home() {
             <Flex className="product_list container" vertical>
                 <Typography.Title level={1}>new products</Typography.Title>
                 <Flex className="products" gap='large'>
-                    {productNew.slice(1, 5).map((item, index) => {
+                    {!productNew ? <Empty description={"No products available"} /> : productNew.slice(1, 5).map((item, index) => {
                         return <Skeleton loading={isLoadingNew} active key={index}>
                             <Product_List products={item} key={item.id} />
                         </Skeleton>

@@ -233,7 +233,7 @@ export const ListOfSale = () => {
                 dataSource={items}
                 rowHoverable
                 onChange={onChange}
-                pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, showSizeChanger: false, onChange: setPage }}
+                pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, current: page, showSizeChanger: false, onChange: setPage }}
             />
             <DeleteModal type_del={typeDelete} id_del={delID} />
 
