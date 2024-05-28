@@ -13,7 +13,7 @@ function Banner() {
     useEffect(() => {
         if (!isSuccess) return
         const rawData = data?.data?.data
-        setBanners(rawData?.filter(item => item.isActive !== false).map(item => ({ id: item._id, image: item.image })))
+        setBanners(rawData?.filter(item => item.isActive !== false).sort((a, b) => a.order - b.order).map(item => ({ id: item._id, image: item.image })))
         return () => {
 
         }

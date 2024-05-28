@@ -10,6 +10,7 @@ const product_schema = new mongoose.Schema({
         trim: true
     },
     description: {
+        required: true,
         type: String,
         min: 5,
         max: 300
@@ -17,11 +18,12 @@ const product_schema = new mongoose.Schema({
     unit: {
         type: String,
         min: 5,
-        max: 20
+        max: 20,
+        required: true,
     },
     origin: {
         type: String,
-        requiredd: true,
+        required: true,
         trim: true
     },
     price: {

@@ -135,7 +135,7 @@ export const ListOfCustomer = () => {
         navigate(`/admin/customers/${id}`)
     }
 
-
+    console.log(status);
     const onFieldsChange = (_, fields) => {
         const mappedFields = fields.reduce((acc, item) => {
             acc[item.name[0]] = item.value;
@@ -155,19 +155,19 @@ export const ListOfCustomer = () => {
                             name="name"
                             style={{ width: "33%" }}
                         >
-                            <Input type="text" placeholder="Name" size="large" />
+                            <Input type="text" placeholder="Name" />
                         </Form.Item>
                         <Form.Item
                             name="email"
                             style={{ width: "33%" }}
                         >
-                            <Input type="text" placeholder="Email" size="large" />
+                            <Input type="text" placeholder="Email" />
                         </Form.Item>
                         <Form.Item
                             style={{ width: "51%" }}
                             name="status"
                         >
-                            <Select placeholder="Status" size="large" options={statuses} allowClear />
+                            <Select placeholder="Status" options={statuses} allowClear />
                         </Form.Item>
                     </Flex>
 
@@ -178,7 +178,7 @@ export const ListOfCustomer = () => {
                 columns={columns}
                 dataSource={items}
                 rowHoverable
-                pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, showSizeChanger: false, onChange: setPage }}
+                pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, current: page, showSizeChanger: false, onChange: setPage }}
             />
 
         </Flex>

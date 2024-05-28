@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { PieChart, Pie, Tooltip, Sector, YAxis, Line, Bar, Legend, ResponsiveContainer, ComposedChart, CartesianGrid, XAxis, BarChart } from 'recharts'
-import { count_order, count_product_category, count_statitics, order_per_day, order_per_month, unsold } from '../../../services/statitics_service';
+import { PieChart, Pie, Tooltip, Sector, YAxis, Line, Bar, Legend, ResponsiveContainer, ComposedChart, CartesianGrid, XAxis, BarChart, LineChart } from 'recharts'
+import { count_order, count_product_category, count_statitics, order_per_day, order_per_month, statiticsPerday, unsold } from '../../../services/statitics_service';
 import { getLabelByValue } from '../../../utils/getLabelByValue';
 import { orderStatusOptions, paymentStatusOptions, shippingStatusOptions } from '../../../utils/options';
 import { Button, Card, Flex, Image, Typography } from 'antd';
@@ -10,6 +10,7 @@ import randomHexColorCode from '../../../utils/randomColor';
 import './OverviewAdmin.css'
 import { useNavigate } from 'react-router';
 import { detailCategory } from '../../../services/category_service';
+import { transformData } from '../../../utils/megreArray';
 
 const renderActiveShape = (props) => {
     const RADIAN = Math.PI / 180;
@@ -102,6 +103,9 @@ export const Overview = () => {
     const [orderByPaymentStatus, setOrderByPaymentStatus] = useState([])
     const [orderByOrderStatus, setOrderByOrderStatus] = useState([])
     const [unsoldProduct, setUnsoldProduct] = useState([])
+
+    const [statsPerday, setStatsPerday] = useState({})
+
     const navigate = useNavigate()
 
     const queryProductCategory = useQuery({
@@ -127,6 +131,12 @@ export const Overview = () => {
         queryKey: ['total_statitics'],
         queryFn: () => count_statitics()
     })
+
+    const queryStatiticsPerday = useQuery({
+        queryKey: ['statitics_per_day'],
+        queryFn: () => statiticsPerday()
+    })
+
 
     const orderPerMonth = useQuery({
         queryKey: ['order_per_month'],
@@ -158,6 +168,16 @@ export const Overview = () => {
         }
     }, [detailCategoryOverview?.isSuccess, detailCategoryOverview?.data])
 
+    useEffect(() => {
+        if (!queryStatiticsPerday?.isSuccess) return
+        const rawData = queryStatiticsPerday?.data?.data
+        setStatsPerday(rawData)
+        return () => {
+            setInfo({})
+        }
+    }, [queryStatiticsPerday?.isSuccess, queryStatiticsPerday?.data])
+
+
 
     useEffect(() => {
         if (!unSold?.isSuccess) return
@@ -165,7 +185,7 @@ export const Overview = () => {
         setUnsoldProduct(rawData?.map(item => ({
             name: item?.name,
             quantity: item?.quantity?.unSold,
-            fill: randomHexColorCode()
+
 
         })))
         return () => {
@@ -186,7 +206,6 @@ export const Overview = () => {
         }
     }, [orderPerDay?.isSuccess, orderPerDay?.data])
 
-    console.log(unsoldProduct);
     useEffect(() => {
         if (!orderPerMonth?.isSuccess) return
         const rawData = orderPerMonth?.data?.data
@@ -394,12 +413,12 @@ export const Overview = () => {
                 </Flex>
             </Card>
             <Card title="Unsold quantity of products">
-                <BarChart width={730} height={250} data={unsoldProduct}>
+                <BarChart width={950} height={250} data={unsoldProduct}>
                     <CartesianGrid strokeDasharray="3 3" />
+                    <Tooltip />
                     <XAxis dataKey="name" />
                     <YAxis domain={[5, "dataMax + 5"]} />
-                    <Bar dataKey="quantity" fill="#8884d8" />
-                    <Tooltip />
+                    <Bar dataKey="quantity" fill="#337fd6" />
                     <Legend />
                 </BarChart>
             </Card>
@@ -459,6 +478,20 @@ export const Overview = () => {
                         />
                     </ComposedChart>
                 </ResponsiveContainer>
+            </Card>
+            <Card title="Item added per day">
+                <LineChart width={950} height={250} data={transformData(statsPerday)}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="Date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="Category" stroke="#8884d8" />
+                    <Line type="monotone" dataKey="Product" stroke="#82ca9d" />
+                    <Line type="monotone" dataKey="Order" stroke="#d6333c" />
+                    <Line type="monotone" dataKey="Customer" stroke="#d6d333" />
+                </LineChart>
             </Card>
         </Flex>
     )

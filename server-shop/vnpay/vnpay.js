@@ -28,7 +28,7 @@ router.post('/create_payment_url', function (req, res, next) {
         let orderId = req.body.orderId ? req.body.orderId : moment(date).format('DDHHmmss');
         let amount = req.body.amount;
         let bankCode = req.body.bankCode;
-        let orderInfo = req.body.note.trim() == '' || !req.body.note ? ('Thanh toan cho ma GD:' + orderId) : req.body.note.trim();
+        let orderInfo = req.body?.note?.trim() == '' || !req.body.note ? ('Thanh toan cho ma GD:' + orderId) : req.body.note.trim();
 
         let locale = req.body.language;
         if (locale === null || locale === '') {

@@ -98,12 +98,12 @@ function Login() {
                     </Flex>
                 </Form>
                 <Divider>Or</Divider>
-                <Flex vertical align="center" className="button_group" gap={'10px'}>
-                    <Button icon={<GoogleOutlined />} className="google" style={{ backgroundColor: "#18228f", lineHeight: "30px", color: "white" }}
+                <Flex vertical align="center" className="button_group" gap={'10px'} style={{ paddingLeft: 20, paddingRight: 20, width: "100%", }}>
+                    <Button icon={<GoogleOutlined />} className="google" style={{ backgroundColor: "#18228f", lineHeight: "30px", color: "white", width: "100%" }}
                         onClick={loginByGoogle}
                     >Login by google</Button>
                     <Flex style={{ width: "100%" }} justify="flex-end">
-                        <Button type="link" href="/client" style={{ marginBottom: "20px", fontWeight: 600, fontSize: "14px" }}>Wanna see our products?</Button>
+                        <Button type="link" href="/client" style={{ marginBottom: "20px", fontWeight: 600, fontSize: "14px", paddingRight: 0 }}>Wanna see our products?</Button>
                     </Flex>
                 </Flex>
 

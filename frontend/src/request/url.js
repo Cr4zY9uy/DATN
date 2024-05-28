@@ -72,7 +72,8 @@ const URL = {
         TOTAL: "count_statitics",
         ORDER_PER_MONTH: 'order_per_month',
         ORDER_PER_DAY: 'order_per_day',
-        UNSOLD: "unsold"
+        UNSOLD: "unsold",
+        STATITICS_PER_DAY: 'statitics_perday'
     }
 }
 export default URL;

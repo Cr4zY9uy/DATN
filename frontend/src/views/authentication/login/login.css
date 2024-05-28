@@ -60,7 +60,7 @@
 
 .login_panel .button_group .login,
 .login_panel .button_group .google {
-    width: 344px !important;
+    width: 100% !important;
     height: 40px;
-    font-weight: 500;
+    font-weight: 600;
 }

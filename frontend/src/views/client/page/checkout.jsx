@@ -276,8 +276,8 @@ function Checkout() {
                                         required: true,
                                         message: 'Please input!',
                                     }, {
-                                        min: 6,
-                                        message: "At least 6 characters"
+                                        min: 3,
+                                        message: "At least 3 characters"
                                     }
                                 ]}
                             >
@@ -295,6 +295,8 @@ function Checkout() {
                                 ]}
                             >
                                 <Select
+                                    virtual={false}
+
                                     showSearch
                                     options={options}
                                     optionFilterProp="children"

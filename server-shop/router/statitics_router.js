@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { count_order, count_product_category, count_statitics, countDailyOrders, countMonthlyOrders, unsold } from "../controllers/statitics_controller.js";
+import { count_order, count_product_category, count_statitics, countDailyOrders, countMonthlyOrders, countAddedPerDay, unsold } from "../controllers/statitics_controller.js";
 import { authRole, checkAuth } from "../middleware/check_auth.js";
 
 const router = Router()
@@ -18,5 +18,6 @@ router.get("/order_per_day", checkAuth, authRole([2]), countDailyOrders)
 
 router.get("/unsold", checkAuth, authRole([2]), unsold)
 
+router.get("/statitics_perday", checkAuth, authRole([2]), countAddedPerDay)
 
 export default router

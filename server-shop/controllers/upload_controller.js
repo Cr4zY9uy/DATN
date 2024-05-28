@@ -11,7 +11,6 @@ export const upload_image = async (req, res) => {
             cloudinary.uploader.upload(parser.format(image.originalname.toString(), image.buffer).content, options)
         );
         const result = await Promise.all(imagesToUpload);
-        console.log(result);
         const imageUrls = result.map((item) => ({
             url: item.url
         }))

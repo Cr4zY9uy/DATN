@@ -38,7 +38,8 @@ function Category() {
                 new Date(dayjs(item?.saleId[item?.saleId.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
                     0 :
                     (item?.saleId[item?.saleId.length - 1]?.products || []).find(product => product.productId === item?._id)?.pricePromotion || 0
-                : 0
+                : 0,
+            status: item?.isActive
         })))
         setCategoryName(rawData?.docs[0]?.categoryId?.name)
         setTotal(rawData?.totalDocs)

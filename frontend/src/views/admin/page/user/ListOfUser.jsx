@@ -225,7 +225,7 @@ export const ListOfUser = () => {
                 columns={columns}
                 dataSource={items}
                 rowHoverable
-                pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, showSizeChanger: false, onChange: setPage }}
+                pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, current: page, showSizeChanger: false, onChange: setPage }}
             />
 
         </Flex>

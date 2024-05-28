@@ -76,6 +76,7 @@ function ProductDetail() {
         if (!detailProductClient?.isSuccess) return
         const rawData = detailProductClient?.data?.data
         setProduct({
+            status: rawData?.isActive,
             id: rawData?._id,
             quantity: rawData?.quantity?.inTrade,
             images: rawData?.images,
@@ -337,25 +338,29 @@ function ProductDetail() {
                                             <Rate allowHalf value={product?.stars} onChange={(e) => rateProduct.mutate({ stars: e, productId: product?.id })} />
                                             <hr />
                                         </div>
-                                        <Flex vertical gap={8} style={{ height: "30vh" }}>
-                                            <Flex className='form-group' gap={7}>
-                                                <Input value={quantity < product?.quantity ? quantity : product?.quantity} className="form-control quantity" style={{ textAlign: "center", width: "100%" }} onChange={(e) => {
-                                                    if (e.target.value > 0)
-                                                        setQuantity(e.target.value)
-                                                }} />
-                                                <Flex vertical justify="space-between">
-                                                    <Button variant="light" onClick={plus} style={{ height: "45%" }}>
-                                                        <PlusOutlined />
-                                                    </Button>
-                                                    <Button variant="light" onClick={minus} style={{ height: "45%" }}>
-                                                        <MinusOutlined />
-                                                    </Button >
+                                        {!product?.status ? <></> :
+
+                                            <Flex vertical gap={8} style={{ height: "30vh" }}>
+                                                <Flex className='form-group' gap={7}>
+                                                    <Input value={quantity < product?.quantity ? quantity : product?.quantity} className="form-control quantity" style={{ textAlign: "center", width: "100%" }} onChange={(e) => {
+                                                        if (e.target.value > 0)
+                                                            setQuantity(e.target.value)
+                                                    }} />
+                                                    <Flex vertical justify="space-between">
+                                                        <Button variant="light" onClick={plus} style={{ height: "45%" }}>
+                                                            <PlusOutlined />
+                                                        </Button>
+                                                        <Button variant="light" onClick={minus} style={{ height: "45%" }}>
+                                                            <MinusOutlined />
+                                                        </Button >
+                                                    </Flex>
+                                                </Flex>
+                                                <Flex style={{ height: "50%" }}>
+                                                    <Button variant="warning" className="cart" onClick={addToCart}>Add to cart</Button>
                                                 </Flex>
                                             </Flex>
-                                            <Flex style={{ height: "50%" }}>
-                                                <Button variant="warning" className="cart" onClick={addToCart}>Add to cart</Button>
-                                            </Flex>
-                                        </Flex>
+                                        }
+
                                     </Flex>
                                 </Flex>
                             </Flex>

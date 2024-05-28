@@ -53,7 +53,7 @@ function Home() {
             <Countdown />
             <Flex className="product_hot container text-center" vertical >
                 <Flex gap='large'>
-                    {[...Array(10)].slice(4, 6).map((item, index) => {
+                    {[...Array(10)].slice(1, 4).map((item, index) => {
                         return <Skeleton key={index} loading={isLoadingSale} active><Product_Hot products={{ product_id: 1, title: "Keo bong gon cuc ngon", price: 1024133, price_promotion: 0.1, qty: 10 }} key={index} /></Skeleton>
                     })}
                 </Flex>

@@ -1,6 +1,6 @@
 import { ShoppingOutlined } from "@ant-design/icons";
 import { Badge, Button, Flex, Typography } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./../style/product_list.css";
 import { useContext } from "react";
 import { ACTION_CART, CartContext } from "../../../store/cart";
@@ -21,6 +21,7 @@ function Product_List(props) {
     }
   };
 
+  const navigate = useNavigate()
 
 
   return (
@@ -54,7 +55,10 @@ function Product_List(props) {
           </Typography.Text>
         </Typography.Text>
       </Flex>
-      <Button icon={<ShoppingOutlined />} onClick={addToCart}>add to cart</Button>
+      {!product?.status ? <Button onClick={() => navigate(`/client/product/${product?.id}`)}>view detail</Button>
+        : <Button icon={<ShoppingOutlined />} onClick={addToCart}>add to cart</Button>
+
+      }
     </Flex >
 
   );

@@ -15,9 +15,9 @@ import { authRole, checkAuth } from "../middleware/check_auth.js";
 const router = Router();
 
 
-router.post("/order", checkAuth, authRole([0]), add_order);
+router.post("/order", checkAuth, authRole([0]), add_order_validator, add_order);
 
-router.put("/order/:id", checkAuth, authRole([0, 1]), edit_order);
+router.put("/order/:id", checkAuth, authRole([0, 1]), edit_order_validator, edit_order);
 
 router.get("/order/options", all_order);
 router.get("/order", checkAuth, authRole([1]), paginate_order);

@@ -10,10 +10,10 @@ import { TypeDeleteAdmin } from '../../../utils/enum';
 import '../style/modal_del.css';
 import { deleteBannerList, deleteBannerOne } from '../../../services/banner_service';
 import { deleteSale } from '../../../services/sale_service';
+import { deleteProductList, deleteProductOne } from '../../../services/product_service';
 function DeleteModal(props) {
     const id = props.id_del;
     const type = props.type_del;
-
     const { state, dispatch } = useContext(ModalContext)
     const isOpen = state?.currentModal
     const onClose = () => {
@@ -64,6 +64,28 @@ function DeleteModal(props) {
         }
     })
 
+    const deleteOneProduct = useMutation({
+        mutationFn: (id) => deleteProductOne(id),
+        onSuccess: () => {
+            Notification({ message: "Delete product successfully!", type: "success" })
+            queryClient.invalidateQueries({ queryKey: ['products_admin'] })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "error" })
+        }
+    })
+
+    const deleteListProduct = useMutation({
+        mutationFn: (id) => deleteProductList(id),
+        onSuccess: () => {
+            Notification({ message: "Delete products successfully!", type: "success" })
+            queryClient.invalidateQueries({ queryKey: ['products_admin'] })
+        },
+        onError: (error) => {
+            Notification({ message: `${error.response.data.message}`, type: "error" })
+        }
+    })
+
     const deleteSaleOne = useMutation({
         mutationFn: (id) => deleteSale(id),
         onSuccess: () => {
@@ -88,6 +110,12 @@ function DeleteModal(props) {
                 break;
             case TypeDeleteAdmin.BANNER_LIST:
                 deleteListBanner.mutate(id)
+                break;
+            case TypeDeleteAdmin.PRODUCT_ONE:
+                deleteOneProduct.mutate(id)
+                break;
+            case TypeDeleteAdmin.PRODUCT_LIST:
+                deleteListProduct.mutate(id)
                 break;
             case TypeDeleteAdmin.SALE:
                 deleteSaleOne.mutate(id)

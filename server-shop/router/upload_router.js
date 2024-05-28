@@ -4,7 +4,7 @@ import { authRole, checkAuth } from "../middleware/check_auth.js";
 
 const router = Router();
 
-router.post("/upload_image", checkAuth, authRole([0,2]), upload_image)
+router.post("/upload_image", checkAuth, authRole([0, 2, 3]), upload_image)
 
 
 export default router;

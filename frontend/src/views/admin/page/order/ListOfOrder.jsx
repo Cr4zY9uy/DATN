@@ -206,25 +206,25 @@ export const ListOfOrder = () => {
                             name="name"
                             style={{ width: "33%" }}
                         >
-                            <Input type="text" placeholder="Name" size="large" />
+                            <Input type="text" placeholder="Name" />
                         </Form.Item>
                         <Form.Item
                             style={{ width: "51%" }}
                             name="orderStatus"
                         >
-                            <Select placeholder="Order status" size="large" options={orderStatusOptions} allowClear />
+                            <Select placeholder="Order status" options={orderStatusOptions} allowClear />
                         </Form.Item>
                         <Form.Item
                             style={{ width: "51%" }}
                             name="paymentStatus"
                         >
-                            <Select placeholder="Payment status" size="large" options={paymentStatusOptions} allowClear />
+                            <Select placeholder="Payment status" options={paymentStatusOptions} allowClear />
                         </Form.Item>
                         <Form.Item
                             style={{ width: "51%" }}
                             name="shippingStatus"
                         >
-                            <Select placeholder="Shipping status" size="large" options={shippingStatusOptions} allowClear />
+                            <Select placeholder="Shipping status" options={shippingStatusOptions} allowClear />
                         </Form.Item>
                     </Flex>
 
@@ -236,7 +236,7 @@ export const ListOfOrder = () => {
                 dataSource={items}
                 rowHoverable
                 onChange={onChange}
-                pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, showSizeChanger: false, onChange: setPage }}
+                pagination={{ hideOnSinglePage: true, pageSize: 6, total: total, defaultCurrent: 1, current: page, showSizeChanger: false, onChange: setPage }}
             />
 
         </Flex>

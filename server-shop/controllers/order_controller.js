@@ -1,6 +1,7 @@
 import { order_form, order_subject, order_text } from "../form_mail/order_form.js";
 import order_model from "../models/order_model.js"
 import { sendEmail } from "../nodemailer/nodemailer_config.js";
+import product_model from "../models/product_model.js";
 const from = process.env.NODEMAILER_EMAIL
 
 export const add_order = async (req, res) => {
@@ -72,6 +73,21 @@ export const edit_order = async (req, res) => {
         const order = await order_model.findOne({ _id: order_id });
         if (!order) {
             return res.status(404).json({ message: "Order does not exist" });
+        }
+        if (order.orderStatus === 'canceled' || order.orderStatus === 'done')
+            return res.status(404).json({ message: "You cant edit this order" });
+
+        if (orderStatus === "canceled") {
+            const products = order.products;
+            for (const product of products) {
+                const originalProduct = await product_model.findById(product.productId);
+                if (originalProduct) {
+                    const newInTrade = originalProduct.quantity.inTrade + product.quantity;
+                    await product_model.findByIdAndUpdate(product.productId, {
+                        $set: { 'quantity.inTrade': newInTrade }
+                    });
+                }
+            }
         }
         const updated_order = await order_model.findOneAndUpdate(
             { _id: order._id },
@@ -160,6 +176,8 @@ export const paginate_order = async (req, res) => {
             {
                 $match: finalQuery
             },
+            ...(Object.keys(sortKind).length !== 0 ? [{ $sort: sortKind }] : []),  // Add sort stage conditionally
+
             {
                 $facet: {
                     paginatedResults: [
@@ -172,12 +190,10 @@ export const paginate_order = async (req, res) => {
                 }
             }
         ];
-        if (Object.keys(sortKind).length !== 0) {
-            aggregationStages.push({ $sort: sortKind });
-        }
+
         const [{ paginatedResults, totalCount }] = await order_model.aggregate(aggregationStages);
 
-        if (totalCount[0].count === 0) {
+        if (totalCount[0]?.count === 0 || paginatedResults?.length === 0) {
             return res.status(404).json({ message: "No order " });
         }
 

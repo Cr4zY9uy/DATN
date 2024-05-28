@@ -16,6 +16,7 @@ import { getFavourite } from "../../../services/favourite_service";
 import { ACTION_FAVOURITE, FavouriteContext } from "../../../store/favourite";
 import { OrderContext } from "../../../store/order/provider";
 import { ACTION_ORDER } from "../../../store/order";
+import { truncate } from "../../../utils/ellipse";
 
 function Headers() {
     const [searchView, setSearchView] = useState(false);
@@ -36,7 +37,6 @@ function Headers() {
         refetchOnWindowFocus: false,
         enabled: fetched || !!user?.state?.currentUser
     })
-
     useEffect(() => {
         if (!getFavouriteNow?.isSuccess) return
         else {
@@ -102,37 +102,40 @@ function Headers() {
         if (isError) return
         const rawData = data?.data?.data
         setCategory(rawData?.map((item) => ({
-            name: item.name,
-            id: item._id
+            name: truncate(item.name),
+            id: item._id,
+            order: item?.order,
+            status: item?.isActive
         })));
         return () => {
             setCategory([])
         }
     }, [setCategory, isError, data])
+    console.log(category?.sort((a, b) => a.order - b.order));
 
     return (
         <>
             {!searchView && (
                 <header>
-                    <Flex style={{ height: "100%" }}>
+                    <Flex style={{ height: "100%" }} justify="space-between">
                         <Flex className="header-logo" align="center">
                             <Link to={"home"} className="icon">
                                 <img src="/data/logo/scart-mid.png" alt="logo" width={120} height={60} />
                             </Link>
                         </Flex>
-                        <div className="header-link">
+                        <Flex className="header-link" justify="space-between">
                             <Link to={"home"}>home</Link>
                             <Link className="main_menu" to={"#"}>
                                 <div>categories</div>
                                 <div className="sub_menu">
-                                    {category?.map((item) => (
+                                    {category?.filter(item => item?.status)?.sort((a, b) => a.order - b.order)?.map((item) => (
                                         <NavLink key={item.id} to={`/client/category/${item.id}`}>{item.name}</NavLink>
                                     ))}
 
                                 </div>
                             </Link>
                             <Link to={"shop"}>shop</Link>
-                        </div>
+                        </Flex>
                         <div className="header-icon">
                             <div>
                                 <button onClick={toggleSearchView}><SearchOutlined style={{ fontSize: '18px' }} /></button>

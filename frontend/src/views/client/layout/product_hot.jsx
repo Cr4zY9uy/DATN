@@ -1,6 +1,6 @@
 import { Badge, Button, Flex, Typography } from "antd";
 import "./../style/product_hot.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingOutlined } from "@ant-design/icons";
 import { ACTION_CART, CartContext } from "../../../store/cart";
 import { useContext } from "react";
@@ -23,6 +23,8 @@ function Product_Hot(props) {
 
         }
     };
+
+    const navigate = useNavigate()
     return (
         <Flex className='item' key={product?.id} vertical>
             <Link to={`/client/product/${product?.id}`} style={{ backgroundColor: "white" }}>
@@ -52,7 +54,9 @@ function Product_Hot(props) {
                     </Typography.Text>
                 </Typography.Text>
             </Flex>
-            <Button icon={<ShoppingOutlined />} onClick={addToCart}>add to cart</Button>
+            {!product?.status ? <Button onClick={() => navigate(`/client/product/${product?.id}`)}>view detail</Button> :
+                <Button icon={<ShoppingOutlined />} onClick={addToCart}>add to cart</Button>
+            }
         </Flex>
 
     );

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { login, register, logout, refresh_token, getAll, detailUser, deleteUser, resetPassword, updateUser, forgetPassword, getCurrentUser, loginByGoogle, resetPasswordCurrentUser, paginate_user, paginate_customer, get_all_user_available, create_user } from "../controllers/user_controller.js";
-import { register_validator, login_validator } from "../validator/user_validator.js";
+import { register_validator, login_validator, forgot_password_validator, send_email_validator, reset_password_validator, create_validator, edit_validator } from "../validator/user_validator.js";
 import passport from "passport";
 import { authRole, checkAuth } from "../middleware/check_auth.js";
 
@@ -36,17 +36,17 @@ router.get('/users', checkAuth, authRole([3]), paginate_user)
 router.get('/customers', checkAuth, authRole([1]), paginate_customer)
 router.get('/users/available/all', checkAuth, authRole([2]), get_all_user_available)
 
-router.put('/users/:user_id', checkAuth, authRole([0, 3]), updateUser)
-router.put('/reset-password', resetPassword)
-router.put('/reset-password-current', checkAuth, authRole([0, 3]), resetPasswordCurrentUser)
+router.put('/users/:user_id', checkAuth, authRole([0, 3]), edit_validator,updateUser)
+router.put('/reset-password', forgot_password_validator, resetPassword)
+router.put('/reset-password-current', checkAuth, authRole([0, 3]), reset_password_validator, resetPasswordCurrentUser)
 
 router.delete('/users/delete/:user_id', deleteUser)
 
-router.post('/register', register);
-router.post('/login', login);
+router.post('/register', register_validator, register);
+router.post('/login', login_validator, login);
 router.post('/logout', checkAuth, authRole([0, 1, 2, 3]), logout);
-router.post('/forget-password', forgetPassword)
-router.post('/users', checkAuth, authRole([3]), create_user)
+router.post('/forget-password', send_email_validator, forgetPassword)
+router.post('/users', checkAuth, authRole([3]), create_validator, create_user)
 
 router.post('/refresh_token', refresh_token)
 

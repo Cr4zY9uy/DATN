@@ -193,6 +193,8 @@ export function DetailConsignment() {
                                                         ]}
                                                         style={{ marginBottom: 0, width: "100%" }}                                                    >
                                                         <Select
+                                                            virtual={false}
+
                                                             options={products}
                                                             placeholder={'Product name'}
                                                         />

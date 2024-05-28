@@ -115,12 +115,12 @@ export const delete_banner_list = async (req, res) => {
 };
 
 export const paginate_banner = async (req, res) => {
-    const { title, description, isActive, sortOrder, sortTitle, page } = req.query
+    const { title, description, isActive, sortOrder, sortName, page } = req.query
     const limit = 6;
     const skip = (page - 1) * limit;
     const query = {};
-    if (title) query.title = { $regex: new RegExp(title, "y") };
-    if (description) query.description = { $regex: new RegExp(description, "y") };
+    if (title) query.title = { $regex: new RegExp(title, "iuy") };
+    if (description) query.description = { $regex: new RegExp(description, "iuy") };
     if (isActive) query.isActive = isActive;
     let sortKind = {};
     if (sortOrder) {
@@ -131,8 +131,8 @@ export const paginate_banner = async (req, res) => {
         }
     }
 
-    if (sortTitle) {
-        if (sortTitle === 'ascend') {
+    if (sortName) {
+        if (sortName === 'ascend') {
             sortKind.title = 1;
         } else {
             sortKind.title = -1;

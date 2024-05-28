@@ -221,6 +221,8 @@ function UpdateProduct() {
                             <Flex vertical style={{ width: "100%" }}>
                                 <Typography.Title level={5}>Category</Typography.Title>
                                 <Form.Item
+                                    virtual={false}
+
                                     name="categoryId"
                                     hasFeedback
                                     validateDebounce={1500}
@@ -232,12 +234,16 @@ function UpdateProduct() {
                                         }
                                     ]}
                                 >
-                                    <Select placeholder="Category" size="small" style={{ height: "31px" }} options={categories} allowClear />
+                                    <Select
+                                        virtual={false}
+
+                                        placeholder="Category" size="small" style={{ height: "31px" }} options={categories} allowClear />
                                 </Form.Item>
                             </Flex>
                             <Flex vertical style={{ width: "100%" }}>
                                 <Typography.Title level={5}>Origin</Typography.Title>
                                 <Form.Item
+
                                     name="origin"
                                     hasFeedback
                                     validateDebounce={1500}
@@ -251,6 +257,8 @@ function UpdateProduct() {
                                 >
                                     <Select placeholder="Origin" size="small" style={{ height: "31px" }} options={options} allowClear
                                         showSearch
+                                        virtual={false}
+
                                         optionFilterProp="children"
                                         filterOption={(input, option) => (option?.text ?? '').includes(input)}
                                         filterSort={(optionA, optionB) =>
@@ -338,7 +346,7 @@ function UpdateProduct() {
                             <Form.Item>
                                 <Flex justify="center" gap={20} className="group_btn">
                                     <Button type="primary" htmlType="submit" disabled={isLoading} >
-                                        Add new
+                                        Update
                                     </Button>
                                 </Flex>
                             </Form.Item>
