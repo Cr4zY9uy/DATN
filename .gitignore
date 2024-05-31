@@ -50,9 +50,7 @@ yarn-error.log*
 
 .env
 
-*.crt
 
-elastic_search 
 
 .history
 
