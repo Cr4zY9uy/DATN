@@ -47,9 +47,6 @@ yarn-debug.log*
 yarn-error.log*
 *.lock
 .history
-package-lock.json
-
-package.json
 
 .env
 
@@ -63,4 +60,3 @@ turn_on_database.txt
 
 *.lock
 
-package-lock.json
