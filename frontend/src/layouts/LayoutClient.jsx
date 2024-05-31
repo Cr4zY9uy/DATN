@@ -14,8 +14,8 @@ export const LayoutClient = () => {
     const { state } = useContext(UserContext)
 
     useEffect(() => {
-        avoidDoubleClick();
-    }, []);
+        avoidDoubleClick()
+    }, [])
 
     return (
         <Layout>

@@ -229,7 +229,10 @@ export const ProductList = () => {
       setPage(1)
     }
   }, [searchOrigin, searchTitle, searchSortTitle, searchCategory, searchSortPrice])
+  useEffect(() => {
+    document.title = "Product"
 
+  }, [])
   return (
     <Flex vertical gap={"middle"} className='banner_list'>
       <Flex>

@@ -66,7 +66,7 @@ function ProductGrid(props) {
     }
 
     return (
-        <Flex className='item' key={product.id} vertical>
+        <Flex className='item' key={product.id} vertical >
             {type === 'wishlist' &&
                 <Button danger type="primary" shape="circle" className="delete_favourite" icon={<CloseOutlined />} onClick={() => handleDelete(product.id)} />}
             {!type && <Button className="favourite" onClick={() => addToFavourite()} icon={<HeartOutlined />} />}
@@ -113,7 +113,7 @@ function ProductGrid(props) {
                             </Typography.Text>
                         </Typography.Text> </>)}
             </Flex>
-            {!type && (!product?.status ? <Button className="buy" onClick={() => navigate(`/client/product/${product?.id}`)}>view detail</Button> : <Button icon={<ShoppingOutlined />} className="buy" onClick={addToCart}>add to cart</Button>)}
+            {!type && ((!product?.status || !product?.quantity) ? <Button className="buy" onClick={() => navigate(`/client/product/${product?.id}`)}>view detail</Button> : <Button icon={<ShoppingOutlined />} className="buy" onClick={addToCart}>add to cart</Button>)}
 
         </Flex >
     );

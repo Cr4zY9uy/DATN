@@ -31,7 +31,7 @@ function Modal_Search(props) {
     return (
         <div className="modal_search">
             <div className="wrap_close">
-                <button className="close_btn" onClick={handleOverlayClick}><CloseOutlined /></button>
+                <button className="close_btn" onClick={handleOverlayClick} style={{ cursor: 'pointer' }}><CloseOutlined /></button>
             </div>
             <div className="wrap_query">
                 <input onChange={(e) => { setSearch(e.target.value) }}

@@ -186,6 +186,11 @@ export const BannerList = () => {
     setSortTitle(newSortTitle);
     setSortOrder(newSortOrder);
   };
+  useEffect(() => {
+    document.title = "Banner"
+
+  }, [])
+
   return (
     <Flex vertical gap={"middle"} className='banner_list'>
       <Flex>

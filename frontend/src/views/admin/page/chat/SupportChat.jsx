@@ -93,7 +93,10 @@ export const SupportChat = () => {
             }
         });
     }, [socket, message]);
+    useEffect(() => {
+        document.title = "Supports"
 
+    }, [])
     return (
         <Flex className='admin_chat_box'>
             <Card title={info?.name} style={{ width: "100%" }}>

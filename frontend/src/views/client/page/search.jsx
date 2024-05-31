@@ -35,7 +35,8 @@ function Search() {
                 new Date(dayjs(is?.sales[is?.sales.length - 1]?.dueDate)).getTime() < new Date().getTime() ?
                     0 :
                     is?.sales[is?.sales.length - 1]?.pricePromotion || 0
-                : 0
+                : 0,
+            status: is?.isActive
 
         })))
         setTotalProducts(data?.data?.total)

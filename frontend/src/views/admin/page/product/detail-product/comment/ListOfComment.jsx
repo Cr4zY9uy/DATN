@@ -157,6 +157,11 @@ export const ListOfComment = () => {
         }
         setSortDate(newSortDate);
     };
+
+    useEffect(() => {
+        document.title = "Comment"
+
+    }, [])
     return (
         <Flex vertical gap={"middle"} className='banner_list'>
             <Flex>
