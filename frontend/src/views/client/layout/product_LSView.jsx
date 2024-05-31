@@ -71,7 +71,7 @@ function Product_LSView(props) {
                 </p>
             </Flex>
             <Flex className="button_group" justify="space-evenly">
-                <Button shape="circle" onClick={addToCart}><ShoppingCartOutlined /></Button>
+                <Button shape="circle" onClick={addToCart} disabled={!product?.quantity}><ShoppingCartOutlined /></Button>
                 <Button shape="circle" onClick={addToFavourite}><HeartOutlined /></Button>
             </Flex>
         </Flex>

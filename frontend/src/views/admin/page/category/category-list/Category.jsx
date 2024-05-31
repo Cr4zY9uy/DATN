@@ -180,6 +180,12 @@ export const CategoryList = () => {
     setSortName(newSortName);
     setSortOrder(newSortOrder);
   };
+
+  useEffect(() => {
+    document.title = "Category"
+
+  }, [])
+
   return (
     <Flex vertical gap={"middle"} className='category_list'>
       <Flex>

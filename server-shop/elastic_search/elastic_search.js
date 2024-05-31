@@ -23,11 +23,14 @@ router.get('/search', async (req, res) => {
             size: limit,
             body: {
                 query: {
-                    match: {
-                        name: searchParam
+                    multi_match: {
+                        query: searchParam,
+                        fields: ['name'],
+                        auto_generate_synonyms_phrase_query: true
                     }
                 }
             }
+
         });
 
         const totalItem = productResult.hits.total.value;

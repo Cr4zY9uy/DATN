@@ -167,6 +167,11 @@ export const ListOfRating = () => {
         setSortStar(newSortStar);
         setSortDate(newSortDate);
     };
+
+    useEffect(() => {
+        document.title = "Rating"
+
+    }, [])
     return (
         <Flex vertical gap={"middle"} className='banner_list'>
             <Flex>

@@ -4,7 +4,7 @@ export const avoidDoubleClick = () => {
     document.addEventListener("click", function (e) {
         const { target } = e;
         const now = Date.now();
-        if (target === lastClickElement && (now - lastClickTime) < 800) {
+        if (target === lastClickElement && (now - lastClickTime) < 500) {
             e.preventDefault();
             e.stopPropagation();
         }

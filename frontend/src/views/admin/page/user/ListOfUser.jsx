@@ -183,7 +183,10 @@ export const ListOfUser = () => {
         setStatus(mappedFields['status'])
         setRole(mappedFields['role'])
     };
+    useEffect(() => {
+        document.title = "User"
 
+    }, [])
     return (
         <Flex vertical gap={"middle"} className='banner_list'>
             <Flex>

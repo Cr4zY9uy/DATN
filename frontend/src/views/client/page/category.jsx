@@ -39,7 +39,8 @@ function Category() {
                     0 :
                     (item?.saleId[item?.saleId.length - 1]?.products || []).find(product => product.productId === item?._id)?.pricePromotion || 0
                 : 0,
-            status: item?.isActive
+            status: item?.isActive,
+            quantity: item?.quantity?.inTrade
         })))
         setCategoryName(rawData?.docs[0]?.categoryId?.name)
         setTotal(rawData?.totalDocs)
@@ -49,16 +50,19 @@ function Category() {
         if (!getNameCategory?.isSuccess) return
         const rawData = getNameCategory?.data?.data?.name
         setCategoryName(rawData)
-        document.title = rawData?.toUpperCase();
-        return () => {
-            document.title = ""
-        }
+
     }, [getNameCategory?.isSuccess, getNameCategory?.data])
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [category_id]);
 
+
+    useEffect(() => {
+        if (categoryName)
+            document.title = categoryName;
+        
+    }, [categoryName])
     return (
         <>
             <Banner_Big info={categoryName?.toUpperCase()} />

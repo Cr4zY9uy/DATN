@@ -187,6 +187,11 @@ export const ListOfSale = () => {
         }
         setSortDate(newSortDate);
     };
+
+    useEffect(() => {
+        document.title = "Sale"
+
+    }, [])
     return (
         <Flex vertical gap={"middle"} className='banner_list'>
             <Flex>

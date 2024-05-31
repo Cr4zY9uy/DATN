@@ -288,7 +288,10 @@ export const Overview = () => {
             setOrderByOrderStatus([])
         }
     }, [queryOrder?.isSuccess, queryOrder?.data])
+    useEffect(() => {
+        document.title = "Overview"
 
+    }, [])
 
     return (
         <Flex vertical className='overview' gap={"20px"}>
@@ -303,7 +306,7 @@ export const Overview = () => {
                     <Card.Meta title="Product total" description={
                         <Flex vertical>
                             <Typography.Text>{products}</Typography.Text>
-                            <Button type='link' onClick={() => navigate('product', { replace: true })} icon={<LoginOutlined />}>View detail</Button>
+                            <Button type='link' onClick={() => navigate('/admin/product', { replace: true })} icon={<LoginOutlined />}>View detail</Button>
                         </Flex>
                     } />
                 </Flex>
@@ -315,7 +318,7 @@ export const Overview = () => {
                     </Flex>
                     <Card.Meta title="Category total" description={<Flex vertical>
                         <Typography.Text>{categories}</Typography.Text>
-                        <Button type='link' onClick={() => navigate('category', { replace: true })} icon={<LoginOutlined />}>View detail</Button>
+                        <Button type='link' onClick={() => navigate('/admin/category', { replace: true })} icon={<LoginOutlined />}>View detail</Button>
                     </Flex>} />
                 </Flex>
                 <Flex
@@ -327,7 +330,7 @@ export const Overview = () => {
                     </Flex>
                     <Card.Meta title="Order total" description={<Flex vertical>
                         <Typography.Text>{orders}</Typography.Text>
-                        <Button type='link' onClick={() => navigate('order', { replace: true })} icon={<LoginOutlined />}>View detail</Button>
+                        <Button type='link' icon={<LoginOutlined />}>View detail</Button>
                     </Flex>} />
                 </Flex>
                 <Flex
@@ -339,7 +342,7 @@ export const Overview = () => {
                     </Flex>
                     <Card.Meta title="Customer total" description={<Flex vertical>
                         <Typography.Text>{customers}</Typography.Text>
-                        <Button type='link' onClick={() => navigate('customer', { replace: true })} icon={<LoginOutlined />}>View detail</Button>
+                        <Button type='link' icon={<LoginOutlined />}>View detail</Button>
                     </Flex>} />
                 </Flex>
             </Flex>
@@ -352,7 +355,7 @@ export const Overview = () => {
                             dataKey="value"
                             nameKey="name"
                             cx="50%" cy="50%"
-                            innerRadius={85}
+                            innerRadius={75}
                             outerRadius={100} fill="#8884d8"
                             activeShape={renderActiveShape}
                             onMouseEnter={onPieEnter}

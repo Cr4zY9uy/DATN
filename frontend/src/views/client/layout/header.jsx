@@ -138,7 +138,7 @@ function Headers() {
                         </Flex>
                         <div className="header-icon">
                             <div>
-                                <button onClick={toggleSearchView}><SearchOutlined style={{ fontSize: '18px' }} /></button>
+                                <button onClick={toggleSearchView}><SearchOutlined style={{ fontSize: '18px', cursor: "pointer" }} /></button>
                             </div>
 
                             <div>
@@ -147,7 +147,7 @@ function Headers() {
                             </div>
                             <>
                                 <div className="main_menu">
-                                    <UserOutlined style={{ fontSize: '18px' }} />
+                                    <UserOutlined style={{ fontSize: '18px', cursor: "pointer" }} />
                                     <div className="user">
                                         {(user?.state.currentUser !== null && user?.state.currentUser !== undefined) ? (<>
                                             <Link to={'user'}>

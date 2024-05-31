@@ -55,7 +55,7 @@ function Product_List(props) {
           </Typography.Text>
         </Typography.Text>
       </Flex>
-      {!product?.status ? <Button onClick={() => navigate(`/client/product/${product?.id}`)}>view detail</Button>
+      {(!product?.status || !product?.quantity) ? <Button onClick={() => navigate(`/client/product/${product?.id}`)}>view detail</Button>
         : <Button icon={<ShoppingOutlined />} onClick={addToCart}>add to cart</Button>
 
       }
