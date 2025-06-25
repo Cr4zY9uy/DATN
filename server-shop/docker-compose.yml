@@ -1,0 +1,192 @@
+services:
+  # MongoDB Primary Node - build từ custom Dockerfile
+  mongo-primary:
+    build:
+      context: .docker/db
+      dockerfile: Dockerfile
+    container_name: mongo-primary
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: shop
+    volumes:
+      - ./.docker/db/mongo/primary:/data/db
+      - ./.docker/db/mongo/configdb/primary:/data/configdb
+      - /var/log/mongodb:/var/log/mongodb # Thêm mount cho logs
+    networks:
+      - shop-server
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    command: ["mongod", "--config", "/etc/mongod.conf", "--replSet", "rs0"]
+
+  # MongoDB Secondary Nodes - sử dụng image thường
+  mongo-secondary1:
+    image: mongo:7.0
+    container_name: mongo-secondary1
+    restart: always
+    ports:
+      - "27018:27017"
+    command: mongod --replSet rs0 --bind_ip_all
+    volumes:
+      - ./.docker/db/mongo/secondary1:/data/db
+      - ./.docker/db/mongo/configdb/secondary1:/data/configdb
+    networks:
+      - shop-server
+    depends_on:
+      mongo-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mongo-secondary2:
+    image: mongo:7.0
+    container_name: mongo-secondary2
+    restart: always
+    ports:
+      - "27019:27017"
+    command: mongod --replSet rs0 --bind_ip_all
+    volumes:
+      - ./.docker/db/mongo/secondary2:/data/db
+      - ./.docker/db/mongo/configdb/secondary2:/data/configdb
+    networks:
+      - shop-server
+    depends_on:
+      mongo-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mongo-arbiter:
+    image: mongo:7.0
+    container_name: mongo-arbiter
+    restart: always
+    ports:
+      - "27020:27017"
+    command: mongod --replSet rs0 --bind_ip_all
+    volumes:
+      - ./.docker/db/mongo/arbiter:/data/db
+      - ./.docker/db/mongo/configdb/arbiter:/data/configdb
+    networks:
+      - shop-server
+    depends_on:
+      mongo-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Service để khởi tạo replica set - chạy sau khi tất cả nodes sẵn sàng
+  mongo-setup:
+    image: mongo:7.0
+    container_name: mongo-setup
+    networks:
+      - shop-server
+    depends_on:
+      mongo-primary:
+        condition: service_healthy
+      mongo-secondary1:
+        condition: service_healthy
+      mongo-secondary2:
+        condition: service_healthy
+      mongo-arbiter:
+        condition: service_healthy
+    volumes:
+      - ./.docker/db/init:/scripts
+    command: >
+      bash -c "
+        echo 'Đợi tất cả MongoDB nodes sẵn sàng...'
+        sleep 20
+        echo 'Bắt đầu khởi tạo replica set...'
+        mongosh --host mongo-primary:27017 --file /scripts/init-replica.js
+        echo 'Hoàn thành khởi tạo replica set'
+      "
+    restart: "no" # Chỉ chạy một lần
+
+  elasticsearch:
+    container_name: es-container
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - shop-server
+    volumes:
+      - ./.docker/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./.docker/elasticsearch/logs:/usr/share/elasticsearch/logs
+    ports:
+      - 9200:9200
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  kibana:
+    container_name: kb-container
+    image: docker.elastic.co/kibana/kibana:7.11.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-container:9200
+      - SERVER_NAME=kibana
+      - SERVER_HOST=0.0.0.0
+    networks:
+      - shop-server
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - 5601:5601
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    restart: unless-stopped
+
+  monstache:
+    image: rwynn/monstache:6.7.22
+    container_name: monstache-container
+    restart: unless-stopped
+    networks:
+      - shop-server
+    depends_on:
+      mongo-setup:
+        condition: service_completed_successfully
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - .docker/monstache/config.toml:/config.toml:ro
+      - .docker/monstache/plugins:/plugins:ro
+    command: -f /config.toml
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep monstache > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mongo-primary-data:
+  mongo-secondary1-data:
+  mongo-secondary2-data:
+
+networks:
+  shop-server:
+    driver: bridge

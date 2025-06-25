@@ -1,0 +1,83 @@
+# monstache/config.toml - Cấu hình nâng cao
+
+# MongoDB connection
+mongo-url = "mongodb://mongo-primary:27017,mongo-secondary1:27017,mongo-secondary2:27017/shop?replicaSet=rs0"
+
+# Elasticsearch connection
+elasticsearch-urls = ["http://es-container:9200"]
+
+# Logging
+verbose = true
+stats = true
+index-stats = true
+
+
+# Direct read namespace (optional - for initial sync)
+direct-read-namespaces = [
+    "shop.products",
+    "shop.users", 
+    "shop.orders",
+    "shop.categories"
+]
+
+# Change stream namespaces (collections to watch)
+change-stream-namespaces = [
+    "shop.products",
+    "shop.users",
+    "shop.orders", 
+    "shop.categories"
+]
+
+# Dropped collections
+dropped-collections = true
+dropped-databases = true
+
+# Resume from last position
+resume = true
+resume-name = "monstache-resume-token"
+
+# Workers (parallel processing)
+elasticsearch-max-conns = 10
+elasticsearch-max-seconds = 5
+
+
+# Exit after sync (false for continuous sync)
+exit-after-direct-reads = false
+
+# Enable oplog
+enable-oplog = true
+
+# Batch size for bulk operations
+elasticsearch-max-docs = 1000
+
+
+
+# Index mapping
+[[mapping]]
+namespace = "shop.products"
+index = "products"
+
+[[mapping]]
+namespace = "shop.users"
+index = "users"
+
+[[mapping]]
+namespace = "shop.orders"
+index = "orders"
+
+[[mapping]]
+namespace = "shop.categories"
+index = "categories"
+
+# Nếu bạn muốn custom mapping cho Elasticsearch
+# [[elasticsearch-mapping]]
+# namespace = "shop.products"
+# mapping = '''
+# {
+#   "properties": {
+#     "name": {"type": "text", "analyzer": "standard"},
+#     "price": {"type": "double"},
+#     "created_at": {"type": "date"}
+#   }
+# }
+# '''
